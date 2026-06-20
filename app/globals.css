@@ -4,23 +4,48 @@
   --background: #ffffff;
   --foreground: #171717;
 }
+@media print {
+  /* Hide everything except the result sheet */
+  nav,
+  aside,
+  button,
+  .no-print {
+    display: none !important;
+  }
 
-/* @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Reset background and shadows for print */
+  body {
+    background: white !important;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  #result-sheet {
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Make table borders visible on print */
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  th,
+  td {
+    border: 1px solid #ccc !important;
+    padding: 8px !important;
+  }
+
+  /* Ensure text is black for printing */
+  * {
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Page margins */
+  @page {
+    margin: 20mm;
   }
 }
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-} */

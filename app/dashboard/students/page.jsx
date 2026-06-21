@@ -9,6 +9,7 @@ import {
   deleteStudent,
 } from "@/lib/students";
 import { useAuth } from "@/lib/useAuth";
+import Pagination from "@/components/pagination";
 
 export default function StudentsPage() {
   const queryClient = useQueryClient();
@@ -19,6 +20,10 @@ export default function StudentsPage() {
   const [search, setSearch] = useState("");
   const [filterClass, setFilterClass] = useState("");
   const [filterGender, setFilterGender] = useState("");
+  const { userData, role } = useAuth();
+  const [matricNumber, setMatricNumber] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   const { data: students = [], isLoading } = useQuery({
     queryKey: ["students"],
@@ -30,16 +35,12 @@ export default function StudentsPage() {
     return [...new Set(students.map((s) => s.class))].sort();
   }, [students]);
 
-  // Filter and search logic
-  // inside the component:
-  const { userData, role } = useAuth();
-
   // update the filteredStudents useMemo to add class restriction for teachers:
   const filteredStudents = useMemo(() => {
     return students.filter((student) => {
-      const matchesSearch = student.name
-        .toLowerCase()
-        .includes(search.toLowerCase());
+      const matchesSearch =
+        student.name.toLowerCase().includes(search.toLowerCase()) ||
+        student.matricNumber?.toLowerCase().includes(search.toLowerCase());
       const matchesClass = filterClass ? student.class === filterClass : true;
       const matchesGender = filterGender
         ? student.gender === filterGender
@@ -51,6 +52,13 @@ export default function StudentsPage() {
       );
     });
   }, [students, search, filterClass, filterGender, role, userData]);
+
+  const totalPages = Math.ceil(filteredStudents.length / ITEMS_PER_PAGE);
+
+  const paginatedStudents = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredStudents.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredStudents, currentPage]);
 
   const addMutation = useMutation({
     mutationFn: addStudent,
@@ -81,14 +89,15 @@ export default function StudentsPage() {
   });
 
   const handleSubmit = () => {
-    if (!name || !className) return alert("Please fill in all fields");
+    if (!name || !className || !matricNumber)
+      return alert("Please fill in all fields");
     if (editingStudent) {
       updateMutation.mutate({
         id: editingStudent.id,
-        data: { name, class: className, gender },
+        data: { name, class: className, gender, matricNumber },
       });
     } else {
-      addMutation.mutate({ name, class: className, gender });
+      addMutation.mutate({ name, class: className, gender, matricNumber });
     }
   };
 
@@ -97,12 +106,11 @@ export default function StudentsPage() {
     setName(student.name);
     setClassName(student.class);
     setGender(student.gender);
+    setMatricNumber(student.matricNumber);
   };
 
   const handleDelete = (id) => {
-    if (confirm("Are you sure you want to delete this student?")) {
-      deleteMutation.mutate(id);
-    }
+    deleteMutation.mutate(id);
   };
 
   const handleCancel = () => {
@@ -110,6 +118,7 @@ export default function StudentsPage() {
     setName("");
     setClassName("");
     setGender("Male");
+    setMatricNumber("");
   };
 
   const isPending = addMutation.isPending || updateMutation.isPending;
@@ -123,7 +132,14 @@ export default function StudentsPage() {
         <h3 className="text-lg font-semibold mb-4">
           {editingStudent ? "Edit Student" : "Add New Student"}
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <input
+            type="text"
+            placeholder="Matric Number e.g GFS/2025/001"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            value={matricNumber}
+            onChange={(e) => setMatricNumber(e.target.value)}
+          />
           <input
             type="text"
             placeholder="Full Name"
@@ -176,15 +192,22 @@ export default function StudentsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <input
             type="text"
-            placeholder="Search by name..."
+            placeholder="Search by name or matric number..."
             className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
           />
+
           <select
             className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
             value={filterClass}
-            onChange={(e) => setFilterClass(e.target.value)}
+            onChange={(e) => {
+              setFilterClass(e.target.value);
+              setCurrentPage(1);
+            }}
           >
             <option value="">All Classes</option>
             {classes.map((c) => (
@@ -193,10 +216,14 @@ export default function StudentsPage() {
               </option>
             ))}
           </select>
+
           <select
             className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
             value={filterGender}
-            onChange={(e) => setFilterGender(e.target.value)}
+            onChange={(e) => {
+              setFilterGender(e.target.value);
+              setCurrentPage(1);
+            }}
           >
             <option value="">All Genders</option>
             <option>Male</option>
@@ -222,53 +249,64 @@ export default function StudentsPage() {
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">All Students</h3>
           <p className="text-sm text-gray-400">
-            Showing {filteredStudents.length} of {students.length} students
+            Showing {paginatedStudents.length} of {filteredStudents.length}{" "}
+            students
           </p>
         </div>
         {isLoading ? (
           <p className="text-gray-400">Loading students...</p>
-        ) : filteredStudents.length === 0 ? (
+        ) : paginatedStudents.length === 0 ? (
           <p className="text-gray-400">No students found.</p>
         ) : (
-          <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="border-b">
-                <th className="pb-3 text-gray-500">#</th>
-                <th className="pb-3 text-gray-500">Matric No.</th>
-                <th className="pb-3 text-gray-500">Name</th>
-                <th className="pb-3 text-gray-500">Class</th>
-                <th className="pb-3 text-gray-500">Gender</th>
-                <th className="pb-3 text-gray-500">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredStudents.map((student, index) => (
-                <tr key={student.id} className="border-b last:border-0">
-                  <td className="py-3 text-gray-400">{index + 1}</td>
-                  <td className="py-3 font-mono text-blue-600">
-                    {student.matricNumber}
-                  </td>
-                  <td className="py-3">{student.name}</td>
-                  <td className="py-3">{student.class}</td>
-                  <td className="py-3">{student.gender}</td>
-                  <td className="py-3 flex gap-2">
-                    <button
-                      onClick={() => handleEdit(student)}
-                      className="text-blue-600 hover:underline text-sm"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(student.id)}
-                      className="text-red-500 hover:underline text-sm"
-                    >
-                      Delete
-                    </button>
-                  </td>
+          <>
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b">
+                  <th className="pb-3 text-gray-500">#</th>
+                  <th className="pb-3 text-gray-500">Matric No.</th>
+                  <th className="pb-3 text-gray-500">Name</th>
+                  <th className="pb-3 text-gray-500">Class</th>
+                  <th className="pb-3 text-gray-500">Gender</th>
+                  <th className="pb-3 text-gray-500">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {paginatedStudents.map((student, index) => (
+                  <tr key={student.id} className="border-b last:border-0">
+                    <td className="py-3 text-gray-400">
+                      {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
+                    </td>
+                    <td className="py-3 font-mono text-blue-600">
+                      {student.matricNumber}
+                    </td>
+                    <td className="py-3">{student.name}</td>
+                    <td className="py-3">{student.class}</td>
+                    <td className="py-3">{student.gender}</td>
+                    <td className="py-3 flex gap-2">
+                      <button
+                        onClick={() => handleEdit(student)}
+                        className="text-blue-600 hover:underline text-sm"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(student.id)}
+                        className="text-red-500 hover:underline text-sm"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </>
         )}
       </div>
     </div>

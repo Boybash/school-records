@@ -6,6 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getStudents } from "@/lib/students";
 import { getStudentResultsByTermAndSession } from "@/lib/results";
 import { getSettings } from "@/lib/settings";
+import { generateResultPDF } from "@/lib/generatePDF";
+import { getClassRanking } from "@/lib/results";
 
 const TERMS = ["1st Term", "2nd Term", "3rd Term"];
 
@@ -68,6 +70,29 @@ export default function ParentResultPage() {
     sessionStorage.removeItem("parentStudentId");
     router.push("/parent/login");
   };
+
+  const handleDownloadPDF = () => {
+    generateResultPDF(
+      settings,
+      selectedStudent,
+      results,
+      term,
+      session,
+      totalScore,
+      average,
+      position,
+      classSize,
+    );
+  };
+
+  const { data: ranking } = useQuery({
+    queryKey: ["ranking", selectedStudent?.class, term, session],
+    queryFn: () => getClassRanking(selectedStudent?.class, term, session),
+    enabled: !!selectedStudent && searched,
+  });
+
+  const position = ranking?.positions?.[studentId];
+  const classSize = ranking?.total;
 
   if (!studentId) return null;
 
@@ -249,12 +274,18 @@ export default function ParentResultPage() {
                 </div>
 
                 {/* Print Button */}
-                <div className="mt-6 text-right">
+                <div className="mt-6 flex gap-3 justify-end no-print">
                   <button
                     onClick={() => window.print()}
+                    className="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition"
+                  >
+                    🖨️ Print
+                  </button>
+                  <button
+                    onClick={handleDownloadPDF}
                     className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition"
                   >
-                    🖨️ Print Result Sheet
+                    📄 Download PDF
                   </button>
                 </div>
               </>

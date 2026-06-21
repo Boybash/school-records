@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getStudents } from "@/lib/students";
 import { getSubjects } from "@/lib/subjects";
 import { getResults } from "@/lib/results";
+import { getPendingResults } from "@/lib/results";
 
 export default function DashboardPage() {
   const { data: students = [] } = useQuery({
@@ -19,6 +20,11 @@ export default function DashboardPage() {
   const { data: results = [] } = useQuery({
     queryKey: ["results"],
     queryFn: getResults,
+  });
+
+  const { data: pendingResults = [] } = useQuery({
+    queryKey: ["pending-results"],
+    queryFn: getPendingResults,
   });
 
   const stats = [
@@ -43,6 +49,13 @@ export default function DashboardPage() {
       bg: "bg-purple-50",
       icon: "📝",
     },
+    {
+      label: "Pending Approvals",
+      value: pendingResults.length,
+      color: "text-yellow-600",
+      bg: "bg-yellow-50",
+      icon: "⏳",
+    },
   ];
 
   return (
@@ -50,7 +63,7 @@ export default function DashboardPage() {
       <h2 className="text-2xl font-semibold mb-6">Dashboard</h2>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
         {stats.map((stat) => (
           <div
             key={stat.label}

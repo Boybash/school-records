@@ -18,9 +18,11 @@ const TERMS = ["1st Term", "2nd Term", "3rd Term"];
 
 export default function ResultsPage() {
   const queryClient = useQueryClient();
+  const { userData, role } = useAuth();
   const [studentId, setStudentId] = useState("");
   const [subjectId, setSubjectId] = useState("");
-  const [score, setScore] = useState("");
+  const [ca, setCa] = useState("");
+  const [exam, setExam] = useState("");
   const [term, setTerm] = useState("1st Term");
   const [session, setSession] = useState("2024/2025");
   const [editingResult, setEditingResult] = useState(null);
@@ -40,26 +42,15 @@ export default function ResultsPage() {
     queryFn: getResults,
   });
 
-  const { userData, role } = useAuth();
-
-  // filter students by teacher's classes
   const visibleStudents =
     role === "teacher"
       ? students.filter((s) => userData?.classes?.includes(s.class))
       : students;
 
-  // filter subjects to only teacher's subject
   const visibleSubjects =
     role === "teacher"
       ? subjects.filter((s) => s.id === userData?.subjectId)
       : subjects;
-
-  // pre-select subject for teacher
-  useState(() => {
-    if (role === "teacher" && userData?.subjectId) {
-      setSubjectId(userData.subjectId);
-    }
-  });
 
   const addMutation = useMutation({
     mutationFn: addResult,
@@ -86,18 +77,21 @@ export default function ResultsPage() {
 
   const resetForm = () => {
     setStudentId("");
-    setSubjectId("");
-    setScore("");
+    setSubjectId(role === "teacher" ? userData?.subjectId || "" : "");
+    setCa("");
+    setExam("");
     setTerm("1st Term");
     setSession("2024/2025");
     setEditingResult(null);
   };
 
   const handleSubmit = () => {
-    if (!studentId || !subjectId || !score)
+    if (!studentId || !subjectId || !ca || !exam)
       return alert("Please fill in all fields");
-    if (score < 0 || score > 100)
-      return alert("Score must be between 0 and 100");
+    if (Number(ca) > 30) return alert("CA score cannot exceed 30 marks");
+    if (Number(exam) > 70) return alert("Exam score cannot exceed 70 marks");
+    if (Number(ca) < 0 || Number(exam) < 0)
+      return alert("Scores cannot be negative");
 
     const selectedStudent = students.find((s) => s.id === studentId);
     const selectedSubject = subjects.find((s) => s.id === subjectId);
@@ -105,11 +99,13 @@ export default function ResultsPage() {
     const data = buildResultData(
       studentId,
       subjectId,
-      score,
+      ca,
+      exam,
       term,
       session,
       selectedStudent.name,
       selectedSubject.name,
+      role,
     );
 
     if (editingResult) {
@@ -123,18 +119,18 @@ export default function ResultsPage() {
     setEditingResult(result);
     setStudentId(result.studentId);
     setSubjectId(result.subjectId);
-    setScore(result.score);
+    setCa(result.ca);
+    setExam(result.exam);
     setTerm(result.term);
     setSession(result.session);
   };
 
   const handleDelete = (id) => {
-    if (confirm("Are you sure you want to delete this result?")) {
-      deleteMutation.mutate(id);
-    }
+    deleteMutation.mutate(id);
   };
 
   const isPending = addMutation.isPending || updateMutation.isPending;
+  const total = Number(ca || 0) + Number(exam || 0);
 
   return (
     <div>
@@ -146,6 +142,7 @@ export default function ResultsPage() {
           {editingResult ? "Edit Result" : "Enter Result"}
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Student */}
           <select
             className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
             value={studentId}
@@ -159,10 +156,12 @@ export default function ResultsPage() {
             ))}
           </select>
 
+          {/* Subject */}
           <select
             className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
             value={subjectId}
             onChange={(e) => setSubjectId(e.target.value)}
+            disabled={role === "teacher"}
           >
             <option value="">Select Subject</option>
             {visibleSubjects.map((s) => (
@@ -172,16 +171,7 @@ export default function ResultsPage() {
             ))}
           </select>
 
-          <input
-            type="number"
-            placeholder="Score (0 - 100)"
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
-            value={score}
-            onChange={(e) => setScore(e.target.value)}
-            min={0}
-            max={100}
-          />
-
+          {/* Term */}
           <select
             className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
             value={term}
@@ -192,6 +182,7 @@ export default function ResultsPage() {
             ))}
           </select>
 
+          {/* Session */}
           <input
             type="text"
             placeholder="Session e.g 2024/2025"
@@ -199,7 +190,54 @@ export default function ResultsPage() {
             value={session}
             onChange={(e) => setSession(e.target.value)}
           />
+
+          <input
+            type="number"
+            placeholder="CA Score (max 30)"
+            className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            value={ca}
+            onChange={(e) => setCa(e.target.value)}
+            min={0}
+            max={30}
+          />
+
+          <input
+            type="number"
+            placeholder="Exam Score (max 70)"
+            className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            value={exam}
+            onChange={(e) => setExam(e.target.value)}
+            min={0}
+            max={70}
+          />
         </div>
+
+        {/* Live Total Preview */}
+        {(ca || exam) && (
+          <div className="mt-4 p-4 bg-gray-50 rounded-lg flex items-center gap-6 text-sm">
+            <span className="text-gray-500">
+              CA: <span className="font-bold text-gray-800">{ca || 0}/30</span>
+            </span>
+            <span className="text-gray-500">
+              Exam:{" "}
+              <span className="font-bold text-gray-800">{exam || 0}/70</span>
+            </span>
+            <span className="text-gray-500">
+              Total:{" "}
+              <span
+                className={`font-bold text-lg ${total >= 70 ? "text-green-600" : total >= 50 ? "text-blue-600" : "text-red-500"}`}
+              >
+                {total}/100
+              </span>
+            </span>
+            <span className="text-gray-500">
+              Grade:{" "}
+              <span className="font-bold text-purple-600">
+                {getGrade(total)}
+              </span>
+            </span>
+          </div>
+        )}
 
         <div className="flex gap-3 mt-4">
           <button
@@ -238,10 +276,13 @@ export default function ResultsPage() {
                 <th className="pb-3 text-gray-500">#</th>
                 <th className="pb-3 text-gray-500">Student</th>
                 <th className="pb-3 text-gray-500">Subject</th>
-                <th className="pb-3 text-gray-500">Score</th>
+                <th className="pb-3 text-gray-500">CA</th>
+                <th className="pb-3 text-gray-500">Exam</th>
+                <th className="pb-3 text-gray-500">Total</th>
                 <th className="pb-3 text-gray-500">Grade</th>
                 <th className="pb-3 text-gray-500">Term</th>
                 <th className="pb-3 text-gray-500">Session</th>
+                <th className="pb-3 text-gray-500">Status</th>
                 <th className="pb-3 text-gray-500">Actions</th>
               </tr>
             </thead>
@@ -251,7 +292,9 @@ export default function ResultsPage() {
                   <td className="py-3 text-gray-400">{index + 1}</td>
                   <td className="py-3">{result.studentName}</td>
                   <td className="py-3">{result.subjectName}</td>
-                  <td className="py-3">{result.score}</td>
+                  <td className="py-3">{result.ca}</td>
+                  <td className="py-3">{result.exam}</td>
+                  <td className="py-3 font-semibold">{result.score}</td>
                   <td className="py-3 font-bold">
                     <span
                       className={
@@ -269,6 +312,19 @@ export default function ResultsPage() {
                   </td>
                   <td className="py-3">{result.term}</td>
                   <td className="py-3">{result.session}</td>
+                  <td className="py-3">
+                    <span
+                      className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                        result.status === "approved"
+                          ? "bg-green-100 text-green-600"
+                          : result.status === "rejected"
+                            ? "bg-red-100 text-red-500"
+                            : "bg-yellow-100 text-yellow-600"
+                      }`}
+                    >
+                      {result.status || "Approved"}
+                    </span>
+                  </td>
                   <td className="py-3 flex gap-2">
                     <button
                       onClick={() => handleEdit(result)}

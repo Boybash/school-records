@@ -95,7 +95,7 @@ export default function TeachersPage() {
 
         {step === 1 && (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
               <input
                 type="text"
                 placeholder="Full Name"
@@ -117,19 +117,13 @@ export default function TeachersPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-            </div>
 
-            {/* Subject Assignment */}
-            <div className="mb-4">
-              <label className="text-sm text-gray-500 mb-1 block">
-                Assign Subject
-              </label>
               <select
                 className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
                 value={subjectId}
                 onChange={(e) => setSubjectId(e.target.value)}
               >
-                <option value="">Select Subject</option>
+                <option value="">Assign Subject</option>
                 {subjects.map((s) => (
                   <option key={s.id} value={s.id}>
                     {s.name}
@@ -137,6 +131,8 @@ export default function TeachersPage() {
                 ))}
               </select>
             </div>
+
+            {/* Subject Assignment */}
 
             {/* Class Assignment */}
             <div className="mb-4">

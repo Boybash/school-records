@@ -12,6 +12,8 @@ const adminLinks = [
   { href: "/dashboard/students", label: "Students", icon: "🎓" },
   { href: "/dashboard/subjects", label: "Subjects", icon: "📚" },
   { href: "/dashboard/results", label: "Results", icon: "📝" },
+  { href: "/dashboard/bulk-upload", label: "Bulk Upload", icon: "📤" },
+  { href: "/dashboard/approvals", label: "Approvals", icon: "✅" },
   { href: "/dashboard/result-sheet", label: "Result Sheet", icon: "🗒️" },
   { href: "/dashboard/teachers", label: "Teachers", icon: "👨‍🏫" },
   { href: "/dashboard/settings", label: "Settings", icon: "⚙️" },
@@ -20,9 +22,9 @@ const adminLinks = [
 const teacherLinks = [
   { href: "/dashboard/students", label: "Students", icon: "🎓" },
   { href: "/dashboard/results", label: "Results", icon: "📝" },
+  { href: "/dashboard/bulk-upload", label: "Bulk Upload", icon: "📤" },
   { href: "/dashboard/result-sheet", label: "Result Sheet", icon: "🗒️" },
 ];
-
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();

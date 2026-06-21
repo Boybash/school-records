@@ -1,5 +1,6 @@
 import Providers from "./provider";
 import "./globals.css";
+import Navbar from "./landingPage/component/navbar";
 
 export const metadata = {
   title: "School Records",
@@ -9,9 +10,29 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+      </head>
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html>
   );
 }
+
+// export function LandingLayout({ children }) {
+//   return (
+//     <html lang="en">
+//       <head>
+//         <link rel="icon" href="/favicon.ico" />
+//       </head>
+
+//       <body>
+//         <Providers>{children}</Providers>
+//       </body>
+//     </html>
+//   );
+// }

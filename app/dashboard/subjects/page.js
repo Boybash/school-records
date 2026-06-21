@@ -13,6 +13,7 @@ export default function SubjectsPage() {
   const queryClient = useQueryClient();
   const [name, setName] = useState("");
   const [editingSubject, setEditingSubject] = useState(null);
+  const [deleetingSubjectId, setDeletingSubjectId] = useState(null);
 
   const { data: subjects = [], isLoading } = useQuery({
     queryKey: ["subjects"],
@@ -58,9 +59,8 @@ export default function SubjectsPage() {
   };
 
   const handleDelete = (id) => {
-    if (confirm("Are you sure you want to delete this subject?")) {
-      deleteMutation.mutate(id);
-    }
+    setDeletingSubjectId(true);
+    deleteMutation.mutate(id);
   };
 
   const handleCancel = () => {

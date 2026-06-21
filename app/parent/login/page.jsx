@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getStudentByMatric } from "@/lib/students";
 
@@ -10,6 +10,20 @@ export default function ParentLoginPage() {
   const [surname, setSurname] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [current, setCurrent] = useState(0);
+  const images = [
+    "/shalom image 6.webp",
+    "/shalom image 2.webp",
+    "/shalom image 5.webp",
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % images.length);
+    }, 3000); // changes every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogin = async () => {
     if (!matricNumber || !surname) return setError("Please fill in all fields");
@@ -46,11 +60,32 @@ export default function ParentLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
+    <div className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden">
+      <div
+        className="absolute inset-0 flex transition-transform duration-700 ease-in-out"
+        style={{ transform: `translateX(-${current * 100}%)` }}
+      >
+        {images.map((img) => (
+          <div
+            key={img}
+            className="min-w-full h-full"
+            style={{
+              backgroundImage: `url('${img}')`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-black/70" />
+
+      <div className="relative z-10 bg-[#c1e8ff] p-8 rounded-md shadow-md w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-blue-600">Parent Portal</h1>
+          <h1 className="text-2xl font-bold text-[#021024]">Parent Portal</h1>
           <p className="text-gray-500 text-sm mt-1">
             Enter your child's matric number and surname to view their results
           </p>
@@ -68,7 +103,7 @@ export default function ParentLoginPage() {
             <input
               type="text"
               placeholder="e.g GFS/2025/001"
-              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full  p-3 rounded-lg outline-none border focus:ring-2 focus:ring-[#052659]"
               value={matricNumber}
               onChange={(e) => setMatricNumber(e.target.value)}
             />
@@ -79,7 +114,7 @@ export default function ParentLoginPage() {
             <input
               type="text"
               placeholder="Enter student's surname"
-              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full p-3 rounded-lg outline-none border focus:ring-2 focus:ring-[#052659]"
               value={surname}
               onChange={(e) => setSurname(e.target.value)}
             />
@@ -89,7 +124,7 @@ export default function ParentLoginPage() {
         <button
           onClick={handleLogin}
           disabled={loading}
-          className="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+          className="w-full mt-6 bg-[#052659] text-white py-3 rounded-md font-semibold hover:bg-[#021024] transition cursor-pointer"
         >
           {loading ? "Checking..." : "View Results"}
         </button>

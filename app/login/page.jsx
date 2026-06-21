@@ -4,6 +4,7 @@ import { useState } from "react";
 import { loginUser } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -40,7 +41,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative flex items-center justify-center py-40 px-6 overflow-hidden">
+    <div className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden">
       <div
         className="absolute inset-0 flex transition-transform duration-700 ease-in-out"
         style={{ transform: `translateX(-${current * 100}%)` }}
@@ -95,6 +96,14 @@ export default function LoginPage() {
           {loading ? "Signing in..." : "Sign In"}
         </button>
       </div>
+
+      <Link
+        href="/"
+        className=" flex gap-2 items-center bg-[#c1e8ff] p-2 rounded-md absolute top-10 left-10 "
+      >
+        <img className="w-5 h-5" src="/arrow-l.png" alt="arrow" />
+        Back
+      </Link>
     </div>
   );
 }

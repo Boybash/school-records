@@ -10,11 +10,12 @@ export default function Navbar() {
     { label: "Home", href: "/" },
     { label: "Features", href: "#features" },
     { label: "How It Works", href: "#how-it-works" },
+    { label: "About Us", href: "#about" },
     { label: "Contact", href: "#contact" },
   ];
 
   return (
-    <nav className="bg-[#052659] px-10 py-5 flex justify-between items-center sticky top-0 z-50">
+    <nav className="bg-[#052659] px-15 py-5 flex justify-between items-center sticky top-0 z-50">
       <div className="flex items-center gap-3">
         <div>
           <p className="font-bold text-[#c1e8ff] text-xl ">

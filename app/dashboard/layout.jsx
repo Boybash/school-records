@@ -49,10 +49,14 @@ export default function DashboardLayout({ children }) {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <aside className="w-64 bg-white shadow-md flex flex-col">
+      <aside className="w-64 bg-[#021024]/50 shadow-md flex flex-col">
         <div className="p-6 border-b">
-          <h1 className="text-xl font-bold text-blue-600">School Records</h1>
-          <p className="text-xs text-gray-400 mt-1 capitalize">{role}</p>
+          <h1 className="text-xl font-bold text-[#021024] uppercase">
+            School Records
+          </h1>
+          <p className="text-2xl font-medium text-gray-400 mt-1 capitalize">
+            {role}
+          </p>
         </div>
 
         <nav className="flex-1 p-4 space-y-1">
@@ -62,7 +66,7 @@ export default function DashboardLayout({ children }) {
               href={link.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition text-sm font-medium ${
                 pathname === link.href
-                  ? "bg-blue-600 text-white"
+                  ? "bg-[#021024] text-white"
                   : "text-gray-600 hover:bg-gray-100"
               }`}
             >
@@ -75,7 +79,7 @@ export default function DashboardLayout({ children }) {
         <div className="p-4 border-t">
           <button
             onClick={handleLogout}
-            className="w-full text-left flex items-center gap-3 px-4 py-3 rounded-lg text-red-500 hover:bg-red-50 transition text-sm font-medium"
+            className="w-full text-left flex items-center gap-3 px-4 py-3 rounded-lg text-red-500 hover:bg-red-50 transition text-sm font-medium cursor-pointer"
           >
             <span>🚪</span>
             <span>Logout</span>

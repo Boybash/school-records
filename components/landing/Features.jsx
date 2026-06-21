@@ -1,31 +1,31 @@
 const features = [
   {
-    icon: "🎓",
+    icon: "/graduation-cap.png",
     title: "Student Management",
     desc: "Add, edit and manage student records with matric numbers, class and gender information.",
   },
   {
-    icon: "📝",
+    icon: "/result.png",
     title: "Result Entry",
     desc: "Teachers enter CA and Exam scores separately. Totals and grades are calculated automatically.",
   },
   {
-    icon: "✅",
+    icon: "/checkbox.png",
     title: "Result Approval",
     desc: "Admin reviews and approves results before they are visible to parents. Full control over data.",
   },
   {
-    icon: "📄",
+    icon: "/sheet.png",
     title: "PDF Result Sheets",
     desc: "Generate and download professional result sheets with school logo, position and grade summary.",
   },
   {
-    icon: "👨‍👩‍👧",
+    icon: "/family.png",
     title: "Parent Portal",
     desc: "Parents log in with their child's matric number and surname to view results anytime.",
   },
   {
-    icon: "📤",
+    icon: "/upload.png",
     title: "Bulk Upload",
     desc: "Upload results for an entire class at once using an Excel template. Saves hours of manual entry.",
   },
@@ -39,7 +39,7 @@ export default function Features() {
           Everything You Need
         </h2>
         <p className="text-center text-[#021024] mb-12 max-w-xl mx-auto">
-          Built specifically for our secondary school student to simplify
+          Built specifically for our secondary school students to simplify
           academic record keeping.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -48,7 +48,11 @@ export default function Features() {
               key={feature.title}
               className="bg-[#052659] rounded-md p-10  hover:shadow-md transition text-white"
             >
-              <span className="text-3xl">{feature.icon}</span>
+              <img
+                className="w-13 h-13 mb-3 bg-white p-1 rounded-4xl"
+                src={feature.icon}
+                alt={feature.title}
+              />
               <h3 className="text-lg font-semibold  mt-3 mb-2 uppercase">
                 {feature.title}
               </h3>

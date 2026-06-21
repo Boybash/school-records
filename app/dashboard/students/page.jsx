@@ -125,37 +125,37 @@ export default function StudentsPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-6">Students</h2>
+      <h2 className="text-2xl font-semibold mb-6 uppercase">Students</h2>
 
       {/* Add/Edit Form */}
-      <div className="bg-white rounded-xl shadow p-6 mb-6">
-        <h3 className="text-lg font-semibold mb-4">
+      <div className="bg-[#021024] rounded-xl shadow p-6 mb-6">
+        <h3 className="text-lg font-semibold mb-4 text-white">
           {editingStudent ? "Edit Student" : "Add New Student"}
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <input
             type="text"
             placeholder="Matric Number e.g GFS/2025/001"
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={matricNumber}
             onChange={(e) => setMatricNumber(e.target.value)}
           />
           <input
             type="text"
             placeholder="Full Name"
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
           <input
             type="text"
             placeholder="Class e.g JSS 1A"
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={className}
             onChange={(e) => setClassName(e.target.value)}
           />
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={gender}
             onChange={(e) => setGender(e.target.value)}
           >
@@ -167,7 +167,7 @@ export default function StudentsPage() {
           <button
             onClick={handleSubmit}
             disabled={isPending}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+            className="bg-[#c1e8ff] text-[#021024] px-6 py-3 rounded-md hover:bg-blue-700 transition font-semibold"
           >
             {isPending
               ? "Saving..."

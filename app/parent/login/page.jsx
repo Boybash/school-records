@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getStudentByMatric } from "@/lib/students";
+import Link from "next/link";
 
 export default function ParentLoginPage() {
   const router = useRouter();
@@ -133,6 +134,14 @@ export default function ParentLoginPage() {
           Having trouble? Contact the school admin.
         </p>
       </div>
+
+      <Link
+        href="/"
+        className=" flex gap-2 items-center bg-[#c1e8ff] p-2 rounded-md absolute top-10 left-10 "
+      >
+        <img className="w-5 h-5" src="/arrow-l.png" alt="arrow" />
+        Back
+      </Link>
     </div>
   );
 }

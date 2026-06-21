@@ -45,7 +45,7 @@ export default function Hero() {
 
       {/* Content */}
       <div className="flex justify-between relative z-10">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 ml-5">
           <h1 className="text-white text-4xl sm:text-5xl font-extrabold uppercase tracking-widest mb-1 text-left">
             Shalom Model College
           </h1>

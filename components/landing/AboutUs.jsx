@@ -62,7 +62,7 @@ export default function AboutUs() {
                 <img
                   src={item.image}
                   alt={item.title}
-                  className="w-10 h-10 mb-4 bg-white rounded-4xl p-2"
+                  className="w-7 h-7 mb-4 "
                 />
                 <div>
                   <h4 className="font-semibold text-gray-800 text-sm mb-1">

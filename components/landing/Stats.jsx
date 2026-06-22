@@ -23,7 +23,7 @@ const offers = [
   {
     title: "leadership training",
     description:
-      "We provide an extensive array of leadership opportunities, including involvement in communities service for all students.",
+      "We provide an extensive array of leadership opportunities, including involvement in communities service for all students.To shape future of our student.",
     image: "/medal.png",
   },
 ];
@@ -34,18 +34,18 @@ export default function Stats() {
       <h1 className="uppercase text-center tracking-widest text-4xl font-bold text-[#021024]">
         What We Offer
       </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-15 items-start max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-16 items-start max-w-7xl mx-auto">
         {offers.map((offer) => (
           <div
-            key={offer.title}
-            className="flex flex-col gap-2 justify-center max-w-3xl text-left mb-8 bg-[#c1e8ff]/50 p-6 rounded-md hover:shadow-md transition"
+            key={offer.id || offer.title} // Prefers id, falls back to title if unique
+            className="flex flex-col gap-2 justify-center text-left bg-[#c1e8ff]/50 p-6 rounded-md hover:shadow-md transition"
           >
             <img
               src={offer.image}
               alt={offer.title}
-              className="w-13 h-13 mb-4"
+              className="w-12 h-12 mb-4 object-contain" // Changed to standard w-12/h-12
             />
-            <h3 className=" text-[#052659] mb-2 uppercase text-2xl font-semibold text-left">
+            <h3 className="text-[#052659] mb-2 uppercase text-2xl font-semibold text-left">
               {offer.title}
             </h3>
             <p className="text-[#021024] text-lg">{offer.description}</p>

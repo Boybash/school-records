@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="400" height="450">
+  <defs>
+    <style>
+      .gold { fill: #C8A200; }
+      .dark-navy { fill: #1a1a4e; }
+      .red { fill: #CC2200; }
+      .yellow { fill: #F5C000; }
+      .white { fill: #ffffff; }
+      .green { fill: #2a8a2a; }
+      .text-gold { fill: #F5C000; }
+      .text-white { fill: #ffffff; }
+    </style>
+  </defs>
+
+  <!-- Graduation Cap -->
+  <g transform="translate(200, 60)">
+    <!-- Cap board -->
+    <polygon points="-70,0 0,-28 70,0 0,28" fill="#1a1a4e"/>
+    <!-- Cap top -->
+    <rect x="-12" y="-50" width="24" height="52" rx="2" fill="#1a1a4e"/>
+    <rect x="-28" y="-55" width="56" height="16" rx="3" fill="#1a1a4e"/>
+    <!-- Tassel -->
+    <line x1="70" y1="0" x2="70" y2="30" stroke="#2a8a2a" stroke-width="3"/>
+    <circle cx="70" cy="33" r="4" fill="#2a8a2a"/>
+  </g>
+
+  <!-- Laurel branches -->
+  <!-- Left branch -->
+  <g fill="#1a1a4e">
+    <!-- Left stem -->
+    <path d="M120,220 Q90,180 100,130" stroke="#1a1a4e" stroke-width="2.5" fill="none"/>
+    <!-- Left leaves -->
+    <ellipse cx="118" cy="215" rx="14" ry="7" transform="rotate(-30,118,215)"/>
+    <ellipse cx="110" cy="200" rx="14" ry="7" transform="rotate(-40,110,200)"/>
+    <ellipse cx="105" cy="183" rx="14" ry="7" transform="rotate(-50,105,183)"/>
+    <ellipse cx="103" cy="165" rx="13" ry="6" transform="rotate(-55,103,165)"/>
+    <ellipse cx="105" cy="148" rx="12" ry="6" transform="rotate(-60,105,148)"/>
+    <ellipse cx="108" cy="133" rx="11" ry="5" transform="rotate(-65,108,133)"/>
+  </g>
+  <!-- Right branch -->
+  <g fill="#1a1a4e">
+    <path d="M280,220 Q310,180 300,130" stroke="#1a1a4e" stroke-width="2.5" fill="none"/>
+    <ellipse cx="282" cy="215" rx="14" ry="7" transform="rotate(30,282,215)"/>
+    <ellipse cx="290" cy="200" rx="14" ry="7" transform="rotate(40,290,200)"/>
+    <ellipse cx="295" cy="183" rx="14" ry="7" transform="rotate(50,295,183)"/>
+    <ellipse cx="297" cy="165" rx="13" ry="6" transform="rotate(55,297,165)"/>
+    <ellipse cx="295" cy="148" rx="12" ry="6" transform="rotate(60,295,148)"/>
+    <ellipse cx="292" cy="133" rx="11" ry="5" transform="rotate(65,292,133)"/>
+  </g>
+
+  <!-- Shield outline (gold border) -->
+  <path d="M145,105 L255,105 L255,240 Q200,280 145,240 Z" fill="#C8A200"/>
+
+  <!-- Shield inner dark background (top half) -->
+  <path d="M150,110 L250,110 L250,175 L150,175 Z" fill="#1a1a4e"/>
+
+  <!-- Shield inner bottom left (yellow/gold) -->
+  <path d="M150,175 L200,175 L200,237 Q175,253 150,237 Z" fill="#F5C000"/>
+
+  <!-- Shield inner bottom right (red) -->
+  <path d="M200,175 L250,175 L250,237 Q225,253 200,237 Z" fill="#CC2200"/>
+
+  <!-- Shield divider lines -->
+  <line x1="150" y1="175" x2="250" y2="175" stroke="#C8A200" stroke-width="2.5"/>
+  <line x1="200" y1="110" x2="200" y2="260" stroke="#C8A200" stroke-width="2.5"/>
+
+  <!-- SHALOM text -->
+  <text x="200" y="148" text-anchor="middle" font-family="Georgia, serif" font-size="22" font-weight="bold" fill="#F5C000" letter-spacing="1">SHALOM</text>
+
+  <!-- MODEL COLLEGE text -->
+  <text x="200" y="167" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#ffffff" letter-spacing="0.5">MODEL</text>
+  <text x="200" y="181" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#ffffff" letter-spacing="0.5">COLLEGE</text>
+
+  <!-- Open book (bottom left of shield) -->
+  <g transform="translate(163,200)">
+    <!-- Left page -->
+    <path d="M-18,0 Q-10,-12 0,-8 L0,14 Q-10,10 -18,12 Z" fill="#2a8a2a"/>
+    <!-- Right page -->
+    <path d="M18,0 Q10,-12 0,-8 L0,14 Q10,10 18,12 Z" fill="#2a8a2a"/>
+    <!-- Spine -->
+    <rect x="-2" y="-8" width="4" height="22" fill="#1a5a1a"/>
+    <!-- Page lines left -->
+    <line x1="-14" y1="0" x2="-3" y2="-2" stroke="#ffffff" stroke-width="1" opacity="0.7"/>
+    <line x1="-14" y1="4" x2="-3" y2="3" stroke="#ffffff" stroke-width="1" opacity="0.7"/>
+    <line x1="-14" y1="8" x2="-3" y2="7" stroke="#ffffff" stroke-width="1" opacity="0.7"/>
+  </g>
+
+  <!-- Key (bottom right of shield) -->
+  <g transform="translate(233,205)">
+    <!-- Key head (ring) -->
+    <circle cx="0" cy="-8" r="10" fill="none" stroke="#ffffff" stroke-width="3.5"/>
+    <!-- Key shaft -->
+    <rect x="-1.5" y="2" width="3" height="20" fill="#ffffff"/>
+    <!-- Key teeth -->
+    <rect x="1.5" y="8" width="6" height="3.5" fill="#ffffff"/>
+    <rect x="1.5" y="16" width="4.5" height="3" fill="#ffffff"/>
+  </g>
+
+  <!-- Red ribbon/scroll -->
+  <path d="M115,255 Q130,240 145,248 Q200,270 255,248 Q270,240 285,255 Q270,275 255,265 Q200,285 145,265 Q130,275 115,255 Z" fill="#CC2200"/>
+
+  <!-- Gold circles at ribbon ends -->
+  <circle cx="118" cy="255" r="10" fill="#C8A200"/>
+  <circle cx="282" cy="255" r="10" fill="#C8A200"/>
+
+  <!-- Ribbon text -->
+  <text x="200" y="263" text-anchor="middle" font-family="Georgia, serif" font-size="9" fill="#ffffff" letter-spacing="1.5">ENABLE • MOTIVATE • EQUIP FOR LIFE</text>
+
+  <!-- School name at bottom -->
+  <text x="200" y="330" text-anchor="middle" font-family="Georgia, serif" font-size="22" font-weight="bold" fill="#1a1a4e" letter-spacing="2">SHALOM MODEL COLLEGE</text>
+  <text x="200" y="355" text-anchor="middle" font-family="Georgia, serif" font-size="10" fill="#555" letter-spacing="1.5">PRE-NURSERY · NURSERY · PRIMARY AND COLLEGE</text>
+</svg>

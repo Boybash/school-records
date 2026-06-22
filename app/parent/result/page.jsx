@@ -100,49 +100,68 @@ export default function ParentResultPage() {
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
       <nav className="bg-white shadow p-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-blue-600">Parent Portal</h1>
-        <button
+        <h1 className="text-xl font-bold text-primary uppercase">
+          Parent Portal
+        </h1>
+        <div
+          className="flex items-center gap-1 bg-primary-50 p-2 rounded-full cursor-pointer"
           onClick={handleLogout}
-          className="text-sm text-red-500 hover:underline"
         >
-          Logout
-        </button>
+          <img
+            className="w-9 h-9 bg-white p-2 rounded-full object-contain "
+            src="/user-logout.png"
+            alt="logout"
+          />
+          <button className="text-sm text-primary font-semibold ">
+            Logout
+          </button>
+        </div>
       </nav>
 
       <div className="max-w-3xl mx-auto p-6">
         {/* Student Info */}
         {selectedStudent && (
-          <div className="bg-white rounded-xl shadow p-6 mb-6">
-            <h2 className="text-lg font-semibold mb-3">Student Information</h2>
+          <div className="bg-primary rounded-md shadow p-6 mb-6">
+            <h2 className="text-lg font-semibold mb-3 text-white">
+              Student Information
+            </h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
               <div>
                 <p className="text-gray-500">Name</p>
-                <p className="font-semibold">{selectedStudent.name}</p>
+                <p className="font-semibold text-white">
+                  {selectedStudent.name}
+                </p>
               </div>
               <div>
                 <p className="text-gray-500">Matric No.</p>
-                <p className="font-semibold font-mono">
+                <p className="font-semibold font-mono text-white">
                   {selectedStudent.matricNumber}
                 </p>
               </div>
               <div>
                 <p className="text-gray-500">Class</p>
-                <p className="font-semibold">{selectedStudent.class}</p>
+                <p className="font-semibold text-white">
+                  {selectedStudent.class}
+                </p>
               </div>
               <div>
                 <p className="text-gray-500">Gender</p>
-                <p className="font-semibold">{selectedStudent.gender}</p>
+                <p className="font-semibold text-white">
+                  {selectedStudent.gender}
+                </p>
               </div>
             </div>
           </div>
         )}
 
         {/* Term & Session Selector */}
-        <div className="bg-white rounded-xl shadow p-6 mb-6">
-          <h3 className="text-lg font-semibold mb-4">Select Term & Session</h3>
+        <div className="bg-primary rounded-md shadow p-6 mb-6">
+          <h3 className="text-lg font-semibold mb-4 text-white">
+            Select Term & Session
+          </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <select
-              className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+              className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
               value={term}
               onChange={(e) => setTerm(e.target.value)}
             >
@@ -153,14 +172,14 @@ export default function ParentResultPage() {
             <input
               type="text"
               placeholder="Session e.g 2024/2025"
-              className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+              className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
               value={session}
               onChange={(e) => setSession(e.target.value)}
             />
           </div>
           <button
             onClick={handleSearch}
-            className="mt-4 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+            className="mt-4 bg-gray-100 text-primary px-6 py-3 rounded-lg cursor-pointer font-semibold transition"
           >
             View Result
           </button>
@@ -168,7 +187,7 @@ export default function ParentResultPage() {
 
         {/* Result Sheet */}
         {searched && (
-          <div className="bg-white rounded-xl shadow p-6" id="result-sheet">
+          <div className="bg-white rounded-md shadow p-6" id="result-sheet">
             {/* Header */}
             <div className="text-center mb-6 border-b pb-4">
               {settings.logoUrl && (
@@ -214,7 +233,10 @@ export default function ParentResultPage() {
                   </thead>
                   <tbody>
                     {results.map((result, index) => (
-                      <tr key={result.id} className="border-b last:border-0">
+                      <tr
+                        key={result.id}
+                        className="border-b last:border-0 font-semibold"
+                      >
                         <td className="py-3 px-4 text-gray-400">{index + 1}</td>
                         <td className="py-3 px-4">{result.subjectName}</td>
                         <td className="py-3 px-4">{result.score}</td>
@@ -233,7 +255,7 @@ export default function ParentResultPage() {
                             {result.grade}
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-gray-500">
+                        <td className="py-3 px-4 text-gray-500 font-semibold">
                           {result.grade === "A"
                             ? "Excellent"
                             : result.grade === "B"
@@ -252,7 +274,7 @@ export default function ParentResultPage() {
                 </table>
 
                 {/* Summary */}
-                <div className="grid grid-cols-3 gap-4 border-t pt-4 text-sm">
+                <div className="grid grid-cols-3 gap-4 border-t pt-4 text-sm font-semibold">
                   <div className="text-center">
                     <p className="text-gray-500">Total Score</p>
                     <p className="text-xl font-bold text-blue-600">

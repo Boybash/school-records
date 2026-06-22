@@ -87,11 +87,13 @@ export default function TeachersPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-6">Teachers</h2>
+      <h2 className="text-xl font-bold mb-6 uppercase">Teachers</h2>
 
       {/* Add Teacher Form */}
-      <div className="bg-white rounded-xl shadow p-6 mb-6">
-        <h3 className="text-lg font-semibold mb-4">Add New Teacher</h3>
+      <div className="bg-primary rounded-xl shadow p-6 mb-6">
+        <h3 className="text-lg font-semibold mb-4 text-white">
+          Add New Teacher
+        </h3>
 
         {step === 1 && (
           <>
@@ -99,27 +101,27 @@ export default function TeachersPage() {
               <input
                 type="text"
                 placeholder="Full Name"
-                className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+                className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
               <input
                 type="email"
                 placeholder="Email"
-                className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+                className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
               <input
                 type="password"
                 placeholder="Password"
-                className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+                className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
 
               <select
-                className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
                 value={subjectId}
                 onChange={(e) => setSubjectId(e.target.value)}
               >
@@ -136,7 +138,7 @@ export default function TeachersPage() {
 
             {/* Class Assignment */}
             <div className="mb-4">
-              <label className="text-sm text-gray-500 mb-2 block">
+              <label className="text-sm text-white mb-2 block">
                 Assign Classes
               </label>
               {classes.length === 0 ? (
@@ -151,8 +153,8 @@ export default function TeachersPage() {
                       onClick={() => toggleClass(cls)}
                       className={`px-4 py-2 rounded-lg text-sm border transition ${
                         selectedClasses.includes(cls)
-                          ? "bg-blue-600 text-white border-blue-600"
-                          : "text-gray-600 border-gray-300 hover:bg-gray-100"
+                          ? "bg-gray-100 text-primary border-blue-600"
+                          : "text-white border-gray-300 hover:bg-gray-100"
                       }`}
                     >
                       {cls}
@@ -171,7 +173,7 @@ export default function TeachersPage() {
                   return alert("Please assign at least one class");
                 setStep(2);
               }}
-              className="mt-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+              className="mt-2 bg-gray-100 text-primary px-6 py-3 rounded-md font-semibold transition cursor-pointer"
             >
               Next
             </button>
@@ -249,7 +251,7 @@ export default function TeachersPage() {
                   <td className="py-3">
                     <button
                       onClick={() => handleDelete(teacher.id)}
-                      className="text-red-500 hover:underline text-sm"
+                      className="text-white cursor-pointer text-sm bg-red-500 p-2 rounded-md"
                     >
                       Delete
                     </button>

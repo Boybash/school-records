@@ -18,9 +18,11 @@ export default function Navbar() {
     <nav className="bg-[#052659] px-15 py-5 flex justify-between items-center sticky top-0 z-50">
       <div className="flex items-center gap-3">
         <div>
-          <p className="font-bold text-[#c1e8ff] text-xl ">
-            Shalom Model College
-          </p>
+          <img
+            src="/shalomlogo.svg"
+            alt="Shalom logo"
+            className="w-16 h-16 bg-white rounded-full p-2 object-contain shadow-sm"
+          />
         </div>
       </div>
       <div className="hidden md:flex items-center gap-15">
@@ -37,13 +39,13 @@ export default function Navbar() {
       <div className="flex items-center gap-3">
         <Link
           href="/parent/login"
-          className="bg-[#c1e8ff] text-[#052659] text-sm px-5 py-2 rounded-md hover:bg-[#021024] hover:text-white transition font-semibold"
+          className="bg-[#c1e8ff] text-[#052659] text-sm px-5 py-2 rounded-md hover:bg-primary-50 hover:text-white transition font-semibold"
         >
           Parent Portal
         </Link>
         <Link
           href="/login"
-          className="bg-[#c1e8ff] text-[#052659] text-sm px-5 py-2 rounded-md hover:bg-[#021024] hover:text-white transition font-semibold"
+          className="bg-[#c1e8ff] text-[#052659] text-sm px-5 py-2 rounded-md hover:bg-primary-50 hover:text-white transition font-semibold"
         >
           Staff Login
         </Link>

@@ -125,10 +125,10 @@ export default function StudentsPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-6 uppercase">Students</h2>
+      <h2 className="text-xl font-bold mb-6 uppercase">Students</h2>
 
       {/* Add/Edit Form */}
-      <div className="bg-[#021024] rounded-xl shadow p-6 mb-6">
+      <div className="bg-[#021024] rounded-md shadow p-6 mb-6">
         <h3 className="text-lg font-semibold mb-4 text-white">
           {editingStudent ? "Edit Student" : "Add New Student"}
         </h3>
@@ -167,7 +167,7 @@ export default function StudentsPage() {
           <button
             onClick={handleSubmit}
             disabled={isPending}
-            className="bg-[#c1e8ff] text-[#021024] px-6 py-3 rounded-md hover:bg-blue-700 transition font-semibold"
+            className="bg-gray-100 text-primary px-6 py-3 rounded-md transition font-semibold cursor-pointer"
           >
             {isPending
               ? "Saving..."
@@ -187,13 +187,15 @@ export default function StudentsPage() {
       </div>
 
       {/* Search & Filter */}
-      <div className="bg-white rounded-xl shadow p-6 mb-6">
-        <h3 className="text-lg font-semibold mb-4">Search & Filter</h3>
+      <div className="bg-[#021024] rounded-md shadow p-6 mb-6">
+        <h3 className="text-lg font-semibold mb-4 text-white">
+          Search & Filter
+        </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <input
             type="text"
             placeholder="Search by name or matric number..."
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -202,7 +204,7 @@ export default function StudentsPage() {
           />
 
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={filterClass}
             onChange={(e) => {
               setFilterClass(e.target.value);
@@ -218,7 +220,7 @@ export default function StudentsPage() {
           </select>
 
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={filterGender}
             onChange={(e) => {
               setFilterGender(e.target.value);
@@ -245,9 +247,9 @@ export default function StudentsPage() {
       </div>
 
       {/* Students Table */}
-      <div className="bg-white rounded-xl shadow p-6">
+      <div className="bg-[#021024] rounded-md shadow p-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">All Students</h3>
+          <h3 className="text-lg font-semibold text-white">All Students</h3>
           <p className="text-sm text-gray-400">
             Showing {paginatedStudents.length} of {filteredStudents.length}{" "}
             students
@@ -261,7 +263,7 @@ export default function StudentsPage() {
           <>
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b">
+                <tr className="border-b border-white/30">
                   <th className="pb-3 text-gray-500">#</th>
                   <th className="pb-3 text-gray-500">Matric No.</th>
                   <th className="pb-3 text-gray-500">Name</th>
@@ -272,26 +274,29 @@ export default function StudentsPage() {
               </thead>
               <tbody>
                 {paginatedStudents.map((student, index) => (
-                  <tr key={student.id} className="border-b last:border-0">
+                  <tr
+                    key={student.id}
+                    className="border-b border-white/30 last:border-0"
+                  >
                     <td className="py-3 text-gray-400">
                       {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
                     </td>
-                    <td className="py-3 font-mono text-blue-600">
+                    <td className="py-3 font-semibold text-blue-600">
                       {student.matricNumber}
                     </td>
-                    <td className="py-3">{student.name}</td>
-                    <td className="py-3">{student.class}</td>
-                    <td className="py-3">{student.gender}</td>
-                    <td className="py-3 flex gap-2">
+                    <td className="py-3 text-white">{student.name}</td>
+                    <td className="py-3 text-white">{student.class}</td>
+                    <td className="py-3 text-white">{student.gender}</td>
+                    <td className="py-3 flex gap-5">
                       <button
                         onClick={() => handleEdit(student)}
-                        className="text-blue-600 hover:underline text-sm"
+                        className="text-white bg-blue-500 p-2 rounded-md text-sm cursor-pointer"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(student.id)}
-                        className="text-red-500 hover:underline text-sm"
+                        className="text-white cursor-pointer text-sm bg-red-500 p-2 rounded-md"
                       >
                         Delete
                       </button>

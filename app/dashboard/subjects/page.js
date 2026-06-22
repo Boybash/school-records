@@ -72,25 +72,25 @@ export default function SubjectsPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-6">Subjects</h2>
+      <h2 className="text-xl font-bold mb-6 uppercase">Subjects</h2>
 
       {/* Add/Edit Form */}
-      <div className="bg-white rounded-xl shadow p-6 mb-6">
-        <h3 className="text-lg font-semibold mb-4">
+      <div className="bg-primary rounded-md shadow p-6 mb-6">
+        <h3 className="text-lg font-semibold mb-4 text-white">
           {editingSubject ? "Edit Subject" : "Add New Subject"}
         </h3>
         <div className="flex gap-4">
           <input
             type="text"
             placeholder="Subject name e.g Mathematics"
-            className="flex-1 border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="flex-1 border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
           <button
             onClick={handleSubmit}
             disabled={isPending}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+            className="bg-gray-100 text-primary px-6 py-3 rounded-md font-semibold cursor-pointer transition"
           >
             {isPending
               ? "Saving..."
@@ -110,8 +110,8 @@ export default function SubjectsPage() {
       </div>
 
       {/* Subjects List */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <h3 className="text-lg font-semibold mb-4">All Subjects</h3>
+      <div className="bg-primary rounded-md shadow p-6">
+        <h3 className="text-lg font-semibold mb-4 text-white">All Subjects</h3>
         {isLoading ? (
           <p className="text-gray-400">Loading subjects...</p>
         ) : subjects.length === 0 ? (
@@ -119,7 +119,7 @@ export default function SubjectsPage() {
         ) : (
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b">
+              <tr className="border-b border-white/30">
                 <th className="pb-3 text-gray-500">#</th>
                 <th className="pb-3 text-gray-500">Subject</th>
                 <th className="pb-3 text-gray-500">Actions</th>
@@ -127,22 +127,36 @@ export default function SubjectsPage() {
             </thead>
             <tbody>
               {subjects.map((subject, index) => (
-                <tr key={subject.id} className="border-b last:border-0">
+                <tr
+                  key={subject.id}
+                  className="border-b border-white/30 last:border-0"
+                >
                   <td className="py-3 text-gray-400">{index + 1}</td>
-                  <td className="py-3">📚 {subject.name}</td>
-                  <td className="py-3 flex gap-2">
-                    <button
-                      onClick={() => handleEdit(subject)}
-                      className="text-blue-600 hover:underline text-sm"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(subject.id)}
-                      className="text-red-500 hover:underline text-sm"
-                    >
-                      Delete
-                    </button>
+                  <td className="py-3">
+                    <div className="flex items-center gap-2">
+                      <img
+                        src="/book.png"
+                        alt="book"
+                        className="w-8 h-8 rounded-full bg-white p-1.5 object-contain"
+                      />
+                      <span className="text-white">{subject.name}</span>
+                    </div>
+                  </td>
+                  <td className="py-3">
+                    <div className="flex gap-5">
+                      <button
+                        onClick={() => handleEdit(subject)}
+                        className="text-white bg-blue-500 p-2 rounded-md text-sm cursor-pointer"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(subject.id)}
+                        className="text-white cursor-pointer text-sm bg-red-500 p-2 rounded-md"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

@@ -45,11 +45,11 @@ export default function Hero() {
 
       {/* Content */}
       <div className="flex justify-between relative z-10">
-        <div className="flex flex-col gap-2 ml-5">
-          <h1 className="text-white text-4xl sm:text-5xl font-extrabold uppercase tracking-widest mb-1 text-left">
+        <div className="flex flex-col gap-1 ml-5">
+          <h1 className="text-white text-4xl sm:text-5xl font-extrabold uppercase tracking-widest text-left">
             Shalom Model College
           </h1>
-          <h1 className="text-4xl sm:text-5xl font-extrabold uppercase leading-tight max-w-3xl mb-1 text-left text-white">
+          <h1 className="text-4xl sm:text-5xl font-extrabold uppercase leading-tight max-w-3xl text-left text-white">
             Smart Student Records Management
           </h1>
           <p className=" text-lg max-w-xl mb-10 text-left text-white">

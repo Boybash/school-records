@@ -1,7 +1,13 @@
 @import "tailwindcss";
 
 @theme {
+  --font-sans: var(--font-manrope), sans-serif;
+}
+
+@theme {
   --font-sans: var(--font-poppins), sans-serif;
+  --color-primary: #021024;
+  --color-primary-50: rgba(2, 16, 36, 0.5);
 }
 
 body {

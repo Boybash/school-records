@@ -65,15 +65,17 @@ export default function BulkUploadPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-6">Bulk Upload Results</h2>
+      <h2 className="text-xl font-bold mb-6 uppercase">Bulk Upload Results</h2>
 
       {/* Step 1 - Download Template */}
-      <div className="bg-white rounded-xl shadow p-6 mb-6">
+      <div className="bg-primary rounded-md shadow p-6 mb-6">
         <div className="flex items-center gap-3 mb-2">
           <span className="bg-blue-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold">
             1
           </span>
-          <h3 className="text-lg font-semibold">Download Template</h3>
+          <h3 className="text-lg font-semibold text-white">
+            Download Template
+          </h3>
         </div>
         <p className="text-gray-500 text-sm mb-4 ml-10">
           Download the Excel template pre-filled with student and subject names.
@@ -82,7 +84,7 @@ export default function BulkUploadPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ml-10 mb-4">
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={term}
             onChange={(e) => setTerm(e.target.value)}
           >
@@ -93,7 +95,7 @@ export default function BulkUploadPage() {
           <input
             type="text"
             placeholder="Session e.g 2024/2025"
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={session}
             onChange={(e) => setSession(e.target.value)}
           />
@@ -101,19 +103,26 @@ export default function BulkUploadPage() {
 
         <button
           onClick={handleDownloadTemplate}
-          className="ml-10 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+          className="ml-10 bg-gray-100 text-primary px-6 py-3 rounded-lg transition cursor-pointer flex gap-1 items-center font-semibold"
         >
-          📥 Download Template
+          <img
+            src="/upload.png"
+            alt="upload"
+            className="w-8 h-8 rounded-full bg-white p-1.5 object-contain"
+          />
+          Download Template
         </button>
       </div>
 
       {/* Step 2 - Fill & Upload */}
-      <div className="bg-white rounded-xl shadow p-6 mb-6">
+      <div className="bg-primary rounded-md shadow p-6 mb-6">
         <div className="flex items-center gap-3 mb-2">
           <span className="bg-blue-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold">
             2
           </span>
-          <h3 className="text-lg font-semibold">Upload Filled Template</h3>
+          <h3 className="text-lg font-semibold text-white">
+            Upload Filled Template
+          </h3>
         </div>
         <p className="text-gray-500 text-sm mb-4 ml-10">
           After filling in the scores, upload the file here. Do not change the
@@ -124,22 +133,27 @@ export default function BulkUploadPage() {
           <input
             type="file"
             accept=".xlsx, .xls"
-            className="border p-3 rounded-lg w-full sm:w-auto outline-none"
+            className="border p-3 rounded-lg w-full sm:w-auto outline-none bg-white"
             onChange={(e) => setFile(e.target.files[0])}
           />
           <button
             onClick={handleUpload}
             disabled={uploading || !file}
-            className="mt-4 block bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition disabled:opacity-50"
+            className="mt-4  bg-gray-100 text-primary px-6 py-3 rounded-lg transition disabled:opacity-50 flex gap-1 items-center cursor-pointer font-semibold"
           >
-            {uploading ? "Uploading..." : "📤 Upload Results"}
+            <img
+              src="/upload.png"
+              alt="upload"
+              className="w-8 h-8 rounded-full bg-white p-1.5 object-contain"
+            />
+            {uploading ? "Uploading..." : "Upload Results"}
           </button>
         </div>
       </div>
 
       {/* Upload Result */}
       {result && (
-        <div className="bg-white rounded-xl shadow p-6">
+        <div className="bg-white rounded-md shadow p-6">
           <h3 className="text-lg font-semibold mb-4">Upload Summary</h3>
 
           <div className="grid grid-cols-2 gap-4 mb-4">

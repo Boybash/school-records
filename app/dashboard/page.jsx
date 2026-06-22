@@ -72,7 +72,7 @@ export default function DashboardPage() {
             className={`${stat.bg} rounded-md p-6 flex items-center gap-4`}
           >
             <img
-              className="w-9 h-9 bg-white p-2 rounded-4xl"
+              className="w-9 h-9 bg-white p-2 rounded-full object-contain"
               src={stat.icon}
               alt={stat.title}
             />
@@ -94,7 +94,7 @@ export default function DashboardPage() {
         ) : (
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b">
+              <tr className="border-b border-white/30">
                 <th className="pb-3 text-gray-500">Name</th>
                 <th className="pb-3 text-gray-500">Class</th>
                 <th className="pb-3 text-gray-500">Gender</th>
@@ -104,7 +104,7 @@ export default function DashboardPage() {
               {students.slice(0, 5).map((student) => (
                 <tr
                   key={student.id}
-                  className="border-b last:border-0 text-white"
+                  className="border-b border-white/30 last:border-0 text-white"
                 >
                   <td className="py-3">{student.name}</td>
                   <td className="py-3">{student.class}</td>
@@ -126,7 +126,7 @@ export default function DashboardPage() {
         ) : (
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b">
+              <tr className="border-b border-white/30">
                 <th className="pb-3 text-gray-500">Student</th>
                 <th className="pb-3 text-gray-500">Subject</th>
                 <th className="pb-3 text-gray-500">Score</th>
@@ -138,7 +138,7 @@ export default function DashboardPage() {
               {results.slice(0, 5).map((result) => (
                 <tr
                   key={result.id}
-                  className="border-b last:border-0 text-white"
+                  className="border-b border-white/30 last:border-0 text-white"
                 >
                   <td className="py-3">{result.studentName}</td>
                   <td className="py-3">{result.subjectName}</td>
@@ -152,7 +152,7 @@ export default function DashboardPage() {
                             ? "text-blue-600"
                             : result.grade === "F"
                               ? "text-red-600"
-                              : "text-gray-700"
+                              : "text-gray-500"
                       }
                     >
                       {result.grade}

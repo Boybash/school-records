@@ -10,13 +10,13 @@ export default function CTA() {
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <Link
           href="/login"
-          className=" bg-[#021024] text-white font-semibold px-8 py-3 rounded-lg hover:bg-blue-700 transition"
+          className=" bg-[#021024] text-white font-semibold px-8 py-3 rounded-lg hover:bg-[#c1e8ff] transition"
         >
           Staff Login
         </Link>
         <Link
           href="/parent/login"
-          className="border border-white text-white font-semibold px-8 py-3 rounded-lg hover:bg-blue-700 transition"
+          className="border border-white text-primary font-semibold px-8 py-3 rounded-lg hover:bg-[#c1e8ff] transition"
         >
           Parent Portal
         </Link>

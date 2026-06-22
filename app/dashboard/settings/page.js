@@ -40,10 +40,12 @@ export default function SettingsPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-6">School Settings</h2>
+      <h2 className="text-xl font-bold mb-6 uppercase">School Settings</h2>
 
-      <div className="bg-white rounded-xl shadow p-6 mb-6">
-        <h3 className="text-lg font-semibold mb-4">School Information</h3>
+      <div className="bg-primary rounded-xl shadow p-6 mb-6">
+        <h3 className="text-lg font-semibold mb-4 text-white">
+          School Information
+        </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="text-sm text-gray-500 mb-1 block">
@@ -52,7 +54,7 @@ export default function SettingsPage() {
             <input
               type="text"
               placeholder="e.g Greenfield Secondary School"
-              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
               value={schoolName}
               onChange={(e) => setSchoolName(e.target.value)}
             />
@@ -64,7 +66,7 @@ export default function SettingsPage() {
             <input
               type="text"
               placeholder="e.g +234 800 000 0000"
-              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
               value={schoolPhone}
               onChange={(e) => setSchoolPhone(e.target.value)}
             />
@@ -76,7 +78,7 @@ export default function SettingsPage() {
             <input
               type="text"
               placeholder="e.g 12 School Road, Lagos"
-              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
               value={schoolAddress}
               onChange={(e) => setSchoolAddress(e.target.value)}
             />
@@ -88,7 +90,7 @@ export default function SettingsPage() {
             <input
               type="text"
               placeholder="Paste image URL e.g https://..."
-              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
               value={logoUrl}
               onChange={(e) => setLogoUrl(e.target.value)}
             />
@@ -105,7 +107,7 @@ export default function SettingsPage() {
         <button
           onClick={handleSave}
           disabled={mutation.isPending}
-          className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+          className="mt-6 bg-gray-100 text-primary px-6 py-3 rounded-lg hover:bg-blue-700 transition cursor-pointer font-semibold"
         >
           {mutation.isPending ? "Saving..." : "Save Settings"}
         </button>

@@ -134,17 +134,17 @@ export default function ResultsPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-6">Results</h2>
+      <h2 className="text-xl font-bold mb-6 uppercase">Results</h2>
 
       {/* Add/Edit Form */}
-      <div className="bg-white rounded-xl shadow p-6 mb-6">
-        <h3 className="text-lg font-semibold mb-4">
+      <div className="bg-primary rounded-md shadow p-6 mb-6">
+        <h3 className="text-lg font-semibold mb-4 text-white">
           {editingResult ? "Edit Result" : "Enter Result"}
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Student */}
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
           >
@@ -158,10 +158,10 @@ export default function ResultsPage() {
 
           {/* Subject */}
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={subjectId}
             onChange={(e) => setSubjectId(e.target.value)}
-            disabled={role === "teacher"}
+            // disabled={role === "teacher"}
           >
             <option value="">Select Subject</option>
             {visibleSubjects.map((s) => (
@@ -173,7 +173,7 @@ export default function ResultsPage() {
 
           {/* Term */}
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={term}
             onChange={(e) => setTerm(e.target.value)}
           >
@@ -186,7 +186,7 @@ export default function ResultsPage() {
           <input
             type="text"
             placeholder="Session e.g 2024/2025"
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={session}
             onChange={(e) => setSession(e.target.value)}
           />
@@ -194,7 +194,7 @@ export default function ResultsPage() {
           <input
             type="number"
             placeholder="CA Score (max 30)"
-            className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={ca}
             onChange={(e) => setCa(e.target.value)}
             min={0}
@@ -204,7 +204,7 @@ export default function ResultsPage() {
           <input
             type="number"
             placeholder="Exam Score (max 70)"
-            className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={exam}
             onChange={(e) => setExam(e.target.value)}
             min={0}
@@ -214,7 +214,7 @@ export default function ResultsPage() {
 
         {/* Live Total Preview */}
         {(ca || exam) && (
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg flex items-center gap-6 text-sm">
+          <div className="mt-4 p-4 bg-gray-50 rounded-md flex items-center gap-6 text-sm">
             <span className="text-gray-500">
               CA: <span className="font-bold text-gray-800">{ca || 0}/30</span>
             </span>
@@ -243,7 +243,7 @@ export default function ResultsPage() {
           <button
             onClick={handleSubmit}
             disabled={isPending}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+            className="bg-gray-100 text-primary px-6 py-3 rounded-md font-semibold transition cursor-pointer"
           >
             {isPending
               ? "Saving..."
@@ -263,8 +263,8 @@ export default function ResultsPage() {
       </div>
 
       {/* Results Table */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <h3 className="text-lg font-semibold mb-4">All Results</h3>
+      <div className="bg-primary rounded-md shadow p-6">
+        <h3 className="text-lg font-semibold mb-4 text-white">All Results</h3>
         {isLoading ? (
           <p className="text-gray-400">Loading results...</p>
         ) : results.length === 0 ? (
@@ -290,11 +290,13 @@ export default function ResultsPage() {
               {results.map((result, index) => (
                 <tr key={result.id} className="border-b last:border-0">
                   <td className="py-3 text-gray-400">{index + 1}</td>
-                  <td className="py-3">{result.studentName}</td>
-                  <td className="py-3">{result.subjectName}</td>
-                  <td className="py-3">{result.ca}</td>
-                  <td className="py-3">{result.exam}</td>
-                  <td className="py-3 font-semibold">{result.score}</td>
+                  <td className="py-3 text-white">{result.studentName}</td>
+                  <td className="py-3 text-white">{result.subjectName}</td>
+                  <td className="py-3 text-white">{result.ca}</td>
+                  <td className="py-3 text-white">{result.exam}</td>
+                  <td className="py-3 font-semibold text-white">
+                    {result.score}
+                  </td>
                   <td className="py-3 font-bold">
                     <span
                       className={
@@ -304,14 +306,14 @@ export default function ResultsPage() {
                             ? "text-blue-600"
                             : result.grade === "F"
                               ? "text-red-600"
-                              : "text-gray-700"
+                              : "text-gray-500"
                       }
                     >
                       {result.grade}
                     </span>
                   </td>
-                  <td className="py-3">{result.term}</td>
-                  <td className="py-3">{result.session}</td>
+                  <td className="py-3 text-white">{result.term}</td>
+                  <td className="py-3 text-white">{result.session}</td>
                   <td className="py-3">
                     <span
                       className={`text-xs font-semibold px-2 py-1 rounded-full ${
@@ -328,13 +330,13 @@ export default function ResultsPage() {
                   <td className="py-3 flex gap-2">
                     <button
                       onClick={() => handleEdit(result)}
-                      className="text-blue-600 hover:underline text-sm"
+                      className="text-white bg-blue-500 p-2 rounded-md text-sm cursor-pointer"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(result.id)}
-                      className="text-red-500 hover:underline text-sm"
+                      className="text-white cursor-pointer text-sm bg-red-500 p-2 rounded-md"
                     >
                       Delete
                     </button>

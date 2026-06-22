@@ -84,14 +84,16 @@ export default function ResultSheetPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-6">Result Sheet</h2>
+      <h2 className="text-xl font-bold mb-6 uppercase">Result Sheet</h2>
 
       {/* Search Form */}
-      <div className="bg-white rounded-xl shadow p-6 mb-6">
-        <h3 className="text-lg font-semibold mb-4">Select Student</h3>
+      <div className="bg-primary rounded-md shadow p-6 mb-6">
+        <h3 className="text-lg font-semibold mb-4 text-white">
+          Select Student
+        </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
           >
@@ -104,7 +106,7 @@ export default function ResultSheetPage() {
           </select>
 
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={term}
             onChange={(e) => setTerm(e.target.value)}
           >
@@ -116,14 +118,14 @@ export default function ResultSheetPage() {
           <input
             type="text"
             placeholder="Session e.g 2024/2025"
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             value={session}
             onChange={(e) => setSession(e.target.value)}
           />
         </div>
         <button
           onClick={handleSearch}
-          className="mt-4 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+          className="mt-4 bg-gray-100 text-primary px-6 py-3 font-semibold rounded-md  transition cursor-pointer"
         >
           Generate Result Sheet
         </button>

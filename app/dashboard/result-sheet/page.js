@@ -133,7 +133,7 @@ export default function ResultSheetPage() {
 
       {/* Result Sheet */}
       {searched && (
-        <div className="bg-white rounded-xl shadow p-6" id="result-sheet">
+        <div className="bg-white rounded-md shadow p-6" id="result-sheet">
           {/* Header */}
           <div className="text-center mb-6 border-b pb-4">
             {settings.logoUrl && (

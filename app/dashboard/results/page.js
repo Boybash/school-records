@@ -11,6 +11,7 @@ import {
   deleteResult,
   buildResultData,
   getGrade,
+  checkDuplicateResult,
 } from "@/lib/results";
 import { useAuth } from "@/lib/useAuth";
 
@@ -85,13 +86,27 @@ export default function ResultsPage() {
     setEditingResult(null);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!studentId || !subjectId || !ca || !exam)
       return alert("Please fill in all fields");
     if (Number(ca) > 30) return alert("CA score cannot exceed 30 marks");
     if (Number(exam) > 70) return alert("Exam score cannot exceed 70 marks");
     if (Number(ca) < 0 || Number(exam) < 0)
       return alert("Scores cannot be negative");
+
+    if (!editingResult) {
+      const isDuplicate = await checkDuplicateResult(
+        studentId,
+        subjectId,
+        term,
+        session,
+      );
+      if (isDuplicate) {
+        return alert(
+          `A result for this student in this subject already exists for ${term} ${session}. Use the Edit button to update it instead.`,
+        );
+      }
+    }
 
     const selectedStudent = students.find((s) => s.id === studentId);
     const selectedSubject = subjects.find((s) => s.id === subjectId);

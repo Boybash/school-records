@@ -7,7 +7,7 @@ export default function AboutUs() {
         {/* Left — Text Content */}
         <div className="flex-1">
           {/* Section Tag */}
-          <span className="inline-block bg-blue-50 text-[#052659] text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4">
+          <span className="inline-block  text-primary text-lg font-extrabold uppercase tracking-widest  py-1 mb-4">
             About Us
           </span>
 
@@ -105,11 +105,13 @@ export default function AboutUs() {
             />
             {/* Floating Card */}
             <div className="absolute bottom-6 left-6 bg-white rounded-xl shadow-lg p-4 flex items-center gap-3">
-              <div className="bg-blue-600 text-white w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg shrink-0">
-                S
-              </div>
+              <img
+                src="/shalomlogo.svg"
+                alt="Shalom logo"
+                className="w-16 h-16 bg-white rounded-full p-2 object-contain shadow-sm"
+              />
               <div>
-                <p className="font-bold text-gray-800 text-sm">
+                <p className="font-bold text-primary uppercase text-sm">
                   Shalom Model College
                 </p>
                 <p className="text-xs text-gray-400">Excellence in Education</p>

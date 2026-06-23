@@ -8,6 +8,8 @@ import { getStudentResultsByTermAndSession } from "@/lib/results";
 import { getSettings } from "@/lib/settings";
 import { generateResultPDF } from "@/lib/generatePDF";
 import { getClassRanking } from "@/lib/results";
+import { useSessionTimeout } from "@/lib/useSessionTimeout";
+import SessionWarning from "@/components/sessionWarning";
 
 const TERMS = ["1st Term", "2nd Term", "3rd Term"];
 
@@ -71,6 +73,8 @@ export default function ParentResultPage() {
     router.push("/parent/login");
   };
 
+  const { showWarning, resetTimer } = useSessionTimeout(handleLogout);
+
   const handleDownloadPDF = () => {
     generateResultPDF(
       settings,
@@ -98,6 +102,9 @@ export default function ParentResultPage() {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      {showWarning && (
+        <SessionWarning onStay={resetTimer} onLogout={handleLogout} />
+      )}
       {/* Navbar */}
       <nav className="bg-white shadow p-4 flex justify-between items-center">
         <h1 className="text-xl font-bold text-primary uppercase">

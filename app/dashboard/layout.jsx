@@ -6,6 +6,8 @@ import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/useAuth";
+import { useSessionTimeout } from "@/lib/useSessionTimeout";
+import SessionWarning from "@/components/sessionWarning";
 
 const adminLinks = [
   { href: "/dashboard", label: "Dashboard", icon: "/people-roof.png" },
@@ -41,6 +43,7 @@ const teacherLinks = [
     icon: "/result.png",
   },
 ];
+
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -50,6 +53,8 @@ export default function DashboardLayout({ children }) {
     await signOut(auth);
     router.push("/login");
   };
+
+  const { showWarning, resetTimer } = useSessionTimeout(handleLogout);
 
   if (loading) {
     return (
@@ -65,6 +70,11 @@ export default function DashboardLayout({ children }) {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
+      {/* Session Warning */}
+      {showWarning && (
+        <SessionWarning onStay={resetTimer} onLogout={handleLogout} />
+      )}
+
       <aside className="w-64 bg-primary-50 shadow-md flex flex-col">
         <div className="p-6 border-b">
           <h1 className="text-xl font-bold text-primary uppercase">

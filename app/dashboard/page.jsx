@@ -5,6 +5,7 @@ import { getStudents } from "@/lib/students";
 import { getSubjects } from "@/lib/subjects";
 import { getResults } from "@/lib/results";
 import { getPendingResults } from "@/lib/results";
+import Link from "next/link";
 
 export default function DashboardPage() {
   const { data: students = [] } = useQuery({
@@ -59,7 +60,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div>
+    <div className="relative">
       <h2 className="text-2xl font-semibold mb-6 uppercase text-[#021024]">
         Dashboard
       </h2>
@@ -165,6 +166,14 @@ export default function DashboardPage() {
           </table>
         )}
       </div>
+
+      <Link
+        href="/"
+        className=" flex gap-2 items-center bg-primary-50 p-2 rounded-md absolute top-0 right-10 "
+      >
+        <img className="w-5 h-5" src="/arrow-l.png" alt="arrow" />
+        Back
+      </Link>
     </div>
   );
 }

@@ -10,7 +10,7 @@ export default function CTA() {
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <Link
           href="/login"
-          className=" bg-[#021024] text-white font-semibold px-8 py-3 rounded-lg hover:bg-[#c1e8ff] transition"
+          className=" bg-[#021024] text-white font-semibold px-8 py-3 rounded-lg hover:bg-[#c1e8ff] hover:text-primary transition"
         >
           Staff Login
         </Link>

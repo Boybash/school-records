@@ -7,6 +7,7 @@ import AboutUs from "@/components/landing/AboutUs";
 import Navbar from "../components/landing/Navbar";
 import Footer from "../components/landing/Footer";
 import Testimonials from "@/components/landing/Testimonials";
+import Activity from "@/components/landing/Activity";
 
 export default function LandingPage() {
   return (
@@ -22,6 +23,7 @@ export default function LandingPage() {
       <div id="features">
         <Features />
       </div>
+      <Activity />
       <div id="how-it-works">
         <HowItWorks />
       </div>

@@ -10,6 +10,7 @@ import {
 } from "@/lib/students";
 import { useAuth } from "@/lib/useAuth";
 import Pagination from "@/components/pagination";
+import Link from "next/link";
 
 export default function StudentsPage() {
   const queryClient = useQueryClient();
@@ -124,7 +125,7 @@ export default function StudentsPage() {
   const isPending = addMutation.isPending || updateMutation.isPending;
 
   return (
-    <div>
+    <div className="relative">
       <h2 className="text-xl font-bold mb-6 uppercase">Students</h2>
 
       {/* Add/Edit Form */}
@@ -314,6 +315,13 @@ export default function StudentsPage() {
           </>
         )}
       </div>
+      <Link
+        href="/"
+        className=" flex gap-2 items-center bg-primary-50 p-2 rounded-md absolute top-0 right-10 "
+      >
+        <img className="w-5 h-5" src="/arrow-l.png" alt="arrow" />
+        Back
+      </Link>
     </div>
   );
 }

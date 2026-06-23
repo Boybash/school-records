@@ -15,7 +15,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="bg-[#052659] px-15 py-5 flex justify-between items-center sticky top-0 z-50">
+    <nav className="bg-primary px-15 py-5 flex justify-between items-center sticky top-0 z-50">
       <div className="flex items-center gap-3">
         <div>
           <img

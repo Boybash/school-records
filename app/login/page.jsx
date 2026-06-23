@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPasword, setShowPassword] = useState(false);
   const [current, setCurrent] = useState(0);
   const images = [
     "/shalom image 6.webp",
@@ -39,6 +40,10 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  function togglePasswordVisibility() {
+    setShowPassword(!showPasword);
+  }
 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden">
@@ -79,14 +84,22 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+        <div className="relative">
+          <input
+            type={`${showPasword ? "text" : "password"}`}
+            placeholder="Password"
+            className="w-full  p-3 rounded-lg mb-6 outline-none border focus:ring-2 focus:ring-[#052659]"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full  p-3 rounded-lg mb-6 outline-none border focus:ring-2 focus:ring-[#052659]"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <img
+            onClick={togglePasswordVisibility}
+            src={`${showPasword ? "/hide eye.svg" : "/show eye.svg"}`}
+            alt="Toggle"
+            className="w-5 h-5 absolute right-4 top-1/3 -translate-y-1/2 cursor-pointer"
+          />
+        </div>
 
         <button
           onClick={handleLogin}

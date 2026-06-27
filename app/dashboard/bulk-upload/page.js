@@ -14,7 +14,7 @@ import { useAuth } from "@/lib/useAuth";
 const TERMS = ["1st Term", "2nd Term", "3rd Term"];
 
 export default function BulkUploadPage() {
-  const { role, userData } = useAuth();
+  const { role, userData, user } = useAuth();
   const [term, setTerm] = useState("1st Term");
   const [session, setSession] = useState("2024/2025");
   const [file, setFile] = useState(null);
@@ -53,7 +53,7 @@ export default function BulkUploadPage() {
 
     try {
       const rows = await parseResultsFile(file);
-      const { successes, errors } = await uploadResults(rows, role);
+      const { successes, errors } = await uploadResults(rows, role, user.uid);
       setResult({ successes, errors });
     } catch (err) {
       alert("Failed to read file. Make sure it is a valid Excel file.");

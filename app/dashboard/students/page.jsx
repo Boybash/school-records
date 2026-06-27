@@ -11,6 +11,7 @@ import {
 import { useAuth } from "@/lib/useAuth";
 import Pagination from "@/components/pagination";
 import Link from "next/link";
+import { TableSkeleton, FormSkeleton } from "@/components/skeleton";
 
 export default function StudentsPage() {
   const queryClient = useQueryClient();
@@ -24,6 +25,7 @@ export default function StudentsPage() {
   const { userData, role } = useAuth();
   const [matricNumber, setMatricNumber] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [dob, setDob] = useState("");
   const ITEMS_PER_PAGE = 10;
 
   const { data: students = [], isLoading } = useQuery({
@@ -90,15 +92,15 @@ export default function StudentsPage() {
   });
 
   const handleSubmit = () => {
-    if (!name || !className || !matricNumber)
+    if (!name || !className || !matricNumber || !dob)
       return alert("Please fill in all fields");
     if (editingStudent) {
       updateMutation.mutate({
         id: editingStudent.id,
-        data: { name, class: className, gender, matricNumber },
+        data: { name, class: className, gender, matricNumber, dob },
       });
     } else {
-      addMutation.mutate({ name, class: className, gender, matricNumber });
+      addMutation.mutate({ name, class: className, gender, matricNumber, dob });
     }
   };
 
@@ -108,6 +110,7 @@ export default function StudentsPage() {
     setClassName(student.class);
     setGender(student.gender);
     setMatricNumber(student.matricNumber);
+    setDob(student.dob || "");
   };
 
   const handleDelete = (id) => {
@@ -120,6 +123,7 @@ export default function StudentsPage() {
     setClassName("");
     setGender("Male");
     setMatricNumber("");
+    setDob("");
   };
 
   const isPending = addMutation.isPending || updateMutation.isPending;
@@ -133,36 +137,47 @@ export default function StudentsPage() {
         <h3 className="text-lg font-semibold mb-4 text-white">
           {editingStudent ? "Edit Student" : "Add New Student"}
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           <input
             type="text"
             placeholder="Matric Number e.g GFS/2025/001"
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
             value={matricNumber}
             onChange={(e) => setMatricNumber(e.target.value)}
           />
           <input
             type="text"
             placeholder="Full Name"
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
           <input
             type="text"
             placeholder="Class e.g JSS 1A"
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
             value={className}
             onChange={(e) => setClassName(e.target.value)}
           />
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
             value={gender}
             onChange={(e) => setGender(e.target.value)}
           >
             <option>Male</option>
             <option>Female</option>
           </select>
+          <div>
+            {/* <label className="text-xs text-white mb-1 block">
+              Date of Birth
+            </label> */}
+            <input
+              type="date"
+              className="w-full  border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
+            />
+          </div>
         </div>
         <div className="flex gap-3 mt-4">
           <button
@@ -196,7 +211,7 @@ export default function StudentsPage() {
           <input
             type="text"
             placeholder="Search by name or matric number..."
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -205,7 +220,7 @@ export default function StudentsPage() {
           />
 
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
             value={filterClass}
             onChange={(e) => {
               setFilterClass(e.target.value);
@@ -221,7 +236,7 @@ export default function StudentsPage() {
           </select>
 
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
             value={filterGender}
             onChange={(e) => {
               setFilterGender(e.target.value);
@@ -257,7 +272,7 @@ export default function StudentsPage() {
           </p>
         </div>
         {isLoading ? (
-          <p className="text-gray-400">Loading students...</p>
+          <TableSkeleton rows={5} cols={6} dark={true} />
         ) : paginatedStudents.length === 0 ? (
           <p className="text-gray-400">No students found.</p>
         ) : (

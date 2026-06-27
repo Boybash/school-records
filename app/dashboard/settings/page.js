@@ -3,6 +3,13 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getSettings, updateSettings } from "@/lib/settings";
+import { auth } from "@/lib/firebase";
+import {
+  getAuth,
+  updatePassword,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+} from "firebase/auth";
 
 export default function SettingsPage() {
   const queryClient = useQueryClient();
@@ -10,6 +17,55 @@ export default function SettingsPage() {
   const [schoolAddress, setSchoolAddress] = useState("");
   const [schoolPhone, setSchoolPhone] = useState("");
   const [logoUrl, setLogoUrl] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
+
+  const handleChangePassword = async () => {
+    setPasswordError("");
+    setPasswordSuccess(false);
+
+    if (!currentPassword || !newPassword || !confirmPassword)
+      return setPasswordError("Please fill in all fields");
+    if (newPassword.length < 6)
+      return setPasswordError("New password must be at least 6 characters");
+    if (newPassword !== confirmPassword)
+      return setPasswordError("New passwords do not match");
+
+    setPasswordLoading(true);
+
+    try {
+      const user = auth.currentUser;
+
+      // Re-authenticate first for security
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        currentPassword,
+      );
+      await reauthenticateWithCredential(user, credential);
+
+      // Update password
+      await updatePassword(user, newPassword);
+
+      setPasswordSuccess(true);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err) {
+      if (err.code === "auth/wrong-password") {
+        setPasswordError("Current password is incorrect");
+      } else if (err.code === "auth/weak-password") {
+        setPasswordError("New password is too weak");
+      } else {
+        setPasswordError("Failed to change password. Please try again.");
+      }
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
 
   const { data: settings = {} } = useQuery({
     queryKey: ["settings"],
@@ -40,9 +96,9 @@ export default function SettingsPage() {
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-6 uppercase">School Settings</h2>
+      <h2 className="text-md font-bold mb-6 uppercase">School Settings</h2>
 
-      <div className="bg-primary rounded-xl shadow p-6 mb-6">
+      <div className="bg-primary rounded-md shadow p-6 mb-6">
         <h3 className="text-lg font-semibold mb-4 text-white">
           School Information
         </h3>
@@ -54,7 +110,7 @@ export default function SettingsPage() {
             <input
               type="text"
               placeholder="e.g Greenfield Secondary School"
-              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={schoolName}
               onChange={(e) => setSchoolName(e.target.value)}
             />
@@ -66,7 +122,7 @@ export default function SettingsPage() {
             <input
               type="text"
               placeholder="e.g +234 800 000 0000"
-              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={schoolPhone}
               onChange={(e) => setSchoolPhone(e.target.value)}
             />
@@ -78,7 +134,7 @@ export default function SettingsPage() {
             <input
               type="text"
               placeholder="e.g 12 School Road, Lagos"
-              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={schoolAddress}
               onChange={(e) => setSchoolAddress(e.target.value)}
             />
@@ -90,7 +146,7 @@ export default function SettingsPage() {
             <input
               type="text"
               placeholder="Paste image URL e.g https://..."
-              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={logoUrl}
               onChange={(e) => setLogoUrl(e.target.value)}
             />
@@ -115,7 +171,7 @@ export default function SettingsPage() {
 
       {/* Preview */}
       {settings.schoolName && (
-        <div className="bg-white rounded-xl shadow p-6">
+        <div className="bg-white rounded-md shadow p-6">
           <h3 className="text-lg font-semibold mb-4">Result Sheet Preview</h3>
           <div className="border rounded-lg p-6 text-center">
             {settings.logoUrl && (
@@ -125,7 +181,7 @@ export default function SettingsPage() {
                 className="h-16 object-contain mx-auto mb-3"
               />
             )}
-            <h1 className="text-xl font-bold uppercase">
+            <h1 className="text-md font-bold uppercase">
               {settings.schoolName}
             </h1>
             {settings.schoolAddress && (
@@ -139,6 +195,70 @@ export default function SettingsPage() {
           </div>
         </div>
       )}
+
+      {/* Change Password */}
+      <div className="bg-primary rounded-md shadow p-6 mt-6">
+        <h3 className="text-lg font-semibold mb-4 text-white">
+          Change Password
+        </h3>
+
+        {passwordError && (
+          <p className="text-red-500 text-sm mb-4">{passwordError}</p>
+        )}
+
+        {passwordSuccess && (
+          <div className="bg-green-50 text-green-600 text-sm p-3 rounded-lg mb-4">
+            ✅ Password changed successfully!
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label className="text-sm text-gray-500 mb-1 block">
+              Current Password
+            </label>
+            <input
+              type="password"
+              placeholder="Enter current password"
+              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="text-sm text-gray-500 mb-1 block">
+              New Password
+            </label>
+            <input
+              type="password"
+              placeholder="Enter new password"
+              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="text-sm text-gray-500 mb-1 block">
+              Confirm New Password
+            </label>
+            <input
+              type="password"
+              placeholder="Confirm new password"
+              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <button
+          onClick={handleChangePassword}
+          disabled={passwordLoading}
+          className="mt-4 bg-gray-100 text-primary font-semibold px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+        >
+          {passwordLoading ? "Changing..." : "Change Password"}
+        </button>
+      </div>
     </div>
   );
 }

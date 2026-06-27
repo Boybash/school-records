@@ -7,6 +7,7 @@ import { getSubjects } from "@/lib/subjects";
 import {
   addResult,
   getResults,
+  getResultsByUploader,
   updateResult,
   deleteResult,
   buildResultData,
@@ -14,12 +15,11 @@ import {
   checkDuplicateResult,
 } from "@/lib/results";
 import { useAuth } from "@/lib/useAuth";
-
-const TERMS = ["1st Term", "2nd Term", "3rd Term"];
+import { TableSkeleton } from "@/components/skeleton";
 
 export default function ResultsPage() {
   const queryClient = useQueryClient();
-  const { userData, role } = useAuth();
+  const { userData, role, user } = useAuth();
   const [studentId, setStudentId] = useState("");
   const [subjectId, setSubjectId] = useState("");
   const [ca, setCa] = useState("");
@@ -27,6 +27,7 @@ export default function ResultsPage() {
   const [term, setTerm] = useState("1st Term");
   const [session, setSession] = useState("2024/2025");
   const [editingResult, setEditingResult] = useState(null);
+  const TERMS = ["1st Term", "2nd Term", "3rd Term"];
 
   const { data: students = [] } = useQuery({
     queryKey: ["students"],
@@ -39,8 +40,10 @@ export default function ResultsPage() {
   });
 
   const { data: results = [], isLoading } = useQuery({
-    queryKey: ["results"],
-    queryFn: getResults,
+    queryKey: ["results", role, user?.uid],
+    queryFn: () =>
+      role === "teacher" ? getResultsByUploader(user.uid) : getResults(),
+    enabled: !!user,
   });
 
   const visibleStudents =
@@ -121,6 +124,7 @@ export default function ResultsPage() {
       selectedStudent.name,
       selectedSubject.name,
       role,
+      user.uid,
     );
 
     if (editingResult) {
@@ -281,7 +285,7 @@ export default function ResultsPage() {
       <div className="bg-primary rounded-md shadow p-6">
         <h3 className="text-lg font-semibold mb-4 text-white">All Results</h3>
         {isLoading ? (
-          <p className="text-gray-400">Loading results...</p>
+          <TableSkeleton rows={5} cols={6} dark={true} />
         ) : results.length === 0 ? (
           <p className="text-gray-400">No results recorded yet.</p>
         ) : (
@@ -343,18 +347,22 @@ export default function ResultsPage() {
                     </span>
                   </td>
                   <td className="py-3 flex gap-2">
-                    <button
-                      onClick={() => handleEdit(result)}
-                      className="text-white bg-blue-500 p-2 rounded-md text-sm cursor-pointer"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(result.id)}
-                      className="text-white cursor-pointer text-sm bg-red-500 p-2 rounded-md"
-                    >
-                      Delete
-                    </button>
+                    {(role === "admin" || result.uploadedBy === user?.uid) && (
+                      <>
+                        <button
+                          onClick={() => handleEdit(result)}
+                          className="text-white bg-blue-500 p-2 rounded-md text-sm cursor-pointer"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(result.id)}
+                          className="text-white cursor-pointer text-sm bg-red-500 p-2 rounded-md"
+                        >
+                          Delete
+                        </button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))}

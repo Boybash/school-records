@@ -21,12 +21,20 @@ export default function ParentResultPage() {
   const [searched, setSearched] = useState(false);
 
   useEffect(() => {
-    const id = sessionStorage.getItem("parentStudentId");
-    if (!id) {
-      router.push("/parent/login");
-    } else {
-      setStudentId(id);
-    }
+    const getSession = async () => {
+      const response = await fetch("/api/parent-session");
+      if (!response.ok) {
+        router.push("/parent/login");
+        return;
+      }
+      const data = await response.json();
+      if (!data.studentId) {
+        router.push("/parent/login");
+        return;
+      }
+      setStudentId(data.studentId);
+    };
+    getSession();
   }, [router]);
 
   const { data: students = [] } = useQuery({
@@ -68,8 +76,8 @@ export default function ParentResultPage() {
     refetch();
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("parentStudentId");
+  const handleLogout = async () => {
+    await fetch("/api/parent-session", { method: "DELETE" });
     router.push("/parent/login");
   };
 

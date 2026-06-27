@@ -15,13 +15,13 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="bg-primary px-15 py-5 flex justify-between items-center sticky top-0 z-50">
+    <nav className="bg-primary px-10 py-5 flex justify-between items-center sticky top-0 z-50">
       <div className="flex items-center gap-3">
         <div>
           <img
             src="/shalomlogo.svg"
             alt="Shalom logo"
-            className="w-16 h-16 bg-white rounded-full p-2 object-contain shadow-sm"
+            className="w-16 h-16 shadow-sm"
           />
         </div>
       </div>

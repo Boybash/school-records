@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getPendingResults, approveResult, rejectResult } from "@/lib/results";
 import Link from "next/link";
+import { TableSkeleton } from "@/components/skeleton";
 
 export default function ApprovalsPage() {
   const queryClient = useQueryClient();
@@ -43,7 +44,7 @@ export default function ApprovalsPage() {
         </div>
 
         {isLoading ? (
-          <p className="text-gray-400">Loading...</p>
+          <TableSkeleton rows={5} cols={6} dark={true} />
         ) : pending.length === 0 ? (
           <div className="text-center py-10 flex flex-col items-center">
             <img

@@ -108,7 +108,7 @@ export default function AboutUs() {
               <img
                 src="/shalomlogo.svg"
                 alt="Shalom logo"
-                className="w-16 h-16 bg-white rounded-full p-2 object-contain shadow-sm"
+                className="w-16 h-16 shadow-sm"
               />
               <div>
                 <p className="font-bold text-primary uppercase text-sm">

@@ -9,6 +9,7 @@ export default function ParentLoginPage() {
   const router = useRouter();
   const [matricNumber, setMatricNumber] = useState("");
   const [surname, setSurname] = useState("");
+  const [dob, setDob] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [current, setCurrent] = useState(0);
@@ -27,7 +28,8 @@ export default function ParentLoginPage() {
   }, []);
 
   const handleLogin = async () => {
-    if (!matricNumber || !surname) return setError("Please fill in all fields");
+    if (!matricNumber || !surname || !dob)
+      return setError("Please fill in all fields");
     setLoading(true);
     setError("");
 
@@ -40,7 +42,6 @@ export default function ParentLoginPage() {
         return;
       }
 
-      // Check surname matches (case insensitive)
       const studentSurname = student.name.split(" ")[0].toLowerCase();
       const enteredSurname = surname.trim().toLowerCase();
 
@@ -50,8 +51,21 @@ export default function ParentLoginPage() {
         return;
       }
 
-      // Save student id to sessionStorage and redirect
-      sessionStorage.setItem("parentStudentId", student.id);
+      if (student.dob !== dob) {
+        setError("Incorrect date of birth. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      // Save to secure cookie instead of sessionStorage
+      const response = await fetch("/api/parent-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ studentId: student.id }),
+      });
+
+      if (!response.ok) throw new Error("Failed to create session");
+
       router.push("/parent/result");
     } catch (err) {
       setError("Something went wrong. Please try again.");
@@ -118,6 +132,17 @@ export default function ParentLoginPage() {
               className="w-full p-3 rounded-lg outline-none border focus:ring-2 focus:ring-[#052659]"
               value={surname}
               onChange={(e) => setSurname(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="text-sm text-gray-500 mb-1 block">
+              Date of Birth
+            </label>
+            <input
+              type="date"
+              className="w-full p-3 rounded-lg outline-none border focus:ring-2 focus:ring-[#052659]"
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
             />
           </div>
         </div>

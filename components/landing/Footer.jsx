@@ -61,7 +61,7 @@ export default function Footer() {
                 key={social.title}
                 href={social.href}
                 title={social.title}
-                className="w-9 h-9 rounded-lg bg-gray-800 hover:bg-blue-600 text-white flex items-center justify-center text-xs font-bold transition"
+                className="w-9 h-9 rounded-lg bg-gray-800 hover:bg-primary-50 text-white flex items-center justify-center text-xs font-bold transition"
               >
                 {social.label}
               </a>
@@ -138,7 +138,7 @@ export default function Footer() {
             © {new Date().getFullYear()} Shalom Model College. All rights
             reserved.
           </p>
-          <p>Designed with ❤️ for Nigerian Schools</p>
+          <p>Designed for Nigerian Schools</p>
         </div>
       </div>
     </footer>

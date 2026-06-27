@@ -5,6 +5,10 @@ import { loginUser } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Link from "next/link";
+import {
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,6 +18,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [showPasword, setShowPassword] = useState(false);
   const [current, setCurrent] = useState(0);
+  const [resetSent, setResetSent] = useState(false);
   const images = [
     "/shalom image 6.webp",
     "/shalom image 2.webp",
@@ -45,6 +50,20 @@ export default function LoginPage() {
     setShowPassword(!showPasword);
   }
 
+  const handleForgotPassword = async () => {
+    if (!email)
+      return setError(
+        "Enter your email address first then click Forgot Password",
+      );
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setResetSent(true);
+      setError("");
+    } catch (err) {
+      setError("Failed to send reset email. Check the email address.");
+    }
+  };
+
   return (
     <div className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden">
       <div
@@ -69,7 +88,7 @@ export default function LoginPage() {
       <div className="absolute inset-0 bg-black/70" />
 
       <div className="relative z-10 bg-[#c1e8ff] p-8 rounded-md shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-6 text-[#021024]">
+        <h1 className="text-2xl font-bold text-center mb-6 text-primary uppercase">
           School Records
         </h1>
 
@@ -108,6 +127,21 @@ export default function LoginPage() {
         >
           {loading ? "Signing in..." : "Sign In"}
         </button>
+        <div className="text-right mb-4">
+          <button
+            onClick={handleForgotPassword}
+            className="text-sm text-blue-600 hover:underline cursor-pointer"
+          >
+            Forgot Password?
+          </button>
+        </div>
+
+        {/* Success Message */}
+        {resetSent && (
+          <div className="bg-green-50 text-green-600 text-sm p-3 rounded-lg mb-4 text-center">
+            ✅ Password reset email sent! Check your inbox.
+          </div>
+        )}
       </div>
 
       <Link
@@ -117,6 +151,8 @@ export default function LoginPage() {
         <img className="w-5 h-5" src="/arrow-l.png" alt="arrow" />
         Back
       </Link>
+
+      {/* Forgot Password */}
     </div>
   );
 }

@@ -9,6 +9,7 @@ import {
   deleteSubject,
 } from "@/lib/subjects";
 import Link from "next/link";
+import { TableSkeleton } from "@/components/skeleton";
 
 export default function SubjectsPage() {
   const queryClient = useQueryClient();
@@ -114,7 +115,7 @@ export default function SubjectsPage() {
       <div className="bg-primary rounded-md shadow p-6">
         <h3 className="text-lg font-semibold mb-4 text-white">All Subjects</h3>
         {isLoading ? (
-          <p className="text-gray-400">Loading subjects...</p>
+          <TableSkeleton rows={5} cols={6} dark={true} />
         ) : subjects.length === 0 ? (
           <p className="text-gray-400">No subjects added yet.</p>
         ) : (

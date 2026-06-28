@@ -46,14 +46,14 @@ export default function Hero() {
       {/* Content Container */}
       <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center gap-12 relative z-10">
         {/* Left Side: Text Details */}
-        <div className="flex flex-col gap-3 max-w-3xl">
-          <h2 className="text-white text-xl sm:text-4xl font-extrabold uppercase tracking-[0.2em] text-left opacity-90">
+        <div className="flex flex-col gap-1.5 md:gap-3 max-w-3xl">
+          <h2 className="text-white text-3xl sm:text-5xl sm:text-4xl font-extrabold uppercase tracking-[0.2em] text-center md:text-left opacity-90">
             Shalom Model College
           </h2>
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold uppercase leading-tight text-left text-white">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold uppercase leading-tight text-center md:text-left text-white">
             Smart Student Records Management
           </h1>
-          <p className="text-base sm:text-lg mt-4 text-left text-gray-100 max-w-xl">
+          <p className="text-base sm:text-lg mt:2 md:mt-4 text-center md:text-left text-gray-100 max-w-xl">
             Manage student results, generate report cards, and give parents
             instant access to their child's academic performance — all in one
             place.

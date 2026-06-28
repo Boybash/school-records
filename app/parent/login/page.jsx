@@ -21,18 +21,18 @@ export default function ParentLoginPage() {
   const [timeLeft, setTimeLeft] = useState(0);
 
   const images = [
-    "/shalom image 6.webp",
-    "/shalom image 2.webp",
-    "/shalom image 5.webp",
+    "/shalomlogo.svg",
+    // "/shalom image 2.webp",
+    // "/shalom image 5.webp",
   ];
 
   // Image slider
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % images.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCurrent((prev) => (prev + 1) % images.length);
+  //   }, 3000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   // Load attempts and lockout from localStorage on mount
   useEffect(() => {
@@ -172,7 +172,8 @@ export default function ParentLoginPage() {
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-[#021024]">Parent Portal</h1>
           <p className="text-gray-500 text-sm mt-1">
-            Enter your child's matric number and surname to view their results
+            Enter your child's matric number, surname and date of birth to view
+            their results
           </p>
         </div>
 

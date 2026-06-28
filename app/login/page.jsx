@@ -20,18 +20,18 @@ export default function LoginPage() {
   const [current, setCurrent] = useState(0);
   const [resetSent, setResetSent] = useState(false);
   const images = [
-    "/shalom image 6.webp",
-    "/shalom image 2.webp",
-    "/shalom image 5.webp",
+    "/shalomlogo.svg",
+    // "/shalom image 2.webp",
+    // "/shalom image 5.webp",
   ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % images.length);
-    }, 3000); // changes every 5 seconds
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCurrent((prev) => (prev + 1) % images.length);
+  //   }, 3000); // changes every 5 seconds
 
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const handleLogin = async () => {
     setLoading(true);
@@ -146,7 +146,7 @@ export default function LoginPage() {
 
       <Link
         href="/"
-        className=" flex gap-2 items-center bg-[#c1e8ff] p-2 rounded-md absolute top-10 left-10 "
+        className=" flex gap-2 items-center bg-[#c1e8ff] p-2 rounded-md absolute top-10 left-8 "
       >
         <img className="w-5 h-5" src="/arrow-l.png" alt="arrow" />
         Back

@@ -75,7 +75,7 @@ export default function Testimonials() {
           {testimonials.map((t, index) => (
             <div
               key={t.name}
-              className="bg-[#c1e8ff]/30 rounded-2xl p-6 shadow-sm  hover:shadow-md transition-transform duration-500 group-hover:scale-110 flex flex-col justify-between"
+              className="bg-[#c1e8ff]/30 rounded-md p-6 shadow-sm  hover:shadow-md transition-transform duration-500 group-hover:scale-110 flex flex-col justify-between"
             >
               {/* Stars */}
               <div className="flex gap-1 mb-4">

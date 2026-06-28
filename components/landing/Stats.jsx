@@ -30,8 +30,8 @@ const offers = [
 
 export default function Stats() {
   return (
-    <section className="bg-white py-12 px-6 border-b-2 border-[#052659]">
-      <h1 className="uppercase text-center tracking-widest text-4xl font-bold text-[#021024]">
+    <section className="bg-white py-12 px-6 ">
+      <h1 className="uppercase text-center tracking-widest text-4xl font-bold text-primary">
         What We Offer
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-16 items-start max-w-7xl mx-auto">
@@ -48,7 +48,12 @@ export default function Stats() {
             <h3 className="text-[#052659] mb-2 uppercase text-2xl font-semibold text-left">
               {offer.title}
             </h3>
-            <p className="text-[#021024] text-lg">{offer.description}</p>
+            <p
+              className="text-primary
+     text-lg"
+            >
+              {offer.description}
+            </p>
           </div>
         ))}
       </div>
@@ -58,7 +63,10 @@ export default function Stats() {
             <p className="text-3xl font-extrabold text-[#052659]">
               {stat.value}
             </p>
-            <p className="text-[#021024] text-sm mt-1 font-semibold">
+            <p
+              className="text-primary
+     text-sm mt-1 font-semibold"
+            >
               {stat.label}
             </p>
           </div>

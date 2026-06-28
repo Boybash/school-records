@@ -15,7 +15,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="bg-primary px-10 py-5 flex justify-between items-center sticky top-0 z-50">
+    <nav className="bg-primary px-10 py-2 flex justify-between items-center sticky top-0 z-50">
       <div className="flex items-center gap-3">
         <div>
           <img
@@ -25,7 +25,7 @@ export default function Navbar() {
           />
         </div>
       </div>
-      <div className="hidden md:flex items-center gap-15">
+      <div className="hidden lg:flex items-center gap-15">
         {navLinks.map((link) => (
           <a
             key={link.href}
@@ -36,7 +36,7 @@ export default function Navbar() {
           </a>
         ))}
       </div>
-      <div className="flex items-center gap-3">
+      <div className=" hidden lg:flex items-center gap-3">
         <Link
           href="/parent/login"
           className="bg-[#c1e8ff] text-[#052659] text-sm px-5 py-2 rounded-md hover:bg-primary-50 hover:text-white transition font-semibold"
@@ -49,6 +49,13 @@ export default function Navbar() {
         >
           Staff Login
         </Link>
+      </div>
+      <div>
+        <img
+          src={menuOpen ? "/xmark.svg" : "xmenu.png"}
+          alt="menu"
+          className="block lg:hidden w-12 h-12"
+        />
       </div>
     </nav>
   );

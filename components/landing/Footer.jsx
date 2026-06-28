@@ -39,7 +39,7 @@ export default function Footer() {
             <img
               src="/shalomlogo.svg"
               alt="Shalom logo"
-              className="w-16 h-16 bg-white rounded-full p-2 object-contain shadow-sm"
+              className="w-16 h-16"
             />
             <div>
               <p className="text-white font-bold text-sm leading-tight">

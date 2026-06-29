@@ -77,7 +77,7 @@ export default function AboutUs() {
           </div>
 
           {/* Stats Row */}
-          <div className="flex flex-wrap gap-6 border-t pt-6">
+          <div className="flex flex-wrap justify-center gap-10 md:gap-6 border-t pt-6">
             {[
               { value: "10+", label: "Years of Excellence" },
               { value: "500+", label: "Students Enrolled" },

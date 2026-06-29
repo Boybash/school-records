@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createTeacher, getTeachers, deleteTeacher } from "@/lib/auth";
 import { getSubjects } from "@/lib/subjects";
@@ -10,6 +10,7 @@ import { auth } from "@/lib/firebase";
 import { TableSkeleton } from "@/components/skeleton";
 import { resetTeacherPassword } from "@/lib/resetPassword";
 import { signOut } from "firebase/auth";
+import Pagination from "@/components/pagination";
 
 export default function TeachersPage() {
   const queryClient = useQueryClient();
@@ -26,6 +27,8 @@ export default function TeachersPage() {
   const [resetLoading, setResetLoading] = useState(false);
   const [resetSuccess, setResetSuccess] = useState(false);
   const [showPasword, setShowPassword] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   const { data: teachers = [], isLoading } = useQuery({
     queryKey: ["teachers"],
@@ -135,6 +138,13 @@ export default function TeachersPage() {
       setResetLoading(false);
     }
   };
+
+  const totalPages = Math.ceil(teachers.length / ITEMS_PER_PAGE);
+
+  const paginatedTeachers = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return teachers.slice(start, start + ITEMS_PER_PAGE);
+  }, [teachers, currentPage]);
 
   return (
     <div>
@@ -292,17 +302,23 @@ export default function TeachersPage() {
 
       {/* Teachers Table */}
       <div className="bg-primary rounded-xl shadow p-4 sm:p-6">
-        <h3 className="text-lg font-semibold mb-4 text-white">All Teachers</h3>
-
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6">
+          <h3 className="text-lg font-semibold mb-4 text-white">
+            All Teachers
+          </h3>
+          <p className="text-sm text-gray-400">
+            Showing {paginatedTeachers.length} of {teachers.length} students
+          </p>
+        </div>
         {isLoading ? (
           <TableSkeleton rows={5} cols={6} dark={true} />
-        ) : teachers.length === 0 ? (
+        ) : paginatedTeachers.length === 0 ? (
           <p className="text-gray-400">No teachers added yet.</p>
         ) : (
           <>
             {/* 1. MOBILE RESPONSIVE CARD VIEW (Visible below md screens) */}
             <div className="grid grid-cols-1 gap-4 md:hidden">
-              {teachers.map((teacher, index) => (
+              {paginatedTeachers.map((teacher, index) => (
                 <div
                   key={teacher.id}
                   className="border border-white/10 bg-white/5 rounded-lg p-4 flex flex-col gap-3"
@@ -310,7 +326,7 @@ export default function TeachersPage() {
                   {/* Header metadata row */}
                   <div className="flex justify-between items-center border-b border-white/10 pb-2 text-xs">
                     <span className="text-white/40 font-mono">
-                      #{index + 1}
+                      #{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
                     </span>
                     <span className="text-yellow-400 font-medium truncate max-w-[200px]">
                       {teacher.email}
@@ -357,6 +373,11 @@ export default function TeachersPage() {
                   </div>
                 </div>
               ))}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
             </div>
 
             {/* 2. DESKTOP TABULAR VIEW (Visible from md screens and above) */}
@@ -383,7 +404,7 @@ export default function TeachersPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {teachers.map((teacher, index) => (
+                  {paginatedTeachers.map((teacher, index) => (
                     <tr
                       key={teacher.id}
                       className="border-b border-white/10 last:border-0 hover:bg-white/5 transition"
@@ -424,6 +445,11 @@ export default function TeachersPage() {
                 </tbody>
               </table>
             </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </>
         )}
       </div>

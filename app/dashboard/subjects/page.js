@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   addSubject,
@@ -10,12 +10,15 @@ import {
 } from "@/lib/subjects";
 import Link from "next/link";
 import { TableSkeleton } from "@/components/skeleton";
+import Pagination from "@/components/pagination";
 
 export default function SubjectsPage() {
   const queryClient = useQueryClient();
   const [name, setName] = useState("");
   const [editingSubject, setEditingSubject] = useState(null);
   const [deleetingSubjectId, setDeletingSubjectId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   const { data: subjects = [], isLoading } = useQuery({
     queryKey: ["subjects"],
@@ -72,6 +75,13 @@ export default function SubjectsPage() {
 
   const isPending = addMutation.isPending || updateMutation.isPending;
 
+  const totalPages = Math.ceil(subjects.length / ITEMS_PER_PAGE);
+
+  const paginatedSubjects = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return subjects.slice(start, start + ITEMS_PER_PAGE);
+  }, [subjects, currentPage]);
+
   return (
     <div className="relative">
       <h2 className="text-xl font-bold mb-6 uppercase">Subjects</h2>
@@ -113,10 +123,17 @@ export default function SubjectsPage() {
 
       {/* Subjects List */}
       <div className="bg-primary rounded-md shadow p-6">
-        <h3 className="text-lg font-semibold mb-4 text-white">All Subjects</h3>
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6">
+          <h3 className="text-lg font-semibold mb-4 text-white">
+            All Subjects
+          </h3>
+          <p className="text-sm text-gray-400">
+            Showing {paginatedSubjects.length} of {subjects.length} students
+          </p>
+        </div>
         {isLoading ? (
           <TableSkeleton rows={5} cols={6} dark={true} />
-        ) : subjects.length === 0 ? (
+        ) : paginatedSubjects.length === 0 ? (
           <p className="text-gray-400">No subjects added yet.</p>
         ) : (
           <table className="w-full text-left text-sm">
@@ -128,12 +145,14 @@ export default function SubjectsPage() {
               </tr>
             </thead>
             <tbody>
-              {subjects.map((subject, index) => (
+              {paginatedSubjects.map((subject, index) => (
                 <tr
                   key={subject.id}
                   className="border-b border-white/30 last:border-0 hover:bg-white/5 transition"
                 >
-                  <td className="py-3 text-gray-400">{index + 1}</td>
+                  <td className="py-3 text-gray-400">
+                    #{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
+                  </td>
                   <td className="py-3">
                     <div className="flex items-center gap-2">
                       <img
@@ -167,6 +186,11 @@ export default function SubjectsPage() {
             </tbody>
           </table>
         )}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
       <Link
         href="/"

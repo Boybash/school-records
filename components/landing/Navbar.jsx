@@ -6,12 +6,40 @@ import { useState } from "react";
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Unified function to handle smooth scrolling and close the mobile menu
+  const handleNavigation = (e, scrollFn) => {
+    if (scrollFn) {
+      e.preventDefault(); // Prevents default browser harsh snap jumps
+      scrollFn();
+    }
+    setMenuOpen(false); // Closes the mobile drawer on link click
+  };
+
+  const scrollToAbout = () => {
+    document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
+  };
+  const scrollToFeatures = () => {
+    document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
+  };
+  const scrollToHowitworks = () => {
+    document
+      .getElementById("how-it-works")
+      ?.scrollIntoView({ behavior: "smooth" });
+  };
+  const scrollToContact = () => {
+    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   const navLinks = [
     { label: "Home", href: "/" },
-    { label: "Features", href: "#features" },
-    { label: "How It Works", href: "#how-it-works" },
-    { label: "About Us", href: "#about" },
-    { label: "Contact", href: "#contact" },
+    { label: "About Us", href: "#about", handleScroll: scrollToAbout },
+    { label: "Features", href: "#features", handleScroll: scrollToFeatures },
+    {
+      label: "How It Works",
+      href: "#how-it-works",
+      handleScroll: scrollToHowitworks,
+    },
+    { label: "Contact", href: "#contact", handleScroll: scrollToContact },
   ];
 
   return (
@@ -32,6 +60,7 @@ export default function Navbar() {
             <a
               key={link.href}
               href={link.href}
+              onClick={(e) => handleNavigation(e, link.handleScroll)}
               className="text-[#c1e8ff] uppercase hover:border-b-3 hover:border-[#c1e8ff] transition font-semibold"
             >
               {link.label}
@@ -42,12 +71,6 @@ export default function Navbar() {
         {/* Desktop Buttons */}
         <div className="hidden lg:flex items-center gap-3">
           <Link
-            href="/parent/login"
-            className="bg-[#c1e8ff] text-[#052659] text-sm px-5 py-2 rounded-md hover:bg-primary-50 hover:text-white transition font-semibold"
-          >
-            Parent Portal
-          </Link>
-          <Link
             href="/login"
             className="bg-[#c1e8ff] text-[#052659] text-sm px-5 py-2 rounded-md hover:bg-primary-50 hover:text-white transition font-semibold"
           >
@@ -57,7 +80,7 @@ export default function Navbar() {
 
         {/* Mobile Menu Toggle */}
         <button
-          className="block lg:hidden"
+          className="block lg:hidden cursor-pointer"
           onClick={() => setMenuOpen(!menuOpen)}
         >
           <img
@@ -75,7 +98,7 @@ export default function Navbar() {
             <a
               key={link.href}
               href={link.href}
-              onClick={() => setMenuOpen(false)}
+              onClick={(e) => handleNavigation(e, link.handleScroll)}
               className="text-[#c1e8ff] uppercase font-semibold text-sm hover:text-white transition"
             >
               {link.label}
@@ -101,66 +124,3 @@ export default function Navbar() {
     </nav>
   );
 }
-
-// "use client";
-
-// import Link from "next/link";
-// import { useState } from "react";
-
-// export default function Navbar() {
-//   const [menuOpen, setMenuOpen] = useState(false);
-
-//   const navLinks = [
-//     { label: "Home", href: "/" },
-//     { label: "Features", href: "#features" },
-//     { label: "How It Works", href: "#how-it-works" },
-//     { label: "About Us", href: "#about" },
-//     { label: "Contact", href: "#contact" },
-//   ];
-
-//   return (
-//     <nav className="bg-primary px-10 py-2 flex justify-between items-center sticky top-0 z-50">
-//       <div className="flex items-center gap-3">
-//         <div>
-//           <img
-//             src="/shalomlogo.svg"
-//             alt="Shalom logo"
-//             className="w-16 h-16 shadow-sm"
-//           />
-//         </div>
-//       </div>
-//       <div className="hidden lg:flex items-center gap-15">
-//         {navLinks.map((link) => (
-//           <a
-//             key={link.href}
-//             href={link.href}
-//             className="text-[#c1e8ff] uppercase hover:border-b-3 hover:border-[#c1e8ff] transition font-semibold"
-//           >
-//             {link.label}
-//           </a>
-//         ))}
-//       </div>
-//       <div className=" hidden lg:flex items-center gap-3">
-//         <Link
-//           href="/parent/login"
-//           className="bg-[#c1e8ff] text-[#052659] text-sm px-5 py-2 rounded-md hover:bg-primary-50 hover:text-white transition font-semibold"
-//         >
-//           Parent Portal
-//         </Link>
-//         <Link
-//           href="/login"
-//           className="bg-[#c1e8ff] text-[#052659] text-sm px-5 py-2 rounded-md hover:bg-primary-50 hover:text-white transition font-semibold"
-//         >
-//           Staff Login
-//         </Link>
-//       </div>
-//       <div className="block lg:hidden">
-//         <img
-//           src={menuOpen ? "/xmark.svg" : "xmenu.png"}
-//           alt="menu"
-//           className="block lg:hidden w-7 h-7"
-//         />
-//       </div>
-//     </nav>
-//   );
-// }

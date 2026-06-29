@@ -263,8 +263,8 @@ export default function StudentsPage() {
       </div>
 
       {/* Students Table */}
-      <div className="bg-[#021024] rounded-md shadow p-6">
-        <div className="flex justify-between items-center mb-4">
+      <div className="bg-[#021024] rounded-md shadow p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6">
           <h3 className="text-lg font-semibold text-white">All Students</h3>
           <p className="text-sm text-gray-400">
             Showing {paginatedStudents.length} of {filteredStudents.length}{" "}
@@ -277,50 +277,106 @@ export default function StudentsPage() {
           <p className="text-gray-400">No students found.</p>
         ) : (
           <>
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="border-b border-white/30">
-                  <th className="pb-3 text-gray-500">#</th>
-                  <th className="pb-3 text-gray-500">Matric No.</th>
-                  <th className="pb-3 text-gray-500">Name</th>
-                  <th className="pb-3 text-gray-500">Class</th>
-                  <th className="pb-3 text-gray-500">Gender</th>
-                  <th className="pb-3 text-gray-500">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedStudents.map((student, index) => (
-                  <tr
-                    key={student.id}
-                    className="border-b border-white/30 last:border-0"
-                  >
-                    <td className="py-3 text-gray-400">
-                      {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
-                    </td>
-                    <td className="py-3 font-semibold text-blue-600">
+            {/* 1. MOBILE RESPONSIVE CARD VIEW (Visible below sm screen threshold) */}
+            <div className="grid grid-cols-1 gap-4 sm:hidden mb-6">
+              {paginatedStudents.map((student, index) => (
+                <div
+                  key={student.id}
+                  className="border border-white/10 bg-white/5 rounded-lg p-4 flex flex-col gap-2"
+                >
+                  <div className="flex justify-between items-center border-b border-white/10 pb-2">
+                    <span className="text-xs text-gray-400 font-mono">
+                      #{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
+                    </span>
+                    <span className="font-semibold text-sm text-blue-400">
                       {student.matricNumber}
-                    </td>
-                    <td className="py-3 text-white">{student.name}</td>
-                    <td className="py-3 text-white">{student.class}</td>
-                    <td className="py-3 text-white">{student.gender}</td>
-                    <td className="py-3 flex gap-5">
-                      <button
-                        onClick={() => handleEdit(student)}
-                        className="text-white bg-blue-500 p-2 rounded-md text-sm cursor-pointer"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(student.id)}
-                        className="text-white cursor-pointer text-sm bg-red-500 p-2 rounded-md"
-                      >
-                        Delete
-                      </button>
-                    </td>
+                    </span>
+                  </div>
+                  <div className="text-sm">
+                    <p className="text-white font-medium text-base">
+                      {student.name}
+                    </p>
+                    <div className="flex gap-4 mt-1 text-xs text-gray-300">
+                      <p>
+                        <span className="text-gray-500">Class:</span>{" "}
+                        {student.class}
+                      </p>
+                      <p>
+                        <span className="text-gray-500">Gender:</span>{" "}
+                        {student.gender}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3 justify-end mt-2 pt-2 border-t border-white/10">
+                    <button
+                      onClick={() => handleEdit(student)}
+                      className="text-white bg-blue-500 px-4 py-2 rounded-md text-xs font-medium"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(student.id)}
+                      className="text-white bg-red-500 px-4 py-2 rounded-md text-xs font-medium"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* 2. DESKTOP TABULAR VIEW (Hidden on mobile devices, renders from sm breakpoint up) */}
+            {/* 1. Added table-layout-fixed to force the table to span edge-to-edge */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full text-left text-sm table-fixed border-collapse">
+                <thead>
+                  <tr className="border-b border-white/30">
+                    {/* 2. Set explicit percentage or fractional widths on the headers */}
+                    <th className="pb-3 text-gray-500 w-[5%]">#</th>
+                    <th className="pb-3 text-gray-500 w-[20%]">Matric No.</th>
+                    <th className="pb-3 text-gray-500 w-[25%]">Name</th>
+                    <th className="pb-3 text-gray-500 w-[15%]">Class</th>
+                    <th className="pb-3 text-gray-500 w-[15%]">Gender</th>
+                    <th className="pb-3 text-gray-500 w-[20%]">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {paginatedStudents.map((student, index) => (
+                    <tr
+                      key={student.id}
+                      className="border-b border-white/30 last:border-0 hover:bg-white/5 transition"
+                    >
+                      <td className="py-3 text-gray-400">
+                        {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
+                      </td>
+                      <td className="py-3 font-semibold text-blue-400 truncate">
+                        {student.matricNumber}
+                      </td>
+                      {/* 3. Added truncate so exceptionally long student names do not deform your columns */}
+                      <td className="py-3 text-white truncate pr-4">
+                        {student.name}
+                      </td>
+                      <td className="py-3 text-white">{student.class}</td>
+                      <td className="py-3 text-white">{student.gender}</td>
+                      <td className="py-3 flex gap-4">
+                        <button
+                          onClick={() => handleEdit(student)}
+                          className="text-white bg-blue-500 px-3 py-1.5 rounded-md text-xs hover:bg-blue-600 transition cursor-pointer"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(student.id)}
+                          className="text-white bg-red-500 px-3 py-1.5 rounded-md text-xs hover:bg-red-600 transition cursor-pointer"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             <Pagination
               currentPage={currentPage}
@@ -332,7 +388,7 @@ export default function StudentsPage() {
       </div>
       <Link
         href="/"
-        className=" flex gap-2 items-center bg-primary-50 p-2 rounded-md absolute top-0 right-10 "
+        className=" flex gap-2 items-center bg-primary-50 p-2 rounded-md absolute top-0 right-0 "
       >
         <img className="w-5 h-5" src="/arrow-l.png" alt="arrow" />
         Back

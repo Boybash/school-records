@@ -291,50 +291,140 @@ export default function TeachersPage() {
       </div>
 
       {/* Teachers Table */}
-      <div className="bg-primary rounded-xl shadow p-6">
+      <div className="bg-primary rounded-xl shadow p-4 sm:p-6">
         <h3 className="text-lg font-semibold mb-4 text-white">All Teachers</h3>
+
         {isLoading ? (
           <TableSkeleton rows={5} cols={6} dark={true} />
         ) : teachers.length === 0 ? (
           <p className="text-gray-400">No teachers added yet.</p>
         ) : (
-          <table className="w-full text-left text-sm text-white">
-            <thead>
-              <tr className="border-b border-primary-50">
-                <th className="pb-3 text-gray-500">#</th>
-                <th className="pb-3 text-gray-500">Name</th>
-                <th className="pb-3 text-gray-500">Email</th>
-                <th className="pb-3 text-gray-500">Subject</th>
-                <th className="pb-3 text-gray-500">Classes</th>
-                <th className="pb-3 text-gray-500">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+          <>
+            {/* 1. MOBILE RESPONSIVE CARD VIEW (Visible below md screens) */}
+            <div className="grid grid-cols-1 gap-4 md:hidden">
               {teachers.map((teacher, index) => (
-                <tr key={teacher.id} className="border-b last:border-0">
-                  <td className="py-3 text-gray-400">{index + 1}</td>
-                  <td className="py-3">{teacher.name}</td>
-                  <td className="py-3">{teacher.email}</td>
-                  <td className="py-3">{teacher.subjectName}</td>
-                  <td className="py-3">{teacher.classes?.join(", ")}</td>
-                  <td className="py-3 flex gap-2">
+                <div
+                  key={teacher.id}
+                  className="border border-white/10 bg-white/5 rounded-lg p-4 flex flex-col gap-3"
+                >
+                  {/* Header metadata row */}
+                  <div className="flex justify-between items-center border-b border-white/10 pb-2 text-xs">
+                    <span className="text-white/40 font-mono">
+                      #{index + 1}
+                    </span>
+                    <span className="text-yellow-400 font-medium truncate max-w-[200px]">
+                      {teacher.email}
+                    </span>
+                  </div>
+
+                  {/* Core Info */}
+                  <div>
+                    <h4 className="text-white font-semibold text-base">
+                      {teacher.name}
+                    </h4>
+                    <p className="text-white/70 text-sm mt-0.5">
+                      Subject:{" "}
+                      <span className="text-white font-medium">
+                        {teacher.subjectName}
+                      </span>
+                    </p>
+                  </div>
+
+                  {/* Target Classes badging container */}
+                  <div className="bg-black/20 p-2 rounded-md text-xs">
+                    <p className="text-white/50 font-medium mb-1">
+                      Assigned Classes:
+                    </p>
+                    <p className="text-white font-medium truncate">
+                      {teacher.classes?.join(", ") || "None"}
+                    </p>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2 pt-1 mt-1 border-t border-white/5">
                     <button
                       onClick={() => setResetingId(teacher.uid)}
-                      className="text-white bg-yellow-500 p-2 rounded-md text-sm cursor-pointer"
+                      className="flex-1 text-center text-white bg-yellow-600 hover:bg-yellow-700 py-2 px-3 rounded-md text-xs font-medium transition cursor-pointer"
                     >
                       Reset Password
                     </button>
                     <button
                       onClick={() => handleDelete(teacher.id, teacher.uid)}
-                      className="text-white cursor-pointer text-sm bg-red-500 p-2 rounded-md"
+                      className="text-white cursor-pointer text-xs bg-red-600 hover:bg-red-700 py-2 px-3 rounded-md font-medium transition"
                     >
                       Delete
                     </button>
-                  </td>
-                </tr>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+
+            {/* 2. DESKTOP TABULAR VIEW (Visible from md screens and above) */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left text-sm text-white border-collapse table-fixed">
+                <thead>
+                  <tr className="border-b border-white/20">
+                    <th className="pb-3 text-white/50 font-medium w-[5%]">#</th>
+                    <th className="pb-3 text-white/50 font-medium w-[25%]">
+                      Name
+                    </th>
+                    <th className="pb-3 text-white/50 font-medium w-[25%]">
+                      Email
+                    </th>
+                    <th className="pb-3 text-white/50 font-medium w-[15%]">
+                      Subject
+                    </th>
+                    <th className="pb-3 text-white/50 font-medium w-[12%]">
+                      Classes
+                    </th>
+                    <th className="pb-3 text-white/50 font-medium w-[18%] text-right">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {teachers.map((teacher, index) => (
+                    <tr
+                      key={teacher.id}
+                      className="border-b border-white/10 last:border-0 hover:bg-white/5 transition"
+                    >
+                      <td className="py-3 text-white/40">{index + 1}</td>
+                      <td className="py-3 font-medium truncate pr-2">
+                        {teacher.name}
+                      </td>
+                      <td className="py-3 truncate text-white/80 pr-2">
+                        {teacher.email}
+                      </td>
+                      <td className="py-3 text-white/80 truncate">
+                        {teacher.subjectName}
+                      </td>
+                      <td className="py-3 text-white/80 truncate">
+                        {teacher.classes?.join(", ")}
+                      </td>
+                      <td className="py-3">
+                        <div className="flex gap-2 justify-end">
+                          <button
+                            onClick={() => setResetingId(teacher.uid)}
+                            className="text-white bg-yellow-600 hover:bg-yellow-700 px-3 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer whitespace-nowrap"
+                          >
+                            Reset Password
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleDelete(teacher.id, teacher.uid)
+                            }
+                            className="text-white cursor-pointer text-xs bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded-md font-semibold transition"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
       {/* Reset Password Modal */}

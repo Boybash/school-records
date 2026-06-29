@@ -35,10 +35,11 @@ export default function ApprovalsPage() {
         Result Approvals
       </h2>
 
-      <div className="bg-primary rounded-md shadow p-6">
-        <div className="flex items-center justify-between mb-4">
+      <div className="bg-primary rounded-md shadow p-4 sm:p-6">
+        {/* Header Section */}
+        <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-white">Pending Results</h3>
-          <span className="bg-yellow-100 text-yellow-600 text-xs font-semibold px-3 py-1 rounded-full">
+          <span className="bg-yellow-500/20 text-yellow-300 text-xs font-semibold px-3 py-1 rounded-full">
             {pending.length} pending
           </span>
         </div>
@@ -55,77 +56,199 @@ export default function ApprovalsPage() {
             <p className="text-gray-400">No pending results. All caught up!</p>
           </div>
         ) : (
-          <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="border-b border-white/30">
-                <th className="pb-3 text-gray-500">#</th>
-                <th className="pb-3 text-gray-500">Student</th>
-                <th className="pb-3 text-gray-500">Subject</th>
-                <th className="pb-3 text-gray-500">CA</th>
-                <th className="pb-3 text-gray-500">Exam</th>
-                <th className="pb-3 text-gray-500">Total</th>
-                <th className="pb-3 text-gray-500">Grade</th>
-                <th className="pb-3 text-gray-500">Term</th>
-                <th className="pb-3 text-gray-500">Session</th>
-                <th className="pb-3 text-gray-500">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+          <>
+            {/* 1. MOBILE RESPONSIVE CARD VIEW (Visible below md breakpoint) */}
+            <div className="grid grid-cols-1 gap-4 md:hidden">
               {pending.map((result, index) => (
-                <tr
+                <div
                   key={result.id}
-                  className="border-b border-white/30 last:border-0"
+                  className="border border-white/10 bg-white/5 rounded-lg p-4 flex flex-col gap-3"
                 >
-                  <td className="py-3 text-gray-400">{index + 1}</td>
-                  <td className="py-3 text-white">{result.studentName}</td>
-                  <td className="py-3 text-white">{result.subjectName}</td>
-                  <td className="py-3 text-white">{result.ca}</td>
-                  <td className="py-3 text-white">{result.exam}</td>
-                  <td className="py-3 font-semibold text-white">
-                    {result.score}
-                  </td>
-                  <td className="py-3 font-bold text-white">
-                    <span
-                      className={
-                        result.grade === "A"
-                          ? "text-green-600"
-                          : result.grade === "B"
-                            ? "text-blue-600"
-                            : result.grade === "F"
-                              ? "text-red-600"
-                              : "text-gray-500"
-                      }
-                    >
-                      {result.grade}
+                  {/* Header: Item Index & Approval Actions */}
+                  <div className="flex justify-between items-center border-b border-white/10 pb-2">
+                    <span className="text-xs text-gray-400 font-mono">
+                      #{index + 1}
                     </span>
-                  </td>
-                  <td className="py-3 text-white">{result.term}</td>
-                  <td className="py-3 text-white">{result.session}</td>
-                  <td className="py-3 flex gap-2">
-                    <button
-                      onClick={() => approveMutation.mutate(result.id)}
-                      disabled={approveMutation.isPending}
-                      className="bg-green-100 text-green-600 hover:bg-green-200 px-3 py-2 rounded-md text-xs font-semibold transition cursor-pointer"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      onClick={() => rejectMutation.mutate(result.id)}
-                      disabled={rejectMutation.isPending}
-                      className="bg-red-100 text-red-500 hover:bg-red-200 px-3 py-2 rounded-md text-xs font-semibold transition cursor-pointer"
-                    >
-                      Reject
-                    </button>
-                  </td>
-                </tr>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => approveMutation.mutate(result.id)}
+                        disabled={approveMutation.isPending}
+                        className="bg-green-500 text-white hover:bg-green-600 px-2.5 py-1 rounded-md text-xs font-semibold transition cursor-pointer disabled:opacity-50"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => rejectMutation.mutate(result.id)}
+                        disabled={rejectMutation.isPending}
+                        className="bg-red-500 text-white hover:bg-red-600 px-2.5 py-1 rounded-md text-xs font-semibold transition cursor-pointer disabled:opacity-50"
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Student & Subject Details */}
+                  <div>
+                    <h4 className="text-white font-semibold text-base">
+                      {result.studentName}
+                    </h4>
+                    <p className="text-gray-400 text-sm mt-0.5">
+                      {result.subjectName}
+                    </p>
+                  </div>
+
+                  {/* Score Breakdown Metrics Sub-Grid */}
+                  <div className="grid grid-cols-4 gap-2 bg-black/20 p-2.5 rounded-md text-center text-xs">
+                    <div>
+                      <p className="text-gray-400 font-medium mb-0.5">CA</p>
+                      <p className="text-white">{result.ca}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400 font-medium mb-0.5">Exam</p>
+                      <p className="text-white">{result.exam}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400 font-medium mb-0.5">Total</p>
+                      <p className="text-white font-bold">{result.score}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400 font-medium mb-0.5">Grade</p>
+                      <p
+                        className={`font-extrabold ${
+                          result.grade === "A"
+                            ? "text-green-400"
+                            : result.grade === "B"
+                              ? "text-blue-400"
+                              : result.grade === "F"
+                                ? "text-red-400"
+                                : "text-gray-300"
+                        }`}
+                      >
+                        {result.grade}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Context Footer Metadata */}
+                  <div className="flex justify-between text-xs text-gray-400 pt-1">
+                    <span>
+                      Term:{" "}
+                      <strong className="text-gray-200">{result.term}</strong>
+                    </span>
+                    <span>
+                      Session:{" "}
+                      <strong className="text-gray-200">
+                        {result.session}
+                      </strong>
+                    </span>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+
+            {/* 2. DESKTOP TABULAR VIEW (Visible from md breakpoint up) */}
+            <div className="hidden md:block">
+              <table className="w-full text-left text-sm table-fixed border-collapse">
+                <thead>
+                  <tr className="border-b border-white/20">
+                    <th className="pb-3 text-gray-400 font-medium w-[4%]">#</th>
+                    <th className="pb-3 text-gray-400 font-medium w-[22%]">
+                      Student
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[22%]">
+                      Subject
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[6%]">
+                      CA
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[6%]">
+                      Exam
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[7%]">
+                      Total
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[7%]">
+                      Grade
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[8%]">
+                      Term
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[10%]">
+                      Session
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[18%]">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pending.map((result, index) => (
+                    <tr
+                      key={result.id}
+                      className="border-b border-white/10 last:border-0 text-white hover:bg-white/5 transition"
+                    >
+                      <td className="py-3 text-gray-400">{index + 1}</td>
+                      <td className="py-3 text-white font-medium truncate pr-2">
+                        {result.studentName}
+                      </td>
+                      <td className="py-3 text-white truncate pr-2">
+                        {result.subjectName}
+                      </td>
+                      <td className="py-3 text-white">{result.ca}</td>
+                      <td className="py-3 text-white">{result.exam}</td>
+                      <td className="py-3 font-semibold text-white">
+                        {result.score}
+                      </td>
+                      <td className="py-3 font-bold">
+                        <span
+                          className={
+                            result.grade === "A"
+                              ? "text-green-400"
+                              : result.grade === "B"
+                                ? "text-blue-400"
+                                : result.grade === "F"
+                                  ? "text-red-400"
+                                  : "text-gray-300"
+                          }
+                        >
+                          {result.grade}
+                        </span>
+                      </td>
+                      <td className="py-3 text-white whitespace-nowrap">
+                        {result.term}
+                      </td>
+                      <td className="py-3 text-white whitespace-nowrap">
+                        {result.session}
+                      </td>
+                      <td className="py-3">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => approveMutation.mutate(result.id)}
+                            disabled={approveMutation.isPending}
+                            className="bg-green-500/20 text-green-300 hover:bg-green-500/30 px-3 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer disabled:opacity-50"
+                          >
+                            Approve
+                          </button>
+                          <button
+                            onClick={() => rejectMutation.mutate(result.id)}
+                            disabled={rejectMutation.isPending}
+                            className="bg-red-500/20 text-red-300 hover:bg-red-500/30 px-3 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer disabled:opacity-50"
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
       <Link
         href="/"
-        className=" flex gap-2 items-center bg-primary-50 p-2 rounded-md absolute top-0 right-10 "
+        className=" flex gap-2 items-center bg-primary-50 p-2 rounded-md absolute top-0 right-0 "
       >
         <img className="w-5 h-5" src="/arrow-l.png" alt="arrow" />
         Back

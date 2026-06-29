@@ -116,7 +116,7 @@ export default function DashboardPage() {
               {students.slice(0, 5).map((student) => (
                 <tr
                   key={student.id}
-                  className="border-b border-white/30 last:border-0 text-white"
+                  className="border-b border-white/30 last:border-0 text-white hover:bg-white/5 transition"
                 >
                   <td className="py-3">{student.name}</td>
                   <td className="py-3">{student.class}</td>
@@ -129,7 +129,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Results */}
-      <div className="bg-[#021024] rounded-md shadow p-6">
+      <div className="bg-[#021024] rounded-md shadow p-4 sm:p-6">
         <h3 className="text-lg font-semibold mb-4 text-white">
           Recent Results
         </h3>
@@ -138,45 +138,95 @@ export default function DashboardPage() {
         ) : results.length === 0 ? (
           <p className="text-gray-400 text-sm">No results recorded yet.</p>
         ) : (
-          <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="border-b border-white/30">
-                <th className="pb-3 text-gray-500">Student</th>
-                <th className="pb-3 text-gray-500">Subject</th>
-                <th className="pb-3 text-gray-500">Score</th>
-                <th className="pb-3 text-gray-500">Grade</th>
-                <th className="pb-3 text-gray-500">Term</th>
-              </tr>
-            </thead>
-            <tbody>
+          <>
+            {/* 1. MOBILE LIST VIEW - Hidden on tablets/desktops */}
+            <div className="flex flex-col gap-3 sm:hidden">
               {results.slice(0, 5).map((result) => (
-                <tr
+                <div
                   key={result.id}
-                  className="border-b border-white/30 last:border-0 text-white"
+                  className="border border-white/10 bg-white/5 rounded-lg p-3 text-sm text-white flex flex-col gap-1.5"
                 >
-                  <td className="py-3">{result.studentName}</td>
-                  <td className="py-3">{result.subjectName}</td>
-                  <td className="py-3">{result.score}</td>
-                  <td className="py-3 font-bold">
-                    <span
-                      className={
-                        result.grade === "A"
-                          ? "text-green-400"
-                          : result.grade === "B"
-                            ? "text-blue-400"
-                            : result.grade === "F"
-                              ? "text-red-400"
-                              : "text-gray-500"
-                      }
-                    >
-                      {result.grade}
+                  <div className="flex justify-between items-start gap-2">
+                    <span className="font-semibold text-white truncate max-w-[70%]">
+                      {result.studentName}
                     </span>
-                  </td>
-                  <td className="py-3">{result.term}</td>
-                </tr>
+                    <span className="text-xs text-gray-400 shrink-0">
+                      {result.term}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center text-xs text-gray-300 mt-0.5">
+                    <span className="truncate max-w-[65%] text-gray-400">
+                      {result.subjectName}
+                    </span>
+                    <div className="flex gap-2 items-center font-medium">
+                      <span>Score: {result.score}</span>
+                      <span
+                        className={`font-bold ${
+                          result.grade === "A"
+                            ? "text-green-400"
+                            : result.grade === "B"
+                              ? "text-blue-400"
+                              : result.grade === "F"
+                                ? "text-red-400"
+                                : "text-gray-400"
+                        }`}
+                      >
+                        [{result.grade}]
+                      </span>
+                    </div>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+
+            {/* 2. TABLE VIEW - Visible on sm screens and above, balanced widths */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full text-left text-sm table-fixed border-collapse">
+                <thead>
+                  <tr className="border-b border-white/30">
+                    <th className="pb-3 text-gray-500 w-[30%]">Student</th>
+                    <th className="pb-3 text-gray-500 w-[35%]">Subject</th>
+                    <th className="pb-3 text-gray-500 w-[12%]">Score</th>
+                    <th className="pb-3 text-gray-500 w-[11%]">Grade</th>
+                    <th className="pb-3 text-gray-500 w-[12%]">Term</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {results.slice(0, 5).map((result) => (
+                    <tr
+                      key={result.id}
+                      className="border-b border-white/30 last:border-0 text-white hover:bg-white/5 transition"
+                    >
+                      <td className="py-3 truncate pr-3">
+                        {result.studentName}
+                      </td>
+                      <td className="py-3 truncate pr-3">
+                        {result.subjectName}
+                      </td>
+                      <td className="py-3">{result.score}</td>
+                      <td className="py-3 font-bold">
+                        <span
+                          className={
+                            result.grade === "A"
+                              ? "text-green-400"
+                              : result.grade === "B"
+                                ? "text-blue-400"
+                                : result.grade === "F"
+                                  ? "text-red-400"
+                                  : "text-gray-500"
+                          }
+                        >
+                          {result.grade}
+                        </span>
+                      </td>
+                      <td className="py-3">{result.term}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 

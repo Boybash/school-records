@@ -81,7 +81,7 @@ export default function SubjectsPage() {
         <h3 className="text-lg font-semibold mb-4 text-white">
           {editingSubject ? "Edit Subject" : "Add New Subject"}
         </h3>
-        <div className="flex gap-4">
+        <div className="flex-col gap-4 md:flex md:gap-4">
           <input
             type="text"
             placeholder="Subject name e.g Mathematics"
@@ -92,7 +92,7 @@ export default function SubjectsPage() {
           <button
             onClick={handleSubmit}
             disabled={isPending}
-            className="bg-gray-100 text-primary px-6 py-3 rounded-md font-semibold cursor-pointer transition"
+            className="bg-gray-100 md:w-[250px] text-primary px-6 py-3 rounded-md font-semibold cursor-pointer transition mt-2 md:mt-0"
           >
             {isPending
               ? "Saving..."
@@ -131,7 +131,7 @@ export default function SubjectsPage() {
               {subjects.map((subject, index) => (
                 <tr
                   key={subject.id}
-                  className="border-b border-white/30 last:border-0"
+                  className="border-b border-white/30 last:border-0 hover:bg-white/5 transition"
                 >
                   <td className="py-3 text-gray-400">{index + 1}</td>
                   <td className="py-3">
@@ -141,7 +141,9 @@ export default function SubjectsPage() {
                         alt="book"
                         className="w-8 h-8 rounded-full bg-white p-1.5 object-contain"
                       />
-                      <span className="text-white">{subject.name}</span>
+                      <span className="text-white truncate">
+                        {subject.name}
+                      </span>
                     </div>
                   </td>
                   <td className="py-3">
@@ -168,7 +170,7 @@ export default function SubjectsPage() {
       </div>
       <Link
         href="/"
-        className=" flex gap-2 items-center bg-primary-50 p-2 rounded-md absolute top-0 right-10 "
+        className=" flex gap-2 items-center bg-primary-50 p-2 rounded-md absolute top-0 right-0 "
       >
         <img className="w-5 h-5" src="/arrow-l.png" alt="arrow" />
         Back

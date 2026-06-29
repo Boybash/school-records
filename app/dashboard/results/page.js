@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getStudents } from "@/lib/students";
 import { getSubjects } from "@/lib/subjects";
@@ -16,6 +16,7 @@ import {
 } from "@/lib/results";
 import { useAuth } from "@/lib/useAuth";
 import { TableSkeleton } from "@/components/skeleton";
+import Pagination from "@/components/pagination";
 
 export default function ResultsPage() {
   const queryClient = useQueryClient();
@@ -28,6 +29,8 @@ export default function ResultsPage() {
   const [session, setSession] = useState("2024/2025");
   const [editingResult, setEditingResult] = useState(null);
   const TERMS = ["1st Term", "2nd Term", "3rd Term"];
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   const { data: students = [] } = useQuery({
     queryKey: ["students"],
@@ -151,6 +154,13 @@ export default function ResultsPage() {
   const isPending = addMutation.isPending || updateMutation.isPending;
   const total = Number(ca || 0) + Number(exam || 0);
 
+  const totalPages = Math.ceil(results.length / ITEMS_PER_PAGE);
+
+  const paginatedResults = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return results.slice(start, start + ITEMS_PER_PAGE);
+  }, [results, currentPage]);
+
   return (
     <div>
       <h2 className="text-xl font-bold mb-6 uppercase">Results</h2>
@@ -163,7 +173,7 @@ export default function ResultsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Student */}
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 bg-white"
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
           >
@@ -177,7 +187,7 @@ export default function ResultsPage() {
 
           {/* Subject */}
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 bg-white"
             value={subjectId}
             onChange={(e) => setSubjectId(e.target.value)}
             // disabled={role === "teacher"}
@@ -192,7 +202,7 @@ export default function ResultsPage() {
 
           {/* Term */}
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 bg-white"
             value={term}
             onChange={(e) => setTerm(e.target.value)}
           >
@@ -205,7 +215,7 @@ export default function ResultsPage() {
           <input
             type="text"
             placeholder="Session e.g 2024/2025"
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 bg-white"
             value={session}
             onChange={(e) => setSession(e.target.value)}
           />
@@ -213,7 +223,7 @@ export default function ResultsPage() {
           <input
             type="number"
             placeholder="CA Score (max 30)"
-            className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 bg-white"
             value={ca}
             onChange={(e) => setCa(e.target.value)}
             min={0}
@@ -223,7 +233,7 @@ export default function ResultsPage() {
           <input
             type="number"
             placeholder="Exam Score (max 70)"
-            className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 bg-white"
             value={exam}
             onChange={(e) => setExam(e.target.value)}
             min={0}
@@ -282,92 +292,248 @@ export default function ResultsPage() {
       </div>
 
       {/* Results Table */}
-      <div className="bg-primary rounded-md shadow p-6">
-        <h3 className="text-lg font-semibold mb-4 text-white">All Results</h3>
+      <div className="bg-primary rounded-md shadow p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6">
+          <h3 className="text-lg font-semibold mb-4 text-white">All Results</h3>
+          <p className="text-sm text-gray-400">
+            Showing {paginatedResults.length} of {results.length} students
+          </p>
+        </div>
         {isLoading ? (
           <TableSkeleton rows={5} cols={6} dark={true} />
-        ) : results.length === 0 ? (
+        ) : paginatedResults.length === 0 ? (
           <p className="text-gray-400">No results recorded yet.</p>
         ) : (
-          <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="border-b">
-                <th className="pb-3 text-gray-500">#</th>
-                <th className="pb-3 text-gray-500">Student</th>
-                <th className="pb-3 text-gray-500">Subject</th>
-                <th className="pb-3 text-gray-500">CA</th>
-                <th className="pb-3 text-gray-500">Exam</th>
-                <th className="pb-3 text-gray-500">Total</th>
-                <th className="pb-3 text-gray-500">Grade</th>
-                <th className="pb-3 text-gray-500">Term</th>
-                <th className="pb-3 text-gray-500">Session</th>
-                <th className="pb-3 text-gray-500">Status</th>
-                <th className="pb-3 text-gray-500">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {results.map((result, index) => (
-                <tr key={result.id} className="border-b last:border-0">
-                  <td className="py-3 text-gray-400">{index + 1}</td>
-                  <td className="py-3 text-white">{result.studentName}</td>
-                  <td className="py-3 text-white">{result.subjectName}</td>
-                  <td className="py-3 text-white">{result.ca}</td>
-                  <td className="py-3 text-white">{result.exam}</td>
-                  <td className="py-3 font-semibold text-white">
-                    {result.score}
-                  </td>
-                  <td className="py-3 font-bold">
-                    <span
-                      className={
-                        result.grade === "A"
-                          ? "text-green-600"
-                          : result.grade === "B"
-                            ? "text-blue-600"
-                            : result.grade === "F"
-                              ? "text-red-600"
-                              : "text-gray-500"
-                      }
-                    >
-                      {result.grade}
+          <>
+            {/* 1. MOBILE RESPONSIVE CARD VIEW (Visible below md screen threshold) */}
+            <div className="grid grid-cols-1 gap-4 md:hidden mb-4">
+              {paginatedResults.map((result, index) => (
+                <div
+                  key={result.id}
+                  className="border border-white/10 bg-white/5 rounded-lg p-4 flex flex-col gap-3"
+                >
+                  {/* Header: Row index, Status Badge & Actions */}
+                  <div className="flex justify-between items-center border-b border-white/10 pb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-400 font-mono">
+                        #{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
+                      </span>
+                      <span
+                        className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                          result.status === "approved"
+                            ? "bg-green-500/20 text-green-300"
+                            : result.status === "rejected"
+                              ? "bg-red-500/20 text-red-300"
+                              : "bg-yellow-500/20 text-yellow-300"
+                        }`}
+                      >
+                        {result.status || "Approved"}
+                      </span>
+                    </div>
+
+                    {/* Actions (Only visible if authorized) */}
+                    <div className="flex gap-2">
+                      {(role === "admin" ||
+                        result.uploadedBy === user?.uid) && (
+                        <>
+                          <button
+                            onClick={() => handleEdit(result)}
+                            className="text-white bg-blue-500 px-2.5 py-1 rounded-md text-xs font-medium"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(result.id)}
+                            className="text-white bg-red-500 px-2.5 py-1 rounded-md text-xs font-medium"
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Student & Subject Details */}
+                  <div>
+                    <h4 className="text-white font-semibold text-base">
+                      {result.studentName}
+                    </h4>
+                    <p className="text-gray-400 text-sm mt-0.5">
+                      {result.subjectName}
+                    </p>
+                  </div>
+
+                  {/* Scores Layout Breakdown Grid */}
+                  <div className="grid grid-cols-4 gap-2 bg-black/20 p-2.5 rounded-md text-center text-xs">
+                    <div>
+                      <p className="text-gray-400 font-medium mb-0.5">CA</p>
+                      <p className="text-white">{result.ca}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400 font-medium mb-0.5">Exam</p>
+                      <p className="text-white">{result.exam}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400 font-medium mb-0.5">Total</p>
+                      <p className="text-white font-bold">{result.score}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400 font-medium mb-0.5">Grade</p>
+                      <p
+                        className={`font-extrabold ${
+                          result.grade === "A"
+                            ? "text-green-400"
+                            : result.grade === "B"
+                              ? "text-blue-400"
+                              : result.grade === "F"
+                                ? "text-red-400"
+                                : "text-gray-300"
+                        }`}
+                      >
+                        {result.grade}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Term & Session Metadata footer */}
+                  <div className="flex justify-between text-xs text-gray-400 pt-1">
+                    <span>
+                      Term:{" "}
+                      <strong className="text-gray-200">{result.term}</strong>
                     </span>
-                  </td>
-                  <td className="py-3 text-white">{result.term}</td>
-                  <td className="py-3 text-white">{result.session}</td>
-                  <td className="py-3">
-                    <span
-                      className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                        result.status === "approved"
-                          ? "bg-green-100 text-green-600"
-                          : result.status === "rejected"
-                            ? "bg-red-100 text-red-500"
-                            : "bg-yellow-100 text-yellow-600"
-                      }`}
-                    >
-                      {result.status || "Approved"}
+                    <span>
+                      Session:{" "}
+                      <strong className="text-gray-200">
+                        {result.session}
+                      </strong>
                     </span>
-                  </td>
-                  <td className="py-3 flex gap-2">
-                    {(role === "admin" || result.uploadedBy === user?.uid) && (
-                      <>
-                        <button
-                          onClick={() => handleEdit(result)}
-                          className="text-white bg-blue-500 p-2 rounded-md text-sm cursor-pointer"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(result.id)}
-                          className="text-white cursor-pointer text-sm bg-red-500 p-2 rounded-md"
-                        >
-                          Delete
-                        </button>
-                      </>
-                    )}
-                  </td>
-                </tr>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+
+            {/* 2. DESKTOP TABULAR VIEW (Hidden on mobile, renders from md breakpoint up) */}
+            <div className="hidden md:block ">
+              <table className="w-full text-left text-sm table-fixed border-collapse">
+                <thead>
+                  <tr className="border-b border-white/20">
+                    <th className="pb-3 text-gray-400 font-medium w-[4%]">#</th>
+                    <th className="pb-3 text-gray-400 font-medium w-[22%]">
+                      Student
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[22%]">
+                      Subject
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[6%]">
+                      CA
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[6%]">
+                      Exam
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[7%]">
+                      Total
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[7%]">
+                      Grade
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[7%]">
+                      Term
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[9%]">
+                      Session
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[10%]">
+                      Status
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[10%]">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginatedResults.map((result, index) => (
+                    <tr
+                      key={result.id}
+                      className="border-b border-white/10 last:border-0 text-white hover:bg-white/5 transition"
+                    >
+                      <td className="py-3 text-gray-400">{index + 1}</td>
+                      <td className="py-3 text-white font-medium truncate pr-2">
+                        {result.studentName}
+                      </td>
+                      <td className="py-3 text-white truncate pr-2">
+                        {result.subjectName}
+                      </td>
+                      <td className="py-3 text-white">{result.ca}</td>
+                      <td className="py-3 text-white">{result.exam}</td>
+                      <td className="py-3 font-semibold text-white">
+                        {result.score}
+                      </td>
+                      <td className="py-3 font-bold">
+                        <span
+                          className={
+                            result.grade === "A"
+                              ? "text-green-400"
+                              : result.grade === "B"
+                                ? "text-blue-400"
+                                : result.grade === "F"
+                                  ? "text-red-400"
+                                  : "text-gray-300"
+                          }
+                        >
+                          {result.grade}
+                        </span>
+                      </td>
+                      <td className="py-3 text-white whitespace-nowrap">
+                        {result.term}
+                      </td>
+                      <td className="py-3 text-white whitespace-nowrap">
+                        {result.session}
+                      </td>
+                      <td className="py-3">
+                        <span
+                          className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ${
+                            result.status === "approved"
+                              ? "bg-green-500/20 text-green-300"
+                              : result.status === "rejected"
+                                ? "bg-red-500/20 text-red-300"
+                                : "bg-yellow-500/20 text-yellow-300"
+                          }`}
+                        >
+                          {result.status || "Approved"}
+                        </span>
+                      </td>
+                      <td className="py-3">
+                        <div className="flex gap-2">
+                          {(role === "admin" ||
+                            result.uploadedBy === user?.uid) && (
+                            <>
+                              <button
+                                onClick={() => handleEdit(result)}
+                                className="text-white bg-blue-500 px-3 py-1.5 rounded-md text-xs font-medium cursor-pointer hover:bg-blue-600 transition"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDelete(result.id)}
+                                className="text-white bg-red-500 px-3 py-1.5 rounded-md text-xs font-medium cursor-pointer hover:bg-red-600 transition"
+                              >
+                                Delete
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </>
         )}
       </div>
     </div>

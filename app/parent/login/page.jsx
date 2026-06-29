@@ -266,7 +266,7 @@ export default function ParentLoginPage() {
 
       <Link
         href="/"
-        className="flex gap-2 items-center bg-[#c1e8ff] p-2 rounded-md absolute top-10 left-10"
+        className="flex gap-2 items-center bg-[#c1e8ff] p-2 rounded-md absolute top-5 md:top-10 left-7"
       >
         <img className="w-5 h-5" src="/arrow-l.png" alt="arrow" />
         Back

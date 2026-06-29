@@ -78,7 +78,7 @@ export default function DashboardLayout({ children }) {
   const navLinks = role === "admin" ? adminLinks : teacherLinks;
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex h-screen w-screen overflow-hidden bg-gray-100">
       {/* Session Warning */}
       {showWarning && (
         <SessionWarning onStay={resetTimer} onLogout={handleLogout} />
@@ -154,7 +154,7 @@ export default function DashboardLayout({ children }) {
       </aside>
 
       {/* Main Content View Wrapper */}
-      <div className="flex-1 flex flex-col min-w-0 relative">
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         {/* Header - Strictly mobile and hidden on md breakpoints and above */}
         <header className="md:hidden flex items-center justify-between bg-white shadow-sm px-6 py-4 sticky top-0 z-30">
           <img

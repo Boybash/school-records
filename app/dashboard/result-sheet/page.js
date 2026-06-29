@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getStudents } from "@/lib/students";
+import { getStudentsForUser } from "@/lib/students";
 import {
   getStudentResultsByTermAndSession,
   getClassRanking,
@@ -21,7 +21,7 @@ export default function ResultSheetPage() {
 
   const { data: students = [] } = useQuery({
     queryKey: ["students"],
-    queryFn: getStudents,
+    queryFn: getStudentsForUser,
   });
 
   const { data: settings = {} } = useQuery({

@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createTeacher, getTeachers, deleteTeacher } from "@/lib/auth";
 import { getSubjects } from "@/lib/subjects";
-import { getStudents } from "@/lib/students";
+import { getStudentsForUser } from "@/lib/students";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { TableSkeleton } from "@/components/skeleton";
@@ -42,7 +42,7 @@ export default function TeachersPage() {
 
   const { data: students = [] } = useQuery({
     queryKey: ["students"],
-    queryFn: getStudents,
+    queryFn: getStudentsForUser,
   });
 
   // Get unique classes from students

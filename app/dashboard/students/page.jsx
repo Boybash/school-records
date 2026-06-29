@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   addStudent,
-  getStudents,
+  getStudentsForUser,
   updateStudent,
   deleteStudent,
 } from "@/lib/students";
@@ -30,7 +30,7 @@ export default function StudentsPage() {
 
   const { data: students = [], isLoading } = useQuery({
     queryKey: ["students"],
-    queryFn: getStudents,
+    queryFn: getStudentsForUser,
   });
 
   // Get unique classes from students for filter dropdown

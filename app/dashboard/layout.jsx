@@ -9,6 +9,8 @@ import { useAuth } from "@/lib/useAuth";
 import { useSessionTimeout } from "@/lib/useSessionTimeout";
 import SessionWarning from "@/components/sessionWarning";
 import { useState, useEffect } from "react";
+import { getTeachers } from "@/lib/auth";
+import { useQuery } from "@tanstack/react-query";
 
 const adminLinks = [
   { href: "/dashboard", label: "Dashboard", icon: "/people-roof.png" },
@@ -51,6 +53,11 @@ export default function DashboardLayout({ children }) {
   const { user, role, loading } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const { data: teachers = [], isLoading } = useQuery({
+    queryKey: ["teachers"],
+    queryFn: getTeachers,
+  });
+
   const handleLogout = async () => {
     await signOut(auth);
     router.push("/login");
@@ -76,6 +83,8 @@ export default function DashboardLayout({ children }) {
   if (!user) return null;
 
   const navLinks = role === "admin" ? adminLinks : teacherLinks;
+  const isTeacher = role === "teacher";
+  const isAdmin = role === "admin";
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-gray-100">
@@ -103,9 +112,25 @@ export default function DashboardLayout({ children }) {
             <h1 className="text-xl font-bold text-primary uppercase">
               School Records
             </h1>
-            <p className="text-2xl font-medium text-gray-400 mt-1 capitalize">
-              {role}
-            </p>
+            {isAdmin && (
+              <p className="text-xl font-bold text-gray-400 uppercase">
+                {role}
+              </p>
+            )}
+            {isTeacher &&
+              teachers.map((teacher) => (
+                <div key={teacher.id}>
+                  <h1 className="text-xl font-bold text-gray-400 uppercase">
+                    {teacher.name}
+                  </h1>
+                  <p className="text-xl font-bold text-gray-400 uppercase">
+                    {role}
+                  </p>
+                  <h1 className="text-xl font-bold text-gray-400 uppercase">
+                    {teacher.classes?.join(", ") || "None"}
+                  </h1>
+                </div>
+              ))}
           </div>
         </div>
 
@@ -121,7 +146,7 @@ export default function DashboardLayout({ children }) {
                 key={link.href}
                 href={link.href}
                 onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition text-sm font-medium ${
+                className={`flex items-center gap-3 px-4 py-3 rounded-md transition text-sm font-medium ${
                   isActive
                     ? "bg-primary text-white"
                     : "text-gray-600 hover:bg-gray-100"
@@ -141,7 +166,7 @@ export default function DashboardLayout({ children }) {
         <div className="p-4 border-t">
           <button
             onClick={handleLogout}
-            className="w-full text-left flex items-center gap-3 px-4 py-3 rounded-lg text-red-800 hover:bg-red-50 transition text-sm font-medium cursor-pointer"
+            className="w-full text-left flex items-center gap-3 px-4 py-3 rounded-md text-red-800 hover:bg-red-50 transition text-sm font-medium cursor-pointer"
           >
             <img
               className="w-9 h-9 bg-white p-2 rounded-full object-contain"
@@ -282,7 +307,7 @@ export default function DashboardLayout({ children }) {
 //             <Link
 //               key={link.href}
 //               href={link.href}
-//               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition text-sm font-medium ${
+//               className={`flex items-center gap-3 px-4 py-3 rounded-md transition text-sm font-medium ${
 //                 pathname === link.href
 //                   ? "bg-primary text-white"
 //                   : "text-gray-600 hover:bg-gray-100"
@@ -301,7 +326,7 @@ export default function DashboardLayout({ children }) {
 //         <div className="p-4 border-t">
 //           <button
 //             onClick={handleLogout}
-//             className="w-full text-left flex items-center gap-3 px-4 py-3 rounded-lg text-red-800 hover:bg-red-50 transition text-sm font-medium cursor-pointer"
+//             className="w-full text-left flex items-center gap-3 px-4 py-3 rounded-md text-red-800 hover:bg-red-50 transition text-sm font-medium cursor-pointer"
 //           >
 //             <img
 //               className="w-9 h-9 bg-white p-2 rounded-full object-contain"
@@ -429,7 +454,7 @@ export default function DashboardLayout({ children }) {
 // //             <Link
 // //               key={link.href}
 // //               href={link.href}
-// //               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition text-sm font-medium ${
+// //               className={`flex items-center gap-3 px-4 py-3 rounded-md transition text-sm font-medium ${
 // //                 pathname === link.href
 // //                   ? "bg-primary text-white"
 // //                   : "text-gray-600 hover:bg-gray-100"
@@ -448,7 +473,7 @@ export default function DashboardLayout({ children }) {
 // //         <div className="p-4 border-t">
 // //           <button
 // //             onClick={handleLogout}
-// //             className="w-full text-left flex items-center gap-3 px-4 py-3 rounded-lg text-red-800 hover:bg-red-50 transition text-sm font-medium cursor-pointer"
+// //             className="w-full text-left flex items-center gap-3 px-4 py-3 rounded-md text-red-800 hover:bg-red-50 transition text-sm font-medium cursor-pointer"
 // //           >
 // //             <img
 // //               className="w-9 h-9 bg-white p-2 rounded-full object-contain"

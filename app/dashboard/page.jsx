@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getStudents } from "@/lib/students";
+import { getStudentsForUser } from "@/lib/students";
 import { getSubjects } from "@/lib/subjects";
 import { getResults, getPendingResults } from "@/lib/results";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import { CardSkeleton, TableSkeleton } from "@/components/skeleton";
 export default function DashboardPage() {
   const { data: students = [], isLoading: loadingStudents } = useQuery({
     queryKey: ["students"],
-    queryFn: getStudents,
+    queryFn: getStudentsForUser,
   });
 
   const { data: subjects = [], isLoading: loadingSubjects } = useQuery({

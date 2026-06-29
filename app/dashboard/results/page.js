@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getStudents } from "@/lib/students";
+import { getStudentsForUser } from "@/lib/students";
 import { getSubjects } from "@/lib/subjects";
 import {
   addResult,
@@ -34,7 +34,7 @@ export default function ResultsPage() {
 
   const { data: students = [] } = useQuery({
     queryKey: ["students"],
-    queryFn: getStudents,
+    queryFn: getStudentsForUser,
   });
 
   const { data: subjects = [] } = useQuery({

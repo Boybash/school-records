@@ -113,7 +113,7 @@ export default function SubjectsPage() {
           {editingSubject && (
             <button
               onClick={handleCancel}
-              className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition"
+              className="bg-gray-200 md:w-[250px] text-gray-700 px-6 py-3 rounded-md font-semibold hover:bg-gray-300 transition cursor-pointer"
             >
               Cancel
             </button>

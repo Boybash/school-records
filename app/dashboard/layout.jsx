@@ -136,7 +136,7 @@ export default function DashboardLayout({ children }) {
           </div>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+        <nav className="flex-1 p-4 space-y-0 overflow-y-auto">
           {navLinks.map((link) => {
             // Checks if path precisely matches or belongs down the deep sub-route structure
             const isActive =

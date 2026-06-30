@@ -194,7 +194,9 @@ export default function StudentsPage() {
               value={className}
               onChange={(e) => setClassName(e.target.value)}
             >
-              <option value="">Select Class</option>
+              <option value="" className="bg-primary-50 text-gray-100">
+                Select Class
+              </option>
               {formAvailableClasses.map((c) => (
                 <option key={c} value={c}>
                   {c}

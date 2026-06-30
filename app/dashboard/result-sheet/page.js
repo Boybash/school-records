@@ -10,6 +10,7 @@ import {
 } from "@/lib/results";
 import { getSettings } from "@/lib/settings";
 import { generateResultPDF } from "@/lib/generatePDF";
+import { useAuth } from "@/lib/useAuth";
 
 const TERMS = ["1st Term", "2nd Term", "3rd Term"];
 
@@ -18,6 +19,7 @@ export default function ResultSheetPage() {
   const [term, setTerm] = useState("1st Term");
   const [session, setSession] = useState("2024/2025");
   const [searched, setSearched] = useState(false);
+  const { userData, role } = useAuth();
 
   const { data: students = [] } = useQuery({
     queryKey: ["students"],
@@ -28,6 +30,11 @@ export default function ResultSheetPage() {
     queryKey: ["settings"],
     queryFn: getSettings,
   });
+
+  const visibleStudents =
+    role === "teacher"
+      ? students.filter((s) => userData?.classes?.includes(s.class))
+      : students;
 
   const {
     data: results = [],
@@ -49,6 +56,14 @@ export default function ResultSheetPage() {
 
   const handleSearch = () => {
     if (!studentId) return alert("Please select a student");
+    if (role === "teacher" && selectedStudent) {
+      const isAuthorized = userData?.classes?.includes(selectedStudent.class);
+      if (!isAuthorized) {
+        return alert(
+          "Unauthorized: You can only query documents matching your assigned classes.",
+        );
+      }
+    }
     setSearched(true);
     refetch();
   };
@@ -98,7 +113,7 @@ export default function ResultSheetPage() {
             onChange={(e) => setStudentId(e.target.value)}
           >
             <option value="">Select Student</option>
-            {students.map((s) => (
+            {visibleStudents.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name} — {s.class}
               </option>

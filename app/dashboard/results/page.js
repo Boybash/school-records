@@ -95,6 +95,21 @@ export default function ResultsPage() {
   const handleSubmit = async () => {
     if (!studentId || !subjectId || !ca || !exam)
       return alert("Please fill in all fields");
+
+    // 1. Locate the targeted student document object
+    const selectedStudent = students.find((s) => s.id === studentId);
+    if (!selectedStudent) return alert("Student not found.");
+
+    // 2. SECURITY CHECK: Enforce class restrictions for teachers on submit
+    if (role === "teacher") {
+      const hasPermission = userData?.classes?.includes(selectedStudent.class);
+      if (!hasPermission) {
+        return alert(
+          "Unauthorized: You can only record results for your assigned classes.",
+        );
+      }
+    }
+
     if (Number(ca) > 30) return alert("CA score cannot exceed 30 marks");
     if (Number(exam) > 70) return alert("Exam score cannot exceed 70 marks");
     if (Number(ca) < 0 || Number(exam) < 0)
@@ -114,7 +129,6 @@ export default function ResultsPage() {
       }
     }
 
-    const selectedStudent = students.find((s) => s.id === studentId);
     const selectedSubject = subjects.find((s) => s.id === subjectId);
 
     const data = buildResultData(

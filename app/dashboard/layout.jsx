@@ -39,6 +39,7 @@ const teacherLinks = [
     icon: "/graduation-cap.png",
   },
   { href: "/dashboard/results", label: "Results", icon: "/sheet.png" },
+  { href: "/dashboard/comments", label: "Comments", icon: "/comment-alt.png" },
   { href: "/dashboard/bulk-upload", label: "Bulk Upload", icon: "/upload.png" },
   {
     href: "/dashboard/result-sheet",

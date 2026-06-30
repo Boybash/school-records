@@ -38,6 +38,13 @@ export default function StudentsPage() {
     return [...new Set(students.map((s) => s.class))].sort();
   }, [students]);
 
+  const formAvailableClasses = useMemo(() => {
+    if (role === "teacher") {
+      return userData?.classes || [];
+    }
+    return classes;
+  }, [role, userData, classes]);
+
   // update the filteredStudents useMemo to add class restriction for teachers:
   const filteredStudents = useMemo(() => {
     return students.filter((student) => {
@@ -92,15 +99,35 @@ export default function StudentsPage() {
   });
 
   const handleSubmit = () => {
-    if (!name || !className || !matricNumber || !dob)
+    const trimmedName = name.trim();
+    const trimmedClass = className.trim();
+    const trimmedMatric = matricNumber.trim();
+
+    if (!trimmedName || !trimmedClass || !trimmedMatric || !dob)
       return alert("Please fill in all fields");
+
+    // Server-side boundary protection check before mutation execution
+    if (role === "teacher" && !userData?.classes?.includes(trimmedClass)) {
+      return alert(
+        "Unauthorized: You can only assign students to your assigned classes.",
+      );
+    }
+
+    const studentPayload = {
+      name: trimmedName,
+      class: trimmedClass,
+      gender,
+      matricNumber: trimmedMatric,
+      dob,
+    };
+
     if (editingStudent) {
       updateMutation.mutate({
         id: editingStudent.id,
-        data: { name, class: className, gender, matricNumber, dob },
+        data: studentPayload,
       });
     } else {
-      addMutation.mutate({ name, class: className, gender, matricNumber, dob });
+      addMutation.mutate(studentPayload);
     }
   };
 
@@ -127,6 +154,7 @@ export default function StudentsPage() {
   };
 
   const isPending = addMutation.isPending || updateMutation.isPending;
+  const isAdmin = role === "admin";
 
   return (
     <div className="relative">
@@ -152,13 +180,28 @@ export default function StudentsPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <input
-            type="text"
-            placeholder="Class e.g JSS 1A"
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
-            value={className}
-            onChange={(e) => setClassName(e.target.value)}
-          />
+          {isAdmin ? (
+            <input
+              type="text"
+              placeholder="Class Format e.g JSS 1A"
+              className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              value={className}
+              onChange={(e) => setClassName(e.target.value)}
+            />
+          ) : (
+            <select
+              className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              value={className}
+              onChange={(e) => setClassName(e.target.value)}
+            >
+              <option value="">Select Class</option>
+              {formAvailableClasses.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          )}
           <select
             className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
             value={gender}
@@ -168,9 +211,6 @@ export default function StudentsPage() {
             <option>Female</option>
           </select>
           <div>
-            {/* <label className="text-xs text-white mb-1 block">
-              Date of Birth
-            </label> */}
             <input
               type="date"
               className="w-full  border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
@@ -218,23 +258,39 @@ export default function StudentsPage() {
               setCurrentPage(1);
             }}
           />
-
-          <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
-            value={filterClass}
-            onChange={(e) => {
-              setFilterClass(e.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="">All Classes</option>
-            {classes.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-
+          {isAdmin ? (
+            <select
+              className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              value={filterClass}
+              onChange={(e) => {
+                setFilterClass(e.target.value);
+                setCurrentPage(1);
+              }}
+            >
+              <option value="">All Classes</option>
+              {classes.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <select
+              className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              value={filterClass}
+              onChange={(e) => {
+                setFilterClass(e.target.value);
+                setCurrentPage(1);
+              }}
+            >
+              <option value="">All Classes</option>
+              {formAvailableClasses.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          )}
           <select
             className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
             value={filterGender}

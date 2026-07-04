@@ -105,14 +105,11 @@ export default function StudentsPage() {
 
     if (!trimmedName || !trimmedClass || !trimmedMatric || !dob)
       return alert("Please fill in all fields");
-
-    // Server-side boundary protection check before mutation execution
     if (role === "teacher" && !userData?.classes?.includes(trimmedClass)) {
       return alert(
         "Unauthorized: You can only assign students to your assigned classes.",
       );
     }
-
     const studentPayload = {
       name: trimmedName,
       class: trimmedClass,

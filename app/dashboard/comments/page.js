@@ -7,7 +7,7 @@ import { getStudentsForUser } from "@/lib/students";
 import { TableSkeleton } from "@/components/skeleton";
 import Pagination from "@/components/pagination";
 import {
-  getTeacherCommentsByTermAndSession,
+  getCommentsByTermAndSession,
   saveTeacherComment,
 } from "@/lib/comments";
 
@@ -95,8 +95,8 @@ export default function TeacherCommentsPage() {
       class: student.class,
       term,
       session,
-      formTeacherComment:
-        localInput.formTeacherComment ?? savedRecord.formTeacherComment ?? "",
+      teacherComment:
+        localInput.teacherComment ?? savedRecord.teacherComment ?? "",
       principalComment:
         localInput.principalComment ?? savedRecord.principalComment ?? "",
     };
@@ -185,7 +185,7 @@ export default function TeacherCommentsPage() {
                   existingComments.find((c) => c.studentId === student.id) ||
                   {};
                 const currentFormText =
-                  commentPayloads[student.id]?.formTeacherComment ??
+                  commentPayloads[student.id]?.teacherComment ??
                   dbRecord.formTeacherComment ??
                   "";
                 const currentPrincipalText =
@@ -224,7 +224,7 @@ export default function TeacherCommentsPage() {
                         onChange={(e) =>
                           handleFieldChange(
                             student.id,
-                            "formTeacherComment",
+                            "teacherComment",
                             e.target.value,
                           )
                         }

@@ -41,6 +41,7 @@ const teacherLinks = [
   },
   { href: "/dashboard/results", label: "Results", icon: "/sheet.png" },
   { href: "/dashboard/comments", label: "Comments", icon: "/comment-alt.png" },
+  { href: "/dashboard/approvals", label: "Approvals", icon: "/checkbox.png" },
   { href: "/dashboard/bulk-upload", label: "Bulk Upload", icon: "/upload.png" },
   {
     href: "/dashboard/result-sheet",
@@ -52,7 +53,7 @@ const teacherLinks = [
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, role, loading } = useAuth();
+  const { user, role, loading, userData } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { data: teachers = [], isLoading } = useQuery({
@@ -119,20 +120,21 @@ export default function DashboardLayout({ children }) {
                 {role}
               </p>
             )}
-            {isTeacher &&
-              teachers.map((teacher) => (
-                <div key={teacher.id}>
-                  <h1 className="text-xl font-bold text-gray-400 uppercase">
-                    {teacher.name}
-                  </h1>
-                  <p className="text-xl font-bold text-gray-400 uppercase">
-                    {role}
-                  </p>
-                  <h1 className="text-xl font-bold text-gray-400 uppercase">
-                    {teacher.classes?.join(", ") || "None"}
-                  </h1>
-                </div>
-              ))}
+            {isTeacher && userData ? (
+              <div>
+                <h1 className="text-xl font-bold text-gray-400 uppercase">
+                  {userData.name || "Unnamed Teacher"}
+                </h1>
+                <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
+                  Role: {role}
+                </p>
+                <h1 className="text-base font-bold text-gray-700 mt-1">
+                  {userData.classes?.join(", ") || "None"}
+                </h1>
+              </div>
+            ) : isTeacher ? (
+              <p className="text-gray-400 italic">Loading profile details...</p>
+            ) : null}
           </div>
         </div>
 

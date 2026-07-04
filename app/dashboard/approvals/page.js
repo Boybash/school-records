@@ -6,10 +6,12 @@ import { getPendingResults, approveResult, rejectResult } from "@/lib/results";
 import Link from "next/link";
 import { TableSkeleton } from "@/components/skeleton";
 import Pagination from "@/components/pagination";
+import { useAuth } from "@/lib/useAuth";
 
 export default function ApprovalsPage() {
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
+  const { userData, role } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
 
@@ -34,20 +36,36 @@ export default function ApprovalsPage() {
     },
   });
 
-  // Client side case-insensitive name filtering
-  const filteredPending = useMemo(() => {
-    if (!searchTerm.trim()) return pending;
-    return pending.filter((result) =>
+  const filteredPendingResult = useMemo(() => {
+    if (!role) return []; // Ensure auth has loaded
+    let baseResults = pending;
+    if (role === "teacher") {
+      const rawSubjects = userData?.subjectName;
+      const allowedSubjects = Array.isArray(rawSubjects)
+        ? rawSubjects.map((s) => String(s).toLowerCase().trim())
+        : rawSubjects
+          ? [String(rawSubjects).toLowerCase().trim()]
+          : [];
+
+      baseResults = pending.filter((result) => {
+        const resultSubject = result?.subjectName || "";
+        return allowedSubjects.includes(
+          String(resultSubject).toLowerCase().trim(),
+        );
+      });
+    }
+    if (!searchTerm.trim()) return baseResults;
+    return baseResults.filter((result) =>
       result?.studentName?.toLowerCase().includes(searchTerm.toLowerCase()),
     );
-  }, [pending, searchTerm]);
+  }, [pending, searchTerm, role, userData]);
 
-  const totalPages = Math.ceil(filteredPending.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(filteredPendingResult.length / ITEMS_PER_PAGE);
 
-  const paginatedPendings = useMemo(() => {
+  const paginatedPendingResults = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredPending.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredPending, currentPage]);
+    return filteredPendingResult.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredPendingResult, currentPage]);
 
   return (
     <div className="relative">
@@ -64,15 +82,16 @@ export default function ApprovalsPage() {
             </h3>
             {searchTerm && (
               <p className="text-xs text-gray-400 mt-0.5">
-                Showing {filteredPending.length} of {pending.length} matches
+                Showing {filteredPendingResult.length} of {pending.length}{" "}
+                matches
               </p>
             )}
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <p className="text-sm text-gray-400">
-              Showing {paginatedPendings.length} of {filteredPending.length}{" "}
-              students
+              Showing {paginatedPendingResults.length} of{" "}
+              {filteredPendingResult.length} students
             </p>
             <input
               type="text"
@@ -82,14 +101,14 @@ export default function ApprovalsPage() {
               className="px-3 py-1.5 text-sm rounded-md border border-white/20 bg-white/10 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-yellow-500 transition w-full sm:w-64"
             />
             <span className="bg-yellow-500/20 text-yellow-300 text-xs font-semibold px-3 py-2 rounded-full text-center whitespace-nowrap self-start sm:self-auto">
-              {filteredPending.length} pending
+              {filteredPendingResult.length} pending
             </span>
           </div>
         </div>
 
         {isLoading ? (
           <TableSkeleton rows={5} cols={6} dark={true} />
-        ) : paginatedPendings.length === 0 ? (
+        ) : paginatedPendingResults.length === 0 ? (
           <div className="text-center py-10 flex flex-col items-center">
             <img
               src="/checkbox.png"
@@ -98,7 +117,7 @@ export default function ApprovalsPage() {
             />
             <p className="text-gray-400">No pending results. All caught up!</p>
           </div>
-        ) : paginatedPendings.length === 0 ? (
+        ) : paginatedPendingResults.length === 0 ? (
           <div className="text-center py-10">
             <p className="text-gray-400">
               No results match your filter criteria.
@@ -114,7 +133,7 @@ export default function ApprovalsPage() {
           <>
             {/* 1. MOBILE RESPONSIVE CARD VIEW (Visible below md breakpoint) */}
             <div className="grid grid-cols-1 gap-4 md:hidden">
-              {paginatedPendings.map((result, index) => (
+              {paginatedPendingResults.map((result, index) => (
                 <div
                   key={result.id}
                   className="border border-white/10 bg-white/5 rounded-lg p-4 flex flex-col gap-3"
@@ -237,7 +256,7 @@ export default function ApprovalsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {paginatedPendings.map((result, index) => (
+                  {paginatedPendingResults.map((result, index) => (
                     <tr
                       key={result.id}
                       className="border-b border-white/10 last:border-0 text-white hover:bg-white/5 transition"

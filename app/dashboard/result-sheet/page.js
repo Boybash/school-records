@@ -23,8 +23,6 @@ export default function ResultSheetPage() {
   const [session, setSession] = useState("2024/2025");
   const [searched, setSearched] = useState(false);
   const { userData, role } = useAuth();
-
-  // local temporary states for editing comments smoothly before saving
   const [localTeacherComment, setLocalTeacherComment] = useState("");
   const [localPrincipalComment, setLocalPrincipalComment] = useState("");
 
@@ -56,22 +54,37 @@ export default function ResultSheetPage() {
 
   // FIXED: Fully reactive query setup that pulls information cleanly
   const {
-    data: comments = { teacherComment: "", principalComment: "" },
+    data: comments,
     refetch: refetchComments,
     isSuccess,
   } = useQuery({
     queryKey: ["result-comments", studentId, term, session],
-    queryFn: () => getCommentsByTermAndSession(studentId, term, session),
+    queryFn: async () => {
+      const result = await getCommentsByTermAndSession(
+        studentId,
+        term,
+        session,
+      );
+      console.log("Comments fetched:", result);
+      return result;
+    },
     enabled: !!studentId && searched,
+    staleTime: 0,
+    gcTime: 0,
   });
 
   // Keep textareas synchronized with database state transitions
   useEffect(() => {
-    if (isSuccess && comments) {
+    if (comments?.teacherComment || comments?.principalComment) {
       setLocalTeacherComment(comments.teacherComment || "");
       setLocalPrincipalComment(comments.principalComment || "");
     }
-  }, [comments, isSuccess]);
+  }, [comments?.teacherComment, comments?.principalComment]);
+
+  console.log("comments state:", comments);
+  console.log("isSuccess:", isSuccess);
+  console.log("localTeacherComment:", localTeacherComment);
+  console.log("localPrincipalComment:", localPrincipalComment);
 
   // Mutation to save comments back to the server
   const saveCommentMutation = useMutation({
@@ -104,11 +117,16 @@ export default function ResultSheetPage() {
     }
 
     setSearched(true);
-    // Explicitly forcing immediate manual triggers resolves state dependency races
+
+    // Invalidate cache first then refetch
+    await queryClient.invalidateQueries({
+      queryKey: ["result-comments", studentId, term, session],
+    });
+
     setTimeout(() => {
       refetchResults();
       refetchComments();
-    }, 10);
+    }, 100);
   };
 
   const totalScore = results.reduce((sum, r) => sum + r.score, 0);
@@ -456,7 +474,7 @@ export default function ResultSheetPage() {
                     </div>
                   ) : (
                     <p className="italic text-gray-700 min-h-[40px]">
-                      {comments.teacherComment || "No comment supplied yet."}
+                      {comments?.teacherComment || "No comment supplied yet."}
                     </p>
                   )}
                   {role === "teacher" && (
@@ -499,7 +517,7 @@ export default function ResultSheetPage() {
                     </div>
                   ) : (
                     <p className="italic text-gray-700 min-h-[40px]">
-                      {comments.principalComment || "No comment supplied yet."}
+                      {comments?.principalComment || "No comment supplied yet."}
                     </p>
                   )}
                   {(role === "principal" || role === "admin") && (

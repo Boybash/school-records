@@ -129,7 +129,7 @@ export default function DashboardLayout({ children }) {
                   Role: {role}
                 </p>
                 <h1 className="text-base font-bold text-gray-700 mt-1">
-                  {userData.classes?.join(", ") || "None"}
+                  {userData.classes?.join(", ") || "None"}.
                 </h1>
               </div>
             ) : isTeacher ? (

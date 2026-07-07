@@ -81,11 +81,6 @@ export default function ResultSheetPage() {
     }
   }, [comments?.teacherComment, comments?.principalComment]);
 
-  console.log("comments state:", comments);
-  console.log("isSuccess:", isSuccess);
-  console.log("localTeacherComment:", localTeacherComment);
-  console.log("localPrincipalComment:", localPrincipalComment);
-
   // Mutation to save comments back to the server
   const saveCommentMutation = useMutation({
     mutationFn: (payload) => saveComment(studentId, term, session, payload),

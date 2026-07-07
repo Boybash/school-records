@@ -101,7 +101,10 @@ export default function AboutUs() {
               src="/shalom image 1.webp"
               alt="Shalom Model College"
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover"
+              loading="eager"
+              priority
             />
             {/* Floating Card */}
             <div className="absolute bottom-6 left-6 bg-white rounded-xl shadow-lg p-4 flex items-center gap-3">

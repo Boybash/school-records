@@ -144,8 +144,20 @@ export default function ResultsPage() {
       user.uid,
     );
 
+    const currentUser = {
+      uid: user.uid,
+      name: userData?.name || "Staff Member",
+      role: role,
+    };
+
     if (editingResult) {
-      updateMutation.mutate({ id: editingResult.id, data });
+      const oldScore = editingResult.score;
+      updateMutation.mutate({
+        id: editingResult.id,
+        data,
+        oldScore,
+        currentUser,
+      });
     } else {
       addMutation.mutate(data);
     }

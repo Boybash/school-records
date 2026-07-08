@@ -529,13 +529,29 @@ export default function ResultSheetPage() {
                   onClick={() => window.print()}
                   className="w-full sm:w-auto bg-gray-600 text-white px-6 py-2.5 sm:py-3 rounded-lg hover:bg-gray-700 transition font-medium text-sm flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <span>🖨️</span> Print Sheet
+                  <span>
+                    {" "}
+                    <img
+                      className="w-5 h-5 object-contain "
+                      src="/print.png"
+                      alt="print"
+                    />
+                  </span>{" "}
+                  Print Sheet
                 </button>
                 <button
                   onClick={handleDownloadPDF}
                   className="w-full sm:w-auto bg-green-600 text-white px-6 py-2.5 sm:py-3 rounded-lg hover:bg-green-700 transition font-medium text-sm flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <span>📄</span> Download PDF
+                  <span>
+                    {" "}
+                    <img
+                      className="w-5 h-5 object-contain "
+                      src="/sheet.png"
+                      alt="sheet"
+                    />
+                  </span>{" "}
+                  Download PDF
                 </button>
               </div>
             </>

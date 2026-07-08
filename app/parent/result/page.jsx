@@ -475,13 +475,29 @@ export default function ParentResultPage() {
                     onClick={() => window.print()}
                     className="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition cursor-pointer"
                   >
-                    🖨️ Print
+                    <span>
+                      {" "}
+                      <img
+                        className="w-5 h-5 object-contain "
+                        src="/print.png"
+                        alt="print"
+                      />
+                    </span>{" "}
+                    Print
                   </button>
                   <button
                     onClick={handleDownloadPDF}
                     className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition cursor-pointer"
                   >
-                    📄 Download PDF
+                    <span>
+                      {" "}
+                      <img
+                        className="w-5 h-5 object-contain "
+                        src="/sheet.png"
+                        alt="sheet"
+                      />
+                    </span>{" "}
+                    Download PDF
                   </button>
                 </div>
               </>

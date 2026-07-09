@@ -470,34 +470,29 @@ export default function ParentResultPage() {
                 </div>
 
                 {/* Print Controls */}
-                <div className="mt-6 flex flex-col md:flex gap-3 justify-end no-print">
+                <div className="mt-6 flex flex-col md:flex-row gap-3 justify-end no-print">
                   <button
                     onClick={() => window.print()}
-                    className="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition cursor-pointer"
+                    className="flex items-center justify-center gap-2 bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition cursor-pointer font-medium text-sm w-full md:w-auto"
                   >
-                    <span>
-                      {" "}
-                      <img
-                        className="w-5 h-5 object-contain "
-                        src="/print.png"
-                        alt="print"
-                      />
-                    </span>{" "}
-                    Print
+                    <img
+                      className="w-5 h-5 object-contain"
+                      src="/print.png"
+                      alt="print"
+                    />
+                    <span>Print</span>
                   </button>
+
                   <button
                     onClick={handleDownloadPDF}
-                    className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition cursor-pointer"
+                    className="flex items-center justify-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition cursor-pointer font-medium text-sm w-full md:w-auto"
                   >
-                    <span>
-                      {" "}
-                      <img
-                        className="w-5 h-5 object-contain "
-                        src="/sheet.png"
-                        alt="sheet"
-                      />
-                    </span>{" "}
-                    Download PDF
+                    <img
+                      className="w-5 h-5 object-contain"
+                      src="/sheet.png"
+                      alt="sheet"
+                    />
+                    <span>Download PDF</span>
                   </button>
                 </div>
               </>

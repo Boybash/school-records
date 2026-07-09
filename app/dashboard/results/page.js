@@ -68,7 +68,8 @@ export default function ResultsPage() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => updateResult(id, data),
+    mutationFn: ({ id, data, oldScore, currentUser }) =>
+      updateResult(id, data, oldScore, currentUser),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["results"] });
       resetForm();
@@ -76,7 +77,8 @@ export default function ResultsPage() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: deleteResult,
+    mutationFn: ({ id, subjectName, studentName, currentUser }) =>
+      deleteResult(id, subjectName, studentName, currentUser),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["results"] });
     },
@@ -142,6 +144,7 @@ export default function ResultsPage() {
       selectedSubject.name,
       role,
       user.uid,
+      userData?.name || "Staff Member",
     );
 
     const currentUser = {
@@ -173,8 +176,25 @@ export default function ResultsPage() {
     setSession(result.session);
   };
 
-  const handleDelete = (id) => {
-    deleteMutation.mutate(id);
+  const handleDelete = (resultItem) => {
+    if (
+      confirm(
+        `Are you sure you want to delete the result for ${resultItem.studentName}?`,
+      )
+    ) {
+      const currentUser = {
+        uid: user.uid,
+        name: userData?.name || "Staff Member",
+        role: role,
+      };
+
+      deleteMutation.mutate({
+        id: resultItem.id,
+        subjectName: resultItem.subjectName,
+        studentName: resultItem.studentName,
+        currentUser,
+      });
+    }
   };
 
   const isPending = addMutation.isPending || updateMutation.isPending;
@@ -345,7 +365,7 @@ export default function ResultsPage() {
                         #{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
                       </span>
                       <span
-                        className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                        className={`text-[11px] font-bold px-2 py-0.5 rounded-full uppercase ${
                           result.status === "approved"
                             ? "bg-green-500/20 text-green-300"
                             : result.status === "rejected"
@@ -364,13 +384,13 @@ export default function ResultsPage() {
                         <>
                           <button
                             onClick={() => handleEdit(result)}
-                            className="text-white bg-blue-500 px-2.5 py-1 rounded-md text-xs font-medium"
+                            className="text-white bg-blue-500 px-2.5 py-1 rounded-md text-xs font-medium cursor-pointer"
                           >
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDelete(result.id)}
-                            className="text-white bg-red-500 px-2.5 py-1 rounded-md text-xs font-medium"
+                            onClick={() => handleDelete(result)}
+                            className="text-white bg-red-500 px-2.5 py-1 rounded-md text-xs font-medium cursor-pointer"
                           >
                             Delete
                           </button>
@@ -517,7 +537,7 @@ export default function ResultsPage() {
                       </td>
                       <td className="py-3">
                         <span
-                          className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ${
+                          className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap uppercase ${
                             result.status === "approved"
                               ? "bg-green-500/20 text-green-300"
                               : result.status === "rejected"
@@ -540,7 +560,7 @@ export default function ResultsPage() {
                                 Edit
                               </button>
                               <button
-                                onClick={() => handleDelete(result.id)}
+                                onClick={() => handleDelete(result)}
                                 className="text-white bg-red-500 px-3 py-1.5 rounded-md text-xs font-medium cursor-pointer hover:bg-red-600 transition"
                               >
                                 Delete

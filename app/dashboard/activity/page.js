@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchSystemLogs } from "@/lib/activity"; // Import the fetch function from lib/activity.js
-import Image from "next/image";
+import Pagination from "@/components/pagination";
 
 const ACTION_TYPES = [
   { value: "ALL", label: "All Activities" },
@@ -17,7 +17,7 @@ export default function AdminLogDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterAction, setFilterAction] = useState("ALL");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const ITEMS_PER_PAGE = 10;
 
   // React Query fetch
   const {
@@ -70,14 +70,15 @@ export default function AdminLogDashboard() {
   });
 
   // Pagination bounds
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentLogs = filteredLogs.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredLogs.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredLogs.length / ITEMS_PER_PAGE);
+  const paginatedActivity = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredLogs.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredLogs, currentPage]);
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-6 uppercase">System Activity Logs</h1>
+      <h1 className="text-xl font-bold mb-6 uppercase">School Activity Logs</h1>
       <div className="min-h-screen bg-primary p-4 sm:p-8 text-gray-800 rounded-md">
         <div className="max-w-6xl mx-auto space-y-6 ">
           {/* Header and Refresh Button */}
@@ -111,7 +112,7 @@ export default function AdminLogDashboard() {
                   setSearchTerm(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full p-2.5 text-sm border rounded-lg outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className="w-full p-2.5 text-sm border rounded-md outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
             </div>
             <div>
@@ -121,7 +122,7 @@ export default function AdminLogDashboard() {
                   setFilterAction(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full p-2.5 text-sm border rounded-lg outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white font-medium text-gray-700"
+                className="w-full p-2.5 text-sm border rounded-md outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white font-medium text-gray-700"
               >
                 {ACTION_TYPES.map((type) => (
                   <option key={type.value} value={type.value}>
@@ -137,7 +138,7 @@ export default function AdminLogDashboard() {
             <div className="py-24 text-center text-sm text-gray-400 font-medium animate-pulse">
               Loading core metrics audit stream...
             </div>
-          ) : filteredLogs.length === 0 ? (
+          ) : paginatedActivity.length === 0 ? (
             <div className="py-16 text-center border-2 border-dashed rounded-xl bg-white">
               <p className="text-sm font-medium text-gray-400">
                 No matching log records found in this context.
@@ -146,7 +147,7 @@ export default function AdminLogDashboard() {
           ) : (
             <>
               {/* DESKTOP AUDIT TABLE CONTAINER */}
-              <div className="hidden md:block overflow-hidden bg-white rounded-xl border shadow-sm">
+              <div className="hidden md:block overflow-hidden bg-white rounded-md border shadow-sm">
                 <table className="w-full text-left text-sm">
                   <thead>
                     <tr className="bg-gray-50 border-b text-xs font-bold uppercase tracking-wider text-gray-400">
@@ -156,8 +157,8 @@ export default function AdminLogDashboard() {
                       <th className="py-3 px-4 w-44">Performed By</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y text-gray-700 font-medium">
-                    {currentLogs.map((log) => (
+                  <tbody className="divide-y divide-primary text-gray-700 font-medium">
+                    {paginatedActivity.map((log, index) => (
                       <tr
                         key={log.id}
                         className="hover:bg-gray-50/50 transition"
@@ -191,7 +192,7 @@ export default function AdminLogDashboard() {
 
               {/* MOBILE AUDIT FEED (Shown on smaller devices) */}
               <div className="block md:hidden space-y-3">
-                {currentLogs.map((log) => (
+                {paginatedActivity.map((log) => (
                   <div
                     key={log.id}
                     className="bg-white p-4 border rounded-xl shadow-sm space-y-3"
@@ -225,35 +226,11 @@ export default function AdminLogDashboard() {
               </div>
 
               {/* Pagination controls footer */}
-              {totalPages > 1 && (
-                <div className="flex justify-between items-center pt-2">
-                  <p className="text-xs text-gray-500 font-medium">
-                    Showing{" "}
-                    <span className="font-bold">{indexOfFirstItem + 1}</span> to{" "}
-                    <span className="font-bold">
-                      {Math.min(indexOfLastItem, filteredLogs.length)}
-                    </span>{" "}
-                    of <span className="font-bold">{filteredLogs.length}</span>{" "}
-                    actions
-                  </p>
-                  <div className="flex gap-2">
-                    <button
-                      disabled={currentPage === 1}
-                      onClick={() => setCurrentPage((p) => p - 1)}
-                      className="px-3 py-1.5 text-xs font-semibold border bg-white rounded-lg shadow-sm hover:bg-gray-50 disabled:opacity-40 transition"
-                    >
-                      Previous
-                    </button>
-                    <button
-                      disabled={currentPage === totalPages}
-                      onClick={() => setCurrentPage((p) => p + 1)}
-                      className="px-3 py-1.5 text-xs font-semibold border bg-white rounded-lg shadow-sm hover:bg-gray-50 disabled:opacity-40 transition"
-                    >
-                      Next
-                    </button>
-                  </div>
-                </div>
-              )}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
             </>
           )}
         </div>

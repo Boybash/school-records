@@ -72,7 +72,7 @@ export default function DashboardPage() {
       {statsLoading ? (
         <CardSkeleton count={4} />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {stats.map((stat) => (
             <div
               key={stat.label}

@@ -11,7 +11,7 @@ import { useAuth } from "@/lib/useAuth";
 export default function ApprovalsPage() {
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
-  const { userData, role } = useAuth();
+  const { userData, user, role } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
 
@@ -21,20 +21,52 @@ export default function ApprovalsPage() {
   });
 
   const approveMutation = useMutation({
-    mutationFn: approveResult,
+    mutationFn: ({ id, subjectName, studentName, currentUser }) =>
+      approveResult(id, subjectName, studentName, currentUser),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pending-results"] });
       queryClient.invalidateQueries({ queryKey: ["results"] });
     },
   });
 
+  const handleApprove = (resultItem) => {
+    const currentUser = {
+      uid: user.uid,
+      name: userData?.name || "Staff Member",
+      role: role,
+    };
+
+    approveMutation.mutate({
+      id: resultItem.id,
+      subjectName: resultItem.subjectName,
+      studentName: resultItem.studentName,
+      currentUser,
+    });
+  };
+
   const rejectMutation = useMutation({
-    mutationFn: rejectResult,
+    mutationFn: ({ id, subjectName, studentName, currentUser }) =>
+      rejectResult(id, subjectName, studentName, currentUser),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pending-results"] });
       queryClient.invalidateQueries({ queryKey: ["results"] });
     },
   });
+
+  const handleReject = (resultItem) => {
+    const currentUser = {
+      uid: user.uid,
+      name: userData?.name || "Staff Member",
+      role: role,
+    };
+
+    rejectMutation.mutate({
+      id: resultItem.id,
+      subjectName: resultItem.subjectName,
+      studentName: resultItem.studentName,
+      currentUser,
+    });
+  };
 
   const filteredPendingResult = useMemo(() => {
     if (!role) return []; // Ensure auth has loaded
@@ -145,18 +177,24 @@ export default function ApprovalsPage() {
                     </span>
                     <div className="flex gap-2">
                       <button
-                        onClick={() => approveMutation.mutate(result.id)}
+                        onClick={() => handleApprove(result)}
                         disabled={approveMutation.isPending}
                         className="bg-green-500 text-white hover:bg-green-600 px-2.5 py-1 rounded-md text-xs font-semibold transition cursor-pointer disabled:opacity-50"
                       >
-                        Approve
+                        {approveMutation.isPending &&
+                        approveMutation.variables?.id === result.id
+                          ? "Approving..."
+                          : "Approve"}
                       </button>
                       <button
-                        onClick={() => rejectMutation.mutate(result.id)}
+                        onClick={() => handleReject(result)}
                         disabled={rejectMutation.isPending}
                         className="bg-red-500 text-white hover:bg-red-600 px-2.5 py-1 rounded-md text-xs font-semibold transition cursor-pointer disabled:opacity-50"
                       >
-                        Reject
+                        {rejectMutation.isPending &&
+                        rejectMutation.variables?.id === result.id
+                          ? "Rejecting..."
+                          : "Reject"}
                       </button>
                     </div>
                   </div>
@@ -300,28 +338,28 @@ export default function ApprovalsPage() {
                       <td className="py-3">
                         <div className="flex gap-2">
                           <button
-                            onClick={() => approveMutation.mutate(result.id)}
+                            onClick={() => handleApprove(result)}
                             disabled={
                               approveMutation.isPending &&
-                              approveMutation.variables === result.id
+                              approveMutation.variables?.id === result.id
                             }
                             className="bg-green-500/20 text-green-300 hover:bg-green-500/30 px-3 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer disabled:opacity-50"
                           >
                             {approveMutation.isPending &&
-                            approveMutation.variables === result.id
+                            approveMutation.variables?.id === result.id
                               ? "Approving..."
                               : "Approve"}
                           </button>
                           <button
-                            onClick={() => rejectMutation.mutate(result.id)}
+                            onClick={() => handleReject(result)}
                             disabled={
                               rejectMutation.isPending &&
-                              rejectMutation.variables === result.id
+                              rejectMutation.variables?.id === result.id
                             }
                             className="bg-red-500/20 text-red-300 hover:bg-red-500/30 px-3 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer disabled:opacity-50"
                           >
                             {rejectMutation.isPending &&
-                            rejectMutation.variables === result.id
+                            rejectMutation.variables?.id === result.id
                               ? "Rejecting..."
                               : "Reject"}
                           </button>

@@ -111,13 +111,26 @@ export default function DashboardLayout({ children }) {
 
       {/* Sidebar - Handles native responsive state cleanly */}
       <aside
-        className={`w-64 bg-primary-50 shadow-md md:flex flex-col shrink-0 ${
-          sidebarOpen ? "fixed inset-y-0 left-0 z-50 flex bg-primary" : "hidden"
-        }`}
+        className={`w-64 shadow-md flex flex-col shrink-0 
+    /* 1. Mobile Setup: Always fixed and ready to animate */
+    fixed inset-y-0 left-0 top-18 z-50 transition-transform duration-300 ease-in-out
+    
+    /* 2. Desktop Setup: Reset position so it stays put */
+    md:static md:translate-x-0 md:bg-primary-50
+    
+    /* 3. Dynamic Sliding & Background Logic */
+    ${
+      sidebarOpen
+        ? "translate-x-0 bg-primary"
+        : "-translate-x-full bg-primary-50"
+    }
+  `}
       >
-        <div className="p-6 border-b flex justify-between items-center md:block">
+        <div className="p-6 border-b border-white flex justify-between items-center md:block">
           <div>
-            <h1 className="text-xl font-bold text-primary uppercase">
+            <h1
+              className={`text-xl font-bold text-primary uppercase ${sidebarOpen ? "text-white" : "text-primary"}`}
+            >
               School Records
             </h1>
             {isAdmin && (
@@ -158,7 +171,7 @@ export default function DashboardLayout({ children }) {
                 className={`flex items-center gap-3 px-4 py-3 rounded-md transition text-sm font-medium ${
                   isActive
                     ? "bg-primary text-white"
-                    : "text-gray-600 hover:bg-gray-100"
+                    : "text-white hover:bg-gray-100 hover:text-primary transition"
                 }`}
               >
                 <img
@@ -172,7 +185,7 @@ export default function DashboardLayout({ children }) {
           })}
         </nav>
 
-        <div className="p-4 border-t">
+        <div className="p-4 border-t border-white">
           <button
             onClick={handleLogout}
             className="w-full text-left flex items-center gap-3 px-4 py-3 rounded-md text-red-800 hover:bg-red-50 transition text-sm font-medium cursor-pointer"

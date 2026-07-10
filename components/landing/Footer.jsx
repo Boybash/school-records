@@ -16,11 +16,11 @@ export default function Footer() {
   ];
 
   const contacts = [
-    { icon: "📍", text: "123 School Road, Lagos, Nigeria" },
-    { icon: "📞", text: "+234 800 000 0000" },
-    { icon: "📞", text: "+234 810 000 0000" },
-    { icon: "📧", text: "info@shalommodelcollege.edu.ng" },
-    { icon: "🌐", text: "www.shalommodelcollege.edu.ng" },
+    { text: "123 School Road, Lagos, Nigeria" },
+    { text: "+234 800 000 0000" },
+    { text: "+234 810 000 0000" },
+    { text: "info@shalommodelcollege.edu.ng" },
+    { text: "www.shalommodelcollege.edu.ng" },
   ];
 
   const officeHours = [
@@ -123,7 +123,7 @@ export default function Footer() {
           <ul className="space-y-4 text-sm">
             {contacts.map((item, index) => (
               <li key={index} className="flex items-start gap-3">
-                <span className="text-blue-400 mt-0.5">{item.icon}</span>
+                {/* <span className="text-blue-400 mt-0.5">{item.icon}</span> */}
                 <span>{item.text}</span>
               </li>
             ))}

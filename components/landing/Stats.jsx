@@ -1,3 +1,5 @@
+import { Fade, Slide } from "react-awesome-reveal";
+
 const stats = [
   { value: "CA + Exam", label: "Result Breakdown" },
   { value: "100%", label: "Digital Records" },
@@ -31,46 +33,52 @@ const offers = [
 export default function Stats() {
   return (
     <section className="bg-white py-12 px-6 ">
-      <h1 className="uppercase text-center tracking-widest text-4xl font-bold text-primary">
-        What We Offer
-      </h1>
+      <Fade>
+        <h1 className="uppercase text-center tracking-widest text-4xl font-bold text-primary">
+          What We Offer
+        </h1>
+      </Fade>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-16 items-start max-w-7xl mx-auto">
-        {offers.map((offer) => (
-          <div
-            key={offer.id || offer.title} // Prefers id, falls back to title if unique
-            className="flex flex-col gap-2 justify-center text-left bg-[#c1e8ff]/50 p-6 rounded-md hover:shadow-md transition"
-          >
-            <img
-              src={offer.image}
-              alt={offer.title}
-              className="w-12 h-12 mb-4 object-contain" // Changed to standard w-12/h-12
-            />
-            <h3 className="text-[#052659] mb-2 uppercase text-2xl font-semibold text-left">
-              {offer.title}
-            </h3>
-            <p
-              className="text-primary
-     text-lg"
+        <Fade cascade damping={0.1}>
+          {offers.map((offer) => (
+            <div
+              key={offer.id || offer.title} // Prefers id, falls back to title if unique
+              className="flex flex-col gap-2 justify-center text-left bg-[#c1e8ff]/50 p-6 rounded-md hover:shadow-md transition"
             >
-              {offer.description}
-            </p>
-          </div>
-        ))}
+              <img
+                src={offer.image}
+                alt={offer.title}
+                className="w-12 h-12 mb-4 object-contain" // Changed to standard w-12/h-12
+              />
+              <h3 className="text-[#052659] mb-2 uppercase text-2xl font-semibold text-left">
+                {offer.title}
+              </h3>
+              <p
+                className="text-primary
+     text-lg"
+              >
+                {offer.description}
+              </p>
+            </div>
+          ))}
+        </Fade>
       </div>
       <div className="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-6 gap-6 text-center">
-        {stats.map((stat) => (
-          <div key={stat.label}>
-            <p className="text-3xl font-extrabold text-[#052659]">
-              {stat.value}
-            </p>
-            <p
-              className="text-primary
+        <Fade cascade damping={0.05} delay={200}>
+          {stats.map((stat) => (
+            <div key={stat.label}>
+              <p className="text-3xl font-extrabold text-[#052659]">
+                {stat.value}
+              </p>
+              <p
+                className="text-primary
      text-sm mt-1 font-semibold"
-            >
-              {stat.label}
-            </p>
-          </div>
-        ))}
+              >
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </Fade>
       </div>
     </section>
   );

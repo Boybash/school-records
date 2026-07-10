@@ -1,3 +1,5 @@
+import { Slide, Fade } from "react-awesome-reveal";
+
 const testimonials = [
   {
     name: "Mrs. Adaeze Okonkwo",
@@ -55,66 +57,70 @@ const colors = [
 export default function Testimonials() {
   return (
     <section id="testimonials" className="py-20 px-6 bg-gray-50">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <span className="inline-block text-[#021024] text-3xl font-semibold uppercase tracking-widest mb-4">
-            Parent Testimonials
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-4">
-            What Parents Are Saying
-          </h2>
-          <p className="text-gray-500 max-w-xl mx-auto">
-            Don't just take our word for it — hear directly from parents whose
-            children are thriving at Shalom Model College.
+      <Fade>
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <span className="inline-block text-[#021024] text-3xl font-semibold uppercase tracking-widest mb-4">
+              Parent Testimonials
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-4">
+              What Parents Are Saying
+            </h2>
+            <p className="text-gray-500 max-w-xl mx-auto">
+              Don't just take our word for it — hear directly from parents whose
+              children are thriving at Shalom Model College.
+            </p>
+          </div>
+
+          {/* Testimonials Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Slide direction="up" cascade damping={0.1} triggerOnce>
+              {testimonials.map((t, index) => (
+                <div
+                  key={t.name}
+                  className="bg-[#c1e8ff]/30 rounded-md p-6 shadow-sm  hover:shadow-md transition-transform duration-500 group-hover:scale-110 flex flex-col justify-between"
+                >
+                  {/* Stars */}
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i} className="text-yellow-400 text-lg">
+                        ★
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Comment */}
+                  <p className="text-[#021024] text-sm leading-relaxed mb-6">
+                    "{t.comment}"
+                  </p>
+
+                  {/* Author */}
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`${colors[index]} text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0`}
+                    >
+                      {t.image}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-800 text-sm">
+                        {t.name}
+                      </p>
+                      <p className="text-xs text-gray-400">{t.role}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </Slide>
+          </div>
+
+          {/* Bottom Note */}
+          <p className="text-center text-gray-400 text-sm mt-10">
+            Join hundreds of satisfied parents who trust Shalom Model College
+            with their children's future.
           </p>
         </div>
-
-        {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((t, index) => (
-            <div
-              key={t.name}
-              className="bg-[#c1e8ff]/30 rounded-md p-6 shadow-sm  hover:shadow-md transition-transform duration-500 group-hover:scale-110 flex flex-col justify-between"
-            >
-              {/* Stars */}
-              <div className="flex gap-1 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <span key={i} className="text-yellow-400 text-lg">
-                    ★
-                  </span>
-                ))}
-              </div>
-
-              {/* Comment */}
-              <p className="text-[#021024] text-sm leading-relaxed mb-6">
-                "{t.comment}"
-              </p>
-
-              {/* Author */}
-              <div className="flex items-center gap-3">
-                <div
-                  className={`${colors[index]} text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0`}
-                >
-                  {t.image}
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-800 text-sm">
-                    {t.name}
-                  </p>
-                  <p className="text-xs text-gray-400">{t.role}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Bottom Note */}
-        <p className="text-center text-gray-400 text-sm mt-10">
-          Join hundreds of satisfied parents who trust Shalom Model College with
-          their children's future.
-        </p>
-      </div>
+      </Fade>
     </section>
   );
 }

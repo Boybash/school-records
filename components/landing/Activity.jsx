@@ -1,3 +1,5 @@
+import { Slide } from "react-awesome-reveal";
+
 export default function Activity() {
   const activities = [
     { image: "/shalom image 3.webp", title: "Culture Day" },
@@ -24,29 +26,31 @@ export default function Activity() {
 
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {activities.map((activity) => (
-            <div
-              key={activity.title}
-              className="relative h-[400px]  rounded-md overflow-hidden group cursor-pointer"
-            >
-              {/* Image */}
-              <img
-                src={activity.image}
-                alt={activity.title}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-              />
+          <Slide direction="up" cascade damping={0.1} triggerOnce>
+            {activities.map((activity) => (
+              <div
+                key={activity.title}
+                className="relative h-[400px]  rounded-md overflow-hidden group cursor-pointer"
+              >
+                {/* Image */}
+                <img
+                  src={activity.image}
+                  alt={activity.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
 
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-black/50 group-hover:bg-black/30 transition-all duration-500" />
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-black/50 group-hover:bg-black/30 transition-all duration-500" />
 
-              {/* Title */}
-              <div className="absolute inset-0 flex justify-center items-end p-6">
-                <h1 className="text-white text-2xl font-extrabold text-center uppercase">
-                  {activity.title}
-                </h1>
+                {/* Title */}
+                <div className="absolute inset-0 flex justify-center items-end p-6">
+                  <h1 className="text-white text-2xl font-extrabold text-center uppercase">
+                    {activity.title}
+                  </h1>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </Slide>
         </div>
       </div>
     </section>

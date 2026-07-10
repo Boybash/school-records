@@ -104,7 +104,7 @@ export default function SettingsPage() {
       <h2 className="text-md font-bold mb-6 uppercase">School Settings</h2>
 
       <div className="bg-primary rounded-md shadow p-6 mb-6">
-        <h3 className="text-lg font-semibold mb-4 text-white">
+        <h3 className="text-md font-semibold mb-4 text-white">
           School Information
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -115,7 +115,7 @@ export default function SettingsPage() {
             <input
               type="text"
               placeholder="e.g Greenfield Secondary School"
-              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              className="w-full border p-3 rounded-md outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={schoolName}
               onChange={(e) => setSchoolName(e.target.value)}
             />
@@ -127,7 +127,7 @@ export default function SettingsPage() {
             <input
               type="text"
               placeholder="e.g +234 800 000 0000"
-              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              className="w-full border p-3 rounded-md outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={schoolPhone}
               onChange={(e) => setSchoolPhone(e.target.value)}
             />
@@ -139,7 +139,7 @@ export default function SettingsPage() {
             <input
               type="text"
               placeholder="e.g 12 School Road, Lagos"
-              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              className="w-full border p-3 rounded-md outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={schoolAddress}
               onChange={(e) => setSchoolAddress(e.target.value)}
             />
@@ -151,7 +151,7 @@ export default function SettingsPage() {
             <input
               type="text"
               placeholder="Paste image URL e.g https://..."
-              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              className="w-full border p-3 rounded-md outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={logoUrl}
               onChange={(e) => setLogoUrl(e.target.value)}
             />
@@ -168,7 +168,7 @@ export default function SettingsPage() {
         <button
           onClick={handleSave}
           disabled={mutation.isPending}
-          className="mt-6 bg-gray-100 text-primary px-6 py-3 rounded-lg transition cursor-pointer font-bold"
+          className="mt-6 bg-gray-100 text-primary px-6 py-3 rounded-md transition cursor-pointer font-bold"
         >
           {mutation.isPending ? "Saving..." : "Save Settings"}
         </button>
@@ -177,8 +177,8 @@ export default function SettingsPage() {
       {/* Preview */}
       {settings.schoolName && (
         <div className="bg-white rounded-md shadow p-6">
-          <h3 className="text-lg font-semibold mb-4">Result Sheet Preview</h3>
-          <div className="border rounded-lg p-6 text-center">
+          <h3 className="text-md font-semibold mb-4">Result Sheet Preview</h3>
+          <div className="border rounded-md p-6 text-center">
             {settings.logoUrl && (
               <img
                 src={settings.logoUrl}
@@ -203,7 +203,7 @@ export default function SettingsPage() {
 
       {/* Change Password */}
       <div className="bg-primary rounded-md shadow p-6 mt-6">
-        <h3 className="text-lg font-semibold mb-4 text-white">
+        <h3 className="text-md font-semibold mb-4 text-white">
           Change Password
         </h3>
 
@@ -212,8 +212,8 @@ export default function SettingsPage() {
         )}
 
         {passwordSuccess && (
-          <div className="bg-green-50 text-green-600 text-sm p-3 rounded-lg mb-4">
-            ✅ Password changed successfully!
+          <div className="bg-green-50 text-green-600 text-sm p-3 rounded-md mb-4">
+            Password changed successfully!
           </div>
         )}
 
@@ -225,7 +225,7 @@ export default function SettingsPage() {
             <input
               type={`${showPasword ? "text" : "password"}`}
               placeholder="Enter current password"
-              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              className="w-full border p-3 rounded-md outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
             />
@@ -243,7 +243,7 @@ export default function SettingsPage() {
             <input
               type={`${showPasword ? "text" : "password"}`}
               placeholder="Enter new password"
-              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              className="w-full border p-3 rounded-md outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
             />
@@ -261,7 +261,7 @@ export default function SettingsPage() {
             <input
               type={`${showPasword ? "text" : "password"}`}
               placeholder="Confirm new password"
-              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              className="w-full border p-3 rounded-md outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
@@ -277,7 +277,7 @@ export default function SettingsPage() {
         <button
           onClick={handleChangePassword}
           disabled={passwordLoading}
-          className="mt-4 bg-gray-100 text-primary font-semibold px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+          className="mt-4 bg-gray-100 text-primary font-semibold px-6 py-3 rounded-md transition"
         >
           {passwordLoading ? "Changing..." : "Change Password"}
         </button>

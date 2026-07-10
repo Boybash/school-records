@@ -1,6 +1,7 @@
-export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
-import admin from "@/lib/firebaseAdmin";
+import { getFirebaseAdmin } from "@/lib/firebaseAdmin";
+
+export const dynamic = "force-dynamic";
 
 export async function DELETE(request) {
   try {
@@ -9,6 +10,8 @@ export async function DELETE(request) {
     if (!uid) {
       return NextResponse.json({ error: "UID is required" }, { status: 400 });
     }
+
+    const admin = getFirebaseAdmin();
 
     // Delete from Firebase Auth
     await admin.auth().deleteUser(uid);

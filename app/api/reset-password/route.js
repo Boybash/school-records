@@ -1,6 +1,7 @@
-export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
-import admin from "@/lib/firebaseAdmin";
+import { getFirebaseAdmin } from "@/lib/firebaseAdmin";
+
+export const dynamic = "force-dynamic";
 
 export async function POST(request) {
   try {
@@ -12,6 +13,8 @@ export async function POST(request) {
         { status: 400 },
       );
     }
+
+    const admin = getFirebaseAdmin();
 
     if (newPassword.length < 6) {
       return NextResponse.json(

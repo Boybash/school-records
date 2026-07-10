@@ -99,7 +99,7 @@ export default function SubjectsPage() {
           <input
             type="text"
             placeholder="Subject name e.g Mathematics"
-            className="flex-1 border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            className="flex-1 border p-3 rounded-lg outline-none focus:ring-2  bg-white"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />

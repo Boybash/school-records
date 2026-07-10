@@ -23,6 +23,7 @@ export default function SettingsPage() {
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState(false);
+  const [showPasword, setShowPassword] = useState(false);
 
   const handleChangePassword = async () => {
     setPasswordError("");
@@ -93,6 +94,10 @@ export default function SettingsPage() {
     if (!schoolName) return alert("Please enter a school name");
     mutation.mutate({ schoolName, schoolAddress, schoolPhone, logoUrl });
   };
+
+  function togglePasswordVisibility() {
+    setShowPassword(!showPasword);
+  }
 
   return (
     <div>
@@ -213,40 +218,58 @@ export default function SettingsPage() {
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div>
+          <div className="relative">
             <label className="text-sm text-gray-500 mb-1 block">
               Current Password
             </label>
             <input
-              type="password"
+              type={`${showPasword ? "text" : "password"}`}
               placeholder="Enter current password"
               className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
             />
+            <img
+              onClick={togglePasswordVisibility}
+              src={`${showPasword ? "/hide eye.svg" : "/show eye.svg"}`}
+              alt="Toggle"
+              className="w-5 h-5 absolute right-4 top-12 -translate-y-1/2 cursor-pointer"
+            />
           </div>
-          <div>
+          <div className="relative">
             <label className="text-sm text-gray-500 mb-1 block">
               New Password
             </label>
             <input
-              type="password"
+              type={`${showPasword ? "text" : "password"}`}
               placeholder="Enter new password"
               className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
             />
+            <img
+              onClick={togglePasswordVisibility}
+              src={`${showPasword ? "/hide eye.svg" : "/show eye.svg"}`}
+              alt="Toggle"
+              className="w-5 h-5 absolute right-4 top-12 -translate-y-1/2 cursor-pointer"
+            />
           </div>
-          <div>
+          <div className="relative">
             <label className="text-sm text-gray-500 mb-1 block">
               Confirm New Password
             </label>
             <input
-              type="password"
+              type={`${showPasword ? "text" : "password"}`}
               placeholder="Confirm new password"
               className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            <img
+              onClick={togglePasswordVisibility}
+              src={`${showPasword ? "/hide eye.svg" : "/show eye.svg"}`}
+              alt="Toggle"
+              className="w-5 h-5 absolute right-4 top-12 -translate-y-1/2 cursor-pointer"
             />
           </div>
         </div>

@@ -33,7 +33,7 @@ export default function AboutUs() {
             challenged to think critically, grow spiritually, and develop the
             skills needed to thrive in a rapidly changing world. With
             experienced and dedicated teachers, state-of-the-art facilities, and
-            a rich extracurricular program, Shalom Model College stands as a
+            a rich extracurricular program, SchoolDesk Model College stands as a
             beacon of educational excellence.
           </p>
 

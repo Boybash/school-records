@@ -13,7 +13,7 @@ const offers = [
   {
     title: "academics activities",
     description:
-      "Shalom Model College is made up of the junior secondary schools and senior secondary schools as well as its leadership programmes.",
+      "Schooldesk Model College is made up of the junior secondary schools and senior secondary schools as well as its leadership programmes.",
     image: "/graduation-cap.png",
   },
   {

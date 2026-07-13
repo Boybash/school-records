@@ -2,9 +2,9 @@ import { Slide } from "react-awesome-reveal";
 
 export default function Activity() {
   const activities = [
-    { image: "/shalom image 3.webp", title: "Culture Day" },
-    { image: "/shalom image 4.webp", title: "Colour Day" },
-    { image: "/shalom image 5.webp", title: "Competition Day" },
+    { image: "/cultureday.jpg", title: "Culture Day" },
+    { image: "/colorday.jpg", title: "Colour Day" },
+    { image: "/competitionday.jpg", title: "Competition Day" },
   ];
 
   return (
@@ -16,7 +16,7 @@ export default function Activity() {
             School Life
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-4">
-            Life at Shalom Model College
+            Life at SchoolDesk Model College
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto">
             Beyond the classroom, our students enjoy a rich and vibrant school

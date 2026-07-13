@@ -19,8 +19,8 @@ export default function Footer() {
     { text: "123 School Road, Lagos, Nigeria" },
     { text: "+234 800 000 0000" },
     { text: "+234 810 000 0000" },
-    { text: "info@shalommodelcollege.edu.ng" },
-    { text: "www.shalommodelcollege.edu.ng" },
+    { text: "info@schooldeskmodelcollege.edu.ng" },
+    { text: "www.schooldeskmodelcollege.edu.ng" },
   ];
 
   const officeHours = [
@@ -43,7 +43,7 @@ export default function Footer() {
             />
             <div>
               <p className="text-white font-bold text-sm leading-tight">
-                Shalom Model College
+                SchoolDesk Model College
               </p>
               <p className="text-xs text-gray-500">Student Records System</p>
             </div>
@@ -135,7 +135,7 @@ export default function Footer() {
       <div className="border-t border-gray-800 px-6 py-6">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-gray-600">
           <p>
-            © {new Date().getFullYear()} Shalom Model College. All rights
+            © {new Date().getFullYear()} SchoolDesk Model College. All rights
             reserved.
           </p>
           <p>Designed for Nigerian Schools</p>

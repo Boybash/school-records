@@ -9,7 +9,7 @@ const manrope = Manrope({
 });
 
 export const metadata = {
-  title: "Shalom Model College",
+  title: "SchoolDesk - Student Records Management System",
   description: "Student Records Management System",
 };
 

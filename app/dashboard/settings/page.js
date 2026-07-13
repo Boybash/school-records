@@ -24,6 +24,7 @@ export default function SettingsPage() {
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState(false);
   const [showPasword, setShowPassword] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const handleChangePassword = async () => {
     setPasswordError("");
@@ -86,7 +87,7 @@ export default function SettingsPage() {
     mutationFn: updateSettings,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["settings"] });
-      alert("Settings saved successfully!");
+      setModalOpen(true);
     },
   });
 
@@ -282,6 +283,32 @@ export default function SettingsPage() {
           {passwordLoading ? "Changing..." : "Change Password"}
         </button>
       </div>
+
+      {modalOpen && (
+        <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-md shadow-lg w-80 flex flex-col items-center">
+            <img
+              src="/checkbox.png"
+              alt="checkbox"
+              className="w-15 h-15 mb-2 bg-white rounded-full p-2"
+            />
+            <h2 className="text-lg font-bold mb-4">Settings Saved</h2>
+            <p className="mb-4 text-center">
+              Your settings have been saved successfully.
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => {
+                  setModalOpen(false);
+                }}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md cursor-pointer transition font-bold"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

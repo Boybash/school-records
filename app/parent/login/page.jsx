@@ -21,7 +21,7 @@ export default function ParentLoginPage() {
   const [timeLeft, setTimeLeft] = useState(0);
 
   const images = [
-    "/shalomlogo.svg",
+    "/classroom3.jpg",
     // "/shalom image 2.webp",
     // "/shalom image 5.webp",
   ];

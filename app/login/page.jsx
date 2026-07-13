@@ -20,7 +20,7 @@ export default function LoginPage() {
   const [current, setCurrent] = useState(0);
   const [resetSent, setResetSent] = useState(false);
   const images = [
-    "/shalomlogo.svg",
+    "/classroom2.jpg",
     // "/shalom image 2.webp",
     // "/shalom image 5.webp",
   ];

@@ -6,7 +6,7 @@ const testimonials = [
     role: "Parent of JSS 2 Student",
     image: "AO",
     comment:
-      "Shalom Model College has been a blessing to our family. The level of dedication from the teachers is outstanding. My son's grades have improved significantly since he enrolled and his confidence has grown tremendously.",
+      "SchoolDesk Model College has been a blessing to our family. The level of dedication from the teachers is outstanding. My son's grades have improved significantly since he enrolled and his confidence has grown tremendously.",
   },
   {
     name: "Mr. Emeka Chukwu",
@@ -20,14 +20,14 @@ const testimonials = [
     role: "Parent of JSS 3 Student",
     image: "FA",
     comment:
-      "The discipline and academic standard at Shalom Model College is top notch. My child came back home more focused and determined after enrolling. I highly recommend this school to every parent who wants the best for their child.",
+      "The discipline and academic standard at SchoolDesk Model College is top notch. My child came back home more focused and determined after enrolling. I highly recommend this school to every parent who wants the best for their child.",
   },
   {
     name: "Mr. Tunde Fashola",
     role: "Parent of SS 2 Student",
     image: "TF",
     comment:
-      "What sets Shalom apart is the combination of academic excellence and moral values. My son not only performs well academically but has also developed strong character and leadership qualities.",
+      "What sets SchoolDesk apart is the combination of academic excellence and moral values. My son not only performs well academically but has also developed strong character and leadership qualities.",
   },
   {
     name: "Mrs. Ngozi Eze",
@@ -41,7 +41,7 @@ const testimonials = [
     role: "Parent of SS 3 Student",
     image: "BA",
     comment:
-      "My son just finished his WAEC and scored distinctions in all his subjects. I credit this to the solid foundation Shalom Model College gave him. The teachers go above and beyond to ensure every student succeeds.",
+      "My son just finished his WAEC and scored distinctions in all his subjects. I credit this to the solid foundation SchoolDesk Model College gave him. The teachers go above and beyond to ensure every student succeeds.",
   },
 ];
 
@@ -69,7 +69,7 @@ export default function Testimonials() {
             </h2>
             <p className="text-gray-500 max-w-xl mx-auto">
               Don't just take our word for it — hear directly from parents whose
-              children are thriving at Shalom Model College.
+              children are thriving at SchoolDesk Model College.
             </p>
           </div>
 
@@ -116,8 +116,8 @@ export default function Testimonials() {
 
           {/* Bottom Note */}
           <p className="text-center text-gray-400 text-sm mt-10">
-            Join hundreds of satisfied parents who trust Shalom Model College
-            with their children's future.
+            Join hundreds of satisfied parents who trust SchoolDesk Model
+            College with their children's future.
           </p>
         </div>
       </Fade>

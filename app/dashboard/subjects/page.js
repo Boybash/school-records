@@ -293,7 +293,7 @@ export default function SubjectsPage() {
               Confirm Deletion
             </h2>
             <p className="mb-4 text-gray-600">
-              Are you sure you want to delete this student?
+              Are you sure you want to delete this subject?
             </p>
             <div className="flex justify-end gap-4">
               <button

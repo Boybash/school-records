@@ -466,8 +466,8 @@ export default function ResultsPage() {
             </div>
 
             {/* 2. DESKTOP TABULAR VIEW (Hidden on mobile, renders from md breakpoint up) */}
-            <div className="hidden md:block ">
-              <table className="w-full text-left text-sm table-fixed border-collapse overflow-x">
+            <div className="hidden md:block overflow-x-auto w-full">
+              <table className="w-full text-left text-sm table-fixed border-collapse">
                 <thead>
                   <tr className="border-b border-white/20">
                     <th className="pb-3 text-gray-400 font-medium w-[4%]">#</th>
@@ -596,7 +596,7 @@ export default function ResultsPage() {
               Confirm Deletion
             </h2>
             <p className="mb-4 text-gray-600">
-              Are you sure you want to delete this student?
+              Are you sure you want to delete this result?
             </p>
             <div className="flex justify-end gap-4">
               <button

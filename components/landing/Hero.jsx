@@ -6,11 +6,7 @@ import { Fade, Slide } from "react-awesome-reveal";
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);
-  const images = [
-    "/shalom image 6.webp",
-    "/shalom image 2.webp",
-    "/shalom image 5.webp",
-  ];
+  const images = ["/classroom1.jpg", "/classroom2.jpg", "/classroom3.jpg"];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -50,7 +46,7 @@ export default function Hero() {
         <Fade cascade damping={0.15} triggerOnce>
           <div className="flex flex-col gap-1.5 md:gap-1 max-w-3xl">
             <h2 className="text-white text-3xl sm:text-5xl lg:text-6xl font-extrabold uppercase  text-center md:text-left opacity-90">
-              Shalom Model College
+              SchoolDesk Model College
             </h2>
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold uppercase  text-center md:text-left text-white">
               Smart Student Records Management

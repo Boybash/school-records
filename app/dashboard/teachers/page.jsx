@@ -28,6 +28,8 @@ export default function TeachersPage() {
   const [resetSuccess, setResetSuccess] = useState(false);
   const [showPasword, setShowPassword] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [teacherToDelete, setTeacherToDelete] = useState(null);
   const ITEMS_PER_PAGE = 10;
 
   const { data: teachers = [], isLoading } = useQuery({
@@ -105,13 +107,19 @@ export default function TeachersPage() {
     },
   });
 
-  const handleDelete = (id, uid) => {
-    if (
-      confirm(
-        "Are you sure you want to delete this teacher? They will lose access immediately.",
-      )
-    ) {
-      deleteMutation.mutate({ id, uid });
+  const openDeleteModal = (id, uid) => {
+    setTeacherToDelete({ id, uid });
+    setModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (teacherToDelete) {
+      deleteMutation.mutate(teacherToDelete, {
+        onSuccess: () => {
+          setModalOpen(false);
+          setTeacherToDelete(null);
+        },
+      });
     }
   };
 
@@ -365,7 +373,7 @@ export default function TeachersPage() {
                       Reset Password
                     </button>
                     <button
-                      onClick={() => handleDelete(teacher.id, teacher.uid)}
+                      onClick={() => openDeleteModal(teacher.id, teacher.uid)}
                       className="text-white cursor-pointer text-xs bg-red-600 hover:bg-red-700 py-2 px-3 rounded-md font-medium transition"
                     >
                       Delete
@@ -432,7 +440,7 @@ export default function TeachersPage() {
                           </button>
                           <button
                             onClick={() =>
-                              handleDelete(teacher.id, teacher.uid)
+                              openDeleteModal(teacher.id, teacher.uid)
                             }
                             className="text-white cursor-pointer text-xs bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded-md font-semibold transition"
                           >
@@ -501,6 +509,37 @@ export default function TeachersPage() {
                 </div>
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {modalOpen && (
+        <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-md shadow-lg w-80">
+            <h2 className="text-lg font-semibold mb-4 text-gray-900">
+              Confirm Deletion
+            </h2>
+            <p className="mb-4 text-gray-600">
+              Are you sure you want to delete this teacher?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => {
+                  setModalOpen(false);
+                  setTeacherToDelete(null);
+                }}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md cursor-pointer transition font-bold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete} // 👈 Fixed this handler callback
+                disabled={deleteMutation.isPending}
+                className="bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer transition font-bold disabled:opacity-50"
+              >
+                {deleteMutation.isPending ? "Deleting..." : "Confirm"}
+              </button>
+            </div>
           </div>
         </div>
       )}

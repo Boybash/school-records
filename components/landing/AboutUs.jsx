@@ -20,7 +20,7 @@ export default function AboutUs() {
           </h2>
 
           <p className=" leading-relaxed mb-4">
-            Shalom Model College is a premier secondary school committed to
+            SchoolDesk Model College is a premier secondary school committed to
             providing quality education that nurtures academic excellence, moral
             integrity, and leadership skills in every student. Founded on the
             principles of discipline, innovation, and service, we have
@@ -106,8 +106,8 @@ export default function AboutUs() {
           <Slide direction="up" delay={200} triggerOnce>
             <div className="relative w-full h-[500px] rounded-md overflow-hidden shadow-xl">
               <Image
-                src="/shalom image 1.webp"
-                alt="Shalom Model College"
+                src="/studentImage.jpg"
+                alt="SchoolDesk Model College"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
@@ -124,7 +124,7 @@ export default function AboutUs() {
                   />
                   <div>
                     <p className="font-bold text-primary uppercase text-sm">
-                      Shalom Model College
+                      SchoolDesk Model College
                     </p>
                     <p className="text-xs text-gray-400">
                       Excellence in Education

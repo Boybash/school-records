@@ -26,6 +26,8 @@ export default function StudentsPage() {
   const [matricNumber, setMatricNumber] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [dob, setDob] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
   const ITEMS_PER_PAGE = 10;
 
   const { data: students = [], isLoading } = useQuery({
@@ -137,8 +139,20 @@ export default function StudentsPage() {
     setDob(student.dob || "");
   };
 
-  const handleDelete = (id) => {
-    deleteMutation.mutate(id);
+  const openDeleteModal = (id) => {
+    setSelectedStudentId(id);
+    setModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedStudentId) {
+      deleteMutation.mutate(selectedStudentId, {
+        onSuccess: () => {
+          setModalOpen(false);
+          setSelectedStudentId(null);
+        },
+      });
+    }
   };
 
   const handleCancel = () => {
@@ -370,7 +384,7 @@ export default function StudentsPage() {
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDelete(student.id)}
+                      onClick={() => openDeleteModal(student.id)}
                       className="text-white bg-red-500 px-4 py-2 rounded-md text-xs font-medium"
                     >
                       Delete
@@ -421,7 +435,7 @@ export default function StudentsPage() {
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDelete(student.id)}
+                          onClick={() => openDeleteModal(student.id)}
                           className="text-white bg-red-500 px-3 py-1.5 rounded-md text-xs hover:bg-red-600 transition cursor-pointer"
                         >
                           Delete
@@ -448,6 +462,37 @@ export default function StudentsPage() {
         <img className="w-5 h-5" src="/arrow-l.png" alt="arrow" />
         Back
       </Link>
+
+      {modalOpen && (
+        <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-md shadow-lg w-80">
+            <h2 className="text-lg font-semibold mb-4 text-gray-900">
+              Confirm Deletion
+            </h2>
+            <p className="mb-4 text-gray-600">
+              Are you sure you want to delete this student?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => {
+                  setModalOpen(false);
+                  setSelectedStudentId(null);
+                }}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md cursor-pointer transition font-bold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete} // 👈 Fixed this handler callback
+                disabled={deleteMutation.isPending}
+                className="bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer transition font-bold disabled:opacity-50"
+              >
+                {deleteMutation.isPending ? "Deleting..." : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -18,6 +18,7 @@ export default function SubjectsPage() {
   const [editingSubject, setEditingSubject] = useState(null);
   const [deletingSubjectId, setDeletingSubjectId] = useState(null); // Fixed typo here
   const [currentPage, setCurrentPage] = useState(1);
+  const [modalOpen, setModalOpen] = useState(false);
   const ITEMS_PER_PAGE = 10;
 
   const { data: subjects = [], isLoading } = useQuery({
@@ -67,9 +68,20 @@ export default function SubjectsPage() {
     setName(subject.name);
   };
 
-  const handleDelete = (id) => {
+  const openDeleteModal = (id) => {
     setDeletingSubjectId(id);
-    deleteMutation.mutate(id);
+    setModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deletingSubjectId) {
+      deleteMutation.mutate(deletingSubjectId, {
+        onSuccess: () => {
+          setModalOpen(false);
+          setDeletingSubjectId(null);
+        },
+      });
+    }
   };
 
   const handleCancel = () => {
@@ -99,7 +111,7 @@ export default function SubjectsPage() {
           <input
             type="text"
             placeholder="Subject name e.g Mathematics"
-            className="flex-1 border p-3 rounded-lg outline-none focus:ring-2  bg-white"
+            className="flex-1 border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -163,7 +175,7 @@ export default function SubjectsPage() {
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDelete(subject.id)}
+                        onClick={() => openDeleteModal(subject.id)}
                         disabled={
                           deleteMutation.isPending &&
                           deletingSubjectId === subject.id
@@ -238,7 +250,7 @@ export default function SubjectsPage() {
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDelete(subject.id)}
+                            onClick={() => openDeleteModal(subject.id)}
                             disabled={
                               deleteMutation.isPending &&
                               deletingSubjectId === subject.id
@@ -274,6 +286,36 @@ export default function SubjectsPage() {
         <img className="w-5 h-5" src="/arrow-l.png" alt="arrow" />
         Back
       </Link>
+      {modalOpen && (
+        <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-md shadow-lg w-80">
+            <h2 className="text-lg font-semibold mb-4 text-gray-900">
+              Confirm Deletion
+            </h2>
+            <p className="mb-4 text-gray-600">
+              Are you sure you want to delete this student?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => {
+                  setModalOpen(false);
+                  setDeletingSubjectId(null);
+                }}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md cursor-pointer transition font-bold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete} // 👈 Fixed this handler callback
+                disabled={deleteMutation.isPending}
+                className="bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer transition font-bold disabled:opacity-50"
+              >
+                {deleteMutation.isPending ? "Deleting..." : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -30,6 +30,8 @@ export default function ResultsPage() {
   const [editingResult, setEditingResult] = useState(null);
   const TERMS = ["1st Term", "2nd Term", "3rd Term"];
   const [currentPage, setCurrentPage] = useState(1);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [resultToDelete, setResultToDelete] = useState(null);
   const ITEMS_PER_PAGE = 10;
 
   const { data: students = [] } = useQuery({
@@ -176,19 +178,24 @@ export default function ResultsPage() {
     setSession(result.session);
   };
 
-  const handleDelete = (resultItem) => {
-    if (
-      confirm(
-        `Are you sure you want to delete the result for ${resultItem.studentName}?`,
-      )
-    ) {
+  const openDeleteModal = (resultItem) => {
+    setResultToDelete(resultItem);
+    setModalOpen(true);
+  };
+
+  const handleConfirmDelete = (resultItem) => {
+    if (resultToDelete) {
       const currentUser = {
         uid: user.uid,
         name: userData?.name || "Staff Member",
         role: role,
       };
 
-      deleteMutation.mutate({
+      deleteMutation.mutate(resultToDelete, {
+        onSuccess: () => {
+          setModalOpen(false);
+          setResultToDelete(null);
+        },
         id: resultItem.id,
         subjectName: resultItem.subjectName,
         studentName: resultItem.studentName,
@@ -389,7 +396,7 @@ export default function ResultsPage() {
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDelete(result)}
+                            onClick={() => openDeleteModal(result)}
                             className="text-white bg-red-500 px-2.5 py-1 rounded-md text-xs font-medium cursor-pointer"
                           >
                             Delete
@@ -460,7 +467,7 @@ export default function ResultsPage() {
 
             {/* 2. DESKTOP TABULAR VIEW (Hidden on mobile, renders from md breakpoint up) */}
             <div className="hidden md:block ">
-              <table className="w-full text-left text-sm table-fixed border-collapse">
+              <table className="w-full text-left text-sm table-fixed border-collapse overflow-x">
                 <thead>
                   <tr className="border-b border-white/20">
                     <th className="pb-3 text-gray-400 font-medium w-[4%]">#</th>
@@ -560,7 +567,7 @@ export default function ResultsPage() {
                                 Edit
                               </button>
                               <button
-                                onClick={() => handleDelete(result)}
+                                onClick={() => openDeleteModal(result)}
                                 className="text-white bg-red-500 px-3 py-1.5 rounded-md text-xs font-medium cursor-pointer hover:bg-red-600 transition"
                               >
                                 Delete
@@ -582,6 +589,36 @@ export default function ResultsPage() {
           </>
         )}
       </div>
+      {modalOpen && (
+        <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-md shadow-lg w-80">
+            <h2 className="text-lg font-semibold mb-4 text-gray-900">
+              Confirm Deletion
+            </h2>
+            <p className="mb-4 text-gray-600">
+              Are you sure you want to delete this student?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => {
+                  setModalOpen(false);
+                  setResultToDelete(null);
+                }}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md cursor-pointer transition font-bold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete} // 👈 Fixed this handler callback
+                disabled={deleteMutation.isPending}
+                className="bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer transition font-bold disabled:opacity-50"
+              >
+                {deleteMutation.isPending ? "Deleting..." : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

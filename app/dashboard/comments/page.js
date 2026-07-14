@@ -68,7 +68,7 @@ export default function TeacherCommentsPage() {
       alert(`Comments successfully saved for student!`);
     },
     onError: (error) => {
-      console.error("❌ FIRESTORE MUTATION ERROR:", error);
+      console.error(" FIRESTORE MUTATION ERROR:", error);
       alert(
         `Failed to update entries: ${error.message || "Permission verification denied."}`,
       );
@@ -121,7 +121,7 @@ export default function TeacherCommentsPage() {
             value={selectedClass}
             onChange={(e) => setSelectedClass(e.target.value)}
           >
-            <option value="">-- Select Class --</option>
+            <option value="">Select Class</option>
             {availableClasses.map((c) => (
               <option key={c} value={c}>
                 {c}

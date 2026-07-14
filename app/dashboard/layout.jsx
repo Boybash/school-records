@@ -133,18 +133,30 @@ export default function DashboardLayout({ children }) {
             >
               School Records
             </h1>
-            {isAdmin && (
-              <p className="text-xl font-bold text-gray-400 uppercase">
-                {role}
-              </p>
-            )}
+          </div>
+          <div>
+            {isAdmin && userData ? (
+              <div>
+                <p className="text-xl font-bold text-gray-400 uppercase">
+                  {userData.name || "Unnamed Admin"}
+                </p>
+                <p className="text-xl font-bold text-gray-400 uppercase">
+                  {role}
+                </p>
+              </div>
+            ) : isAdmin ? (
+              <p className="text-gray-400 italic">Loading profile details...</p>
+            ) : null}
+          </div>
+
+          <div>
             {isTeacher && userData ? (
               <div>
                 <h1 className="text-xl font-bold text-gray-400 uppercase">
                   {userData.name || "Unnamed Teacher"}
                 </h1>
                 <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
-                  Role: {role}
+                  {role}
                 </p>
                 <h1 className="text-base font-bold text-gray-700 mt-1">
                   {userData.classes?.join(", ") || "None"}.

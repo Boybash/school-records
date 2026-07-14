@@ -197,7 +197,7 @@ export default function ResultSheetPage() {
             ))}
           </select>
 
-          <input
+          {/* <input
             type="text"
             placeholder="Session e.g 2024/2025"
             className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
@@ -206,7 +206,22 @@ export default function ResultSheetPage() {
               setSession(e.target.value);
               setSearched(false); // Reset view on session change
             }}
-          />
+          /> */}
+          <select
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+            value={session}
+            onChange={(e) => {
+              setSession(e.target.value);
+              setSearched(false); // Reset view on session change
+            }}
+          >
+            <option value="">Select Session</option>
+            <option value="2024/2025">2024/2025</option>
+            <option value="2025/2026">2025/2026</option>
+            <option value="2026/2027">2026/2027</option>
+            <option value="2027/2028">2027/2028</option>
+            <option value="2028/2029">2028/2029</option>
+          </select>
         </div>
         <button
           onClick={handleSearch}

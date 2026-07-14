@@ -28,6 +28,13 @@ export default function StudentsPage() {
   const [dob, setDob] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const [formError, setFormError] = useState({
+    matricNumber: "",
+    name: "",
+    className: "",
+    gender: "",
+    dob: "",
+  });
   const ITEMS_PER_PAGE = 10;
 
   const { data: students = [], isLoading } = useQuery({
@@ -101,17 +108,65 @@ export default function StudentsPage() {
   });
 
   const handleSubmit = () => {
+    setFormError({
+      matricNumber: "",
+      name: "",
+      className: "",
+      dob: "",
+      gender: "",
+    });
+
     const trimmedName = name.trim();
     const trimmedClass = className.trim();
     const trimmedMatric = matricNumber.trim();
 
-    if (!trimmedName || !trimmedClass || !trimmedMatric || !dob)
-      return alert("Please fill in all fields");
-    if (role === "teacher" && !userData?.classes?.includes(trimmedClass)) {
-      return alert(
-        "Unauthorized: You can only assign students to your assigned classes.",
-      );
+    // Track if we find any errors
+    let hasError = false;
+    const newErrors = { matricNumber: "", name: "", className: "", dob: "" };
+
+    if (!trimmedMatric) {
+      newErrors.matricNumber = "Matric number is required";
+      hasError = true;
     }
+    if (!trimmedName) {
+      newErrors.name = "Full name is required";
+      hasError = true;
+    }
+    if (!trimmedClass) {
+      newErrors.className = "Class is required";
+      hasError = true;
+    }
+    if (!dob) {
+      newErrors.dob = "Date of birth is required";
+      hasError = true;
+    }
+    if (!gender) {
+      newErrors.gender = "Gender is required";
+      hasError = true;
+    }
+
+    if (role === "teacher" && !userData?.classes?.includes(trimmedClass)) {
+      newErrors.className = "Unauthorized class selection";
+      hasError = true;
+    }
+
+    const existingStudents = editingStudent
+      ? students.filter((s) => s.id !== editingStudent.id)
+      : students;
+
+    const usedMatricNumbers = existingStudents.map((s) =>
+      s.matricNumber.toLowerCase(),
+    );
+
+    if (usedMatricNumbers.includes(trimmedMatric.toLowerCase())) {
+      newErrors.matricNumber = "Matric number already exists";
+      hasError = true;
+    }
+
+    if (hasError) {
+      return setFormError(newErrors);
+    }
+
     const studentPayload = {
       name: trimmedName,
       class: trimmedClass,
@@ -177,59 +232,93 @@ export default function StudentsPage() {
           {editingStudent ? "Edit Student" : "Add New Student"}
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          <input
-            type="text"
-            placeholder="Matric Number e.g GFS/2025/001"
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
-            value={matricNumber}
-            onChange={(e) => setMatricNumber(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Full Name"
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          {isAdmin ? (
+          <div className="sm:col-span-2 lg:col-span-1">
             <input
               type="text"
-              placeholder="Class Format e.g JSS 1A"
+              placeholder="Matric Number e.g GFS/2025/001"
               className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
-              value={className}
-              onChange={(e) => setClassName(e.target.value)}
+              value={matricNumber}
+              onChange={(e) => setMatricNumber(e.target.value)}
             />
-          ) : (
-            <select
+            {formError.matricNumber && (
+              <p className="text-red-500 text-sm mt-1">
+                {formError.matricNumber}
+              </p>
+            )}
+          </div>
+          <div className="sm:col-span-2 lg:col-span-1">
+            <input
+              type="text"
+              placeholder="Full Name"
               className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
-              value={className}
-              onChange={(e) => setClassName(e.target.value)}
-            >
-              <option value="" className="bg-primary-50 text-gray-100">
-                Select Class
-              </option>
-              {formAvailableClasses.map((c) => (
-                <option key={c} value={c}>
-                  {c}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            {formError.name && (
+              <p className="text-red-500 text-sm mt-1">{formError.name}</p>
+            )}
+          </div>
+          {isAdmin ? (
+            <div className="sm:col-span-2 lg:col-span-1">
+              <input
+                type="text"
+                placeholder="Class Format e.g JSS 1A"
+                className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+                value={className}
+                onChange={(e) => setClassName(e.target.value)}
+              />
+              {formError.className && (
+                <p className="text-red-500 text-sm mt-1">
+                  {formError.className}
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="sm:col-span-2 lg:col-span-1">
+              <select
+                className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+                value={className}
+                onChange={(e) => setClassName(e.target.value)}
+              >
+                <option value="" className="bg-primary-50 text-gray-100">
+                  Select Class
                 </option>
-              ))}
-            </select>
+                {formAvailableClasses.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+              {formError.className && (
+                <p className="text-red-500 text-sm mt-1">
+                  {formError.className}
+                </p>
+              )}
+            </div>
           )}
-          <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-          >
-            <option>Male</option>
-            <option>Female</option>
-          </select>
-          <div>
+          <div className="sm:col-span-2 lg:col-span-1">
+            <select
+              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+            >
+              <option>Male</option>
+              <option>Female</option>
+            </select>
+            {formError.gender && (
+              <p className="text-red-500 text-sm mt-1">{formError.gender}</p>
+            )}
+          </div>
+          <div className="sm:col-span-2 lg:col-span-1">
             <input
               type="date"
               className="w-full  border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={dob}
               onChange={(e) => setDob(e.target.value)}
             />
+            {formError.dob && (
+              <p className="text-red-500 text-sm mt-1">{formError.dob}</p>
+            )}
           </div>
         </div>
         <div className="flex gap-3 mt-4">
@@ -455,13 +544,13 @@ export default function StudentsPage() {
           </>
         )}
       </div>
-      <Link
+      {/* <Link
         href="/"
         className=" flex gap-2 items-center bg-primary-50 p-2 rounded-md absolute top-0 right-0 "
       >
         <img className="w-5 h-5" src="/arrow-l.png" alt="arrow" />
         Back
-      </Link>
+      </Link> */}
 
       {modalOpen && (
         <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">

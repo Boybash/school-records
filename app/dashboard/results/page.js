@@ -265,14 +265,18 @@ export default function ResultsPage() {
           </select>
 
           {/* Session */}
-          <input
-            type="text"
-            placeholder="Session e.g 2024/2025"
+          <select
             className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 bg-white"
             value={session}
             onChange={(e) => setSession(e.target.value)}
-          />
-
+          >
+            <option value="">Select Session</option>
+            <option value="2024/2025">2024/2025</option>
+            <option value="2025/2026">2025/2026</option>
+            <option value="2026/2027">2026/2027</option>
+            <option value="2027/2028">2027/2028</option>
+            <option value="2028/2029">2028/2029</option>
+          </select>
           <input
             type="number"
             placeholder="CA Score (max 30)"

@@ -279,13 +279,13 @@ export default function SubjectsPage() {
         />
       </div>
 
-      <Link
+      {/* <Link
         href="/"
         className="flex gap-2 items-center bg-primary-50 p-2 rounded-md absolute top-0 right-0 text-sm font-medium hover:opacity-90 transition"
       >
         <img className="w-5 h-5" src="/arrow-l.png" alt="arrow" />
         Back
-      </Link>
+      </Link> */}
       {modalOpen && (
         <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-md shadow-lg w-80">

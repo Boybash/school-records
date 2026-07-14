@@ -230,13 +230,13 @@ export default function DashboardPage() {
         )}
       </div>
 
-      <Link
+      {/* <Link
         href="/"
         className="flex gap-2 items-center bg-primary-50 p-2 rounded-md absolute top-0 right-0"
       >
         <img className="w-5 h-5" src="/arrow-l.png" alt="arrow" />
         Back
-      </Link>
+      </Link> */}
     </div>
   );
 }

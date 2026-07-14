@@ -13,6 +13,9 @@ export default function ApprovalsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const { userData, user, role } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
+  const [approveModalOpen, setApproveModalOpen] = useState(false);
+  const [rejectModalOpen, setRejectModalOpen] = useState(false);
+  const [selectedResult, setSelectedResult] = useState(null);
   const ITEMS_PER_PAGE = 10;
 
   const { data: pending = [], isLoading } = useQuery({
@@ -29,19 +32,36 @@ export default function ApprovalsPage() {
     },
   });
 
-  const handleApprove = (resultItem) => {
-    const currentUser = {
-      uid: user.uid,
-      name: userData?.name || "Staff Member",
-      role: role,
-    };
+  const openApprovalModal = (resultItem) => {
+    setSelectedResult(resultItem);
+    setApproveModalOpen(true);
+  };
 
-    approveMutation.mutate({
-      id: resultItem.id,
-      subjectName: resultItem.subjectName,
-      studentName: resultItem.studentName,
-      currentUser,
-    });
+  const handleConfirmApprove = () => {
+    if (selectedResult) {
+      const currentUser = {
+        uid: user.uid,
+        name: userData?.name || "Staff Member",
+        role: role,
+      };
+
+      // Pass the payload as the first argument, and query options as the second argument
+      approveMutation.mutate(
+        {
+          result: selectedResult,
+          id: selectedResult.id,
+          subjectName: selectedResult.subjectName,
+          studentName: selectedResult.studentName,
+          currentUser,
+        },
+        {
+          onSuccess: () => {
+            setApproveModalOpen(false); // Use semicolons here
+            setSelectedResult(null); // Use semicolons here
+          },
+        },
+      );
+    }
   };
 
   const rejectMutation = useMutation({
@@ -53,19 +73,36 @@ export default function ApprovalsPage() {
     },
   });
 
-  const handleReject = (resultItem) => {
-    const currentUser = {
-      uid: user.uid,
-      name: userData?.name || "Staff Member",
-      role: role,
-    };
+  const openRejectModal = (resultItem) => {
+    setSelectedResult(resultItem);
+    setRejectModalOpen(true);
+  };
 
-    rejectMutation.mutate({
-      id: resultItem.id,
-      subjectName: resultItem.subjectName,
-      studentName: resultItem.studentName,
-      currentUser,
-    });
+  const handleConfirmReject = () => {
+    if (selectedResult) {
+      const currentUser = {
+        uid: user.uid,
+        name: userData?.name || "Staff Member",
+        role: role,
+      };
+
+      rejectMutation.mutate(
+        selectedResult,
+        {
+          onSuccess: () => {
+            setRejectModalOpen(false);
+            setSelectedResult(null);
+          },
+        },
+        {
+          result: selectedResult,
+          id: selectedResult.id,
+          subjectName: selectedResult.subjectName,
+          studentName: selectedResult.studentName,
+          currentUser,
+        },
+      );
+    }
   };
 
   const filteredPendingResult = useMemo(() => {
@@ -177,7 +214,7 @@ export default function ApprovalsPage() {
                     </span>
                     <div className="flex gap-2">
                       <button
-                        onClick={() => handleApprove(result)}
+                        onClick={() => openApprovalModal(result)}
                         disabled={approveMutation.isPending}
                         className="bg-green-500 text-white hover:bg-green-600 px-2.5 py-1 rounded-md text-xs font-semibold transition cursor-pointer disabled:opacity-50"
                       >
@@ -187,7 +224,7 @@ export default function ApprovalsPage() {
                           : "Approve"}
                       </button>
                       <button
-                        onClick={() => handleReject(result)}
+                        onClick={() => openRejectModal(result)}
                         disabled={rejectMutation.isPending}
                         className="bg-red-500 text-white hover:bg-red-600 px-2.5 py-1 rounded-md text-xs font-semibold transition cursor-pointer disabled:opacity-50"
                       >
@@ -259,7 +296,7 @@ export default function ApprovalsPage() {
             </div>
 
             {/* 2. DESKTOP TABULAR VIEW (Visible from md breakpoint up) */}
-            <div className="hidden md:block">
+            <div className="hidden md:block overflow-x-auto w-full">
               <table className="w-full text-left text-sm table-fixed border-collapse">
                 <thead>
                   <tr className="border-b border-white/20">
@@ -338,7 +375,7 @@ export default function ApprovalsPage() {
                       <td className="py-3">
                         <div className="flex gap-2">
                           <button
-                            onClick={() => handleApprove(result)}
+                            onClick={() => openApprovalModal(result)}
                             disabled={
                               approveMutation.isPending &&
                               approveMutation.variables?.id === result.id
@@ -351,7 +388,7 @@ export default function ApprovalsPage() {
                               : "Approve"}
                           </button>
                           <button
-                            onClick={() => handleReject(result)}
+                            onClick={() => openRejectModal(result)}
                             disabled={
                               rejectMutation.isPending &&
                               rejectMutation.variables?.id === result.id
@@ -385,6 +422,67 @@ export default function ApprovalsPage() {
         <img className="w-5 h-5" src="/arrow-l.png" alt="arrow" />
         Back
       </Link>
+
+      {approveModalOpen && (
+        <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-md shadow-lg w-80">
+            <h2 className="text-lg font-semibold mb-4 text-gray-900">
+              Confirm Deletion
+            </h2>
+            <p className="mb-4 text-gray-600">
+              Are you sure you want to approve this result?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => {
+                  setApproveModalOpen(false);
+                  setSelectedResult(null);
+                }}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md cursor-pointer transition font-bold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmApprove} // 👈 Fixed this handler callback
+                disabled={approveMutation.isPending}
+                className="bg-green-500/20 text-green-950 hover:bg-green-500/30 px-4 py-2 rounded-md  font-bold transition cursor-pointer disabled:opacity-50"
+              >
+                {approveMutation.isPending ? "Approving..." : "Approve"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {rejectModalOpen && (
+        <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-md shadow-lg w-80">
+            <h2 className="text-lg font-semibold mb-4 text-gray-900">
+              Confirm Deletion
+            </h2>
+            <p className="mb-4 text-gray-600">
+              Are you sure you want to reject this result?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => {
+                  setRejectModalOpen(false);
+                  setSelectedResult(null);
+                }}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md cursor-pointer transition font-bold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmReject} // 👈 Fixed this handler callback
+                disabled={rejectMutation.isPending}
+                className="bg-red-500/20 text-red-950 hover:bg-red-500/30 px-4 py-2 rounded-md  font-bold transition cursor-pointer disabled:opacity-50"
+              >
+                {rejectMutation.isPending ? "Rejecting..." : "Reject"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

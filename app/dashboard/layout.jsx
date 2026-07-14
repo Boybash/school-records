@@ -126,7 +126,7 @@ export default function DashboardLayout({ children }) {
     }
   `}
       >
-        <div className="p-6 border-b border-white flex justify-between items-center md:block">
+        <div className="p-6 border-b border-white flex flex-col justify-between md:block">
           <div>
             <h1
               className={`text-xl font-bold text-primary uppercase ${sidebarOpen ? "text-white" : "text-primary"}`}
@@ -136,11 +136,11 @@ export default function DashboardLayout({ children }) {
           </div>
           <div>
             {isAdmin && userData ? (
-              <div>
-                <p className="text-xl font-bold text-gray-400 uppercase">
+              <div className="text-left">
+                <h1 className="text-xl font-bold text-gray-400 uppercase">
                   {userData.name || "Unnamed Admin"}
-                </p>
-                <p className="text-xl font-bold text-gray-400 uppercase">
+                </h1>
+                <p className="text-xl font-semibold text-gray-400 uppercase tracking-wider">
                   {role}
                 </p>
               </div>
@@ -151,15 +151,15 @@ export default function DashboardLayout({ children }) {
 
           <div>
             {isTeacher && userData ? (
-              <div>
-                <h1 className="text-xl font-bold text-gray-400 uppercase">
+              <div className="text-left">
+                <h1 className="text-xl text-left font-bold text-gray-400 uppercase">
                   {userData.name || "Unnamed Teacher"}
                 </h1>
                 <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
                   {role}
                 </p>
                 <h1 className="text-base font-bold text-gray-700 mt-1">
-                  {userData.classes?.join(", ") || "None"}.
+                  {userData.classes?.join(", ") || "None"}
                 </h1>
               </div>
             ) : isTeacher ? (

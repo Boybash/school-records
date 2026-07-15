@@ -21,9 +21,9 @@
   <!-- Inner background circle -->
   <circle cx="200" cy="200" r="168" fill="#1a1a4e"/>
 
-  <!-- Curved top text: SHALOM MODEL COLLEGE -->
+  <!-- Curved top text: SCHOOLDESK -->
   <text font-family="Georgia, serif" font-size="17" font-weight="bold" fill="#F5C000" letter-spacing="3">
-    <textPath href="#topCircle" startOffset="50%" text-anchor="middle">SHALOM MODEL COLLEGE</textPath>
+    <textPath href="#topCircle" startOffset="50%" text-anchor="middle">SCHOOLDESK</textPath>
   </text>
 
   <!-- Curved bottom text -->
@@ -83,8 +83,8 @@
   <line x1="160" y1="178" x2="240" y2="178" stroke="#C8A200" stroke-width="2"/>
   <line x1="200" y1="120" x2="200" y2="248" stroke="#C8A200" stroke-width="2"/>
 
-  <!-- SHALOM -->
-  <text x="200" y="145" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-size="19" font-weight="bold" fill="#F5C000" letter-spacing="1">SHALOM</text>
+  <!-- SCHOOLDESK -->
+  <text x="200" y="145" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-size="13" font-weight="bold" fill="#F5C000" letter-spacing="1">SCHOOLDESK</text>
   <!-- MODEL COLLEGE -->
   <text x="200" y="161" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-size="11" fill="#ffffff">MODEL</text>
   <text x="200" y="175" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-size="11" fill="#ffffff">COLLEGE</text>

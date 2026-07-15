@@ -32,6 +32,7 @@ export default function ResultsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [resultToDelete, setResultToDelete] = useState(null);
+  const [formError, setFormError] = useState("");
   const ITEMS_PER_PAGE = 10;
 
   const { data: students = [] } = useQuery({
@@ -94,30 +95,41 @@ export default function ResultsPage() {
     setTerm("1st Term");
     setSession("2024/2025");
     setEditingResult(null);
+    setFormError("");
   };
 
   const handleSubmit = async () => {
-    if (!studentId || !subjectId || !ca || !exam)
-      return alert("Please fill in all fields");
+    setFormError("");
+
+    if (!studentId || !subjectId || !ca || !exam) {
+      return setFormError("Please fill in all fields");
+    }
 
     // 1. Locate the targeted student document object
     const selectedStudent = students.find((s) => s.id === studentId);
-    if (!selectedStudent) return alert("Student not found.");
+    if (!selectedStudent) {
+      return setFormError("Student not found.");
+    }
 
     // 2. SECURITY CHECK: Enforce class restrictions for teachers on submit
     if (role === "teacher") {
       const hasPermission = userData?.classes?.includes(selectedStudent.class);
       if (!hasPermission) {
-        return alert(
+        return setFormError(
           "Unauthorized: You can only record results for your assigned classes.",
         );
       }
     }
 
-    if (Number(ca) > 30) return alert("CA score cannot exceed 30 marks");
-    if (Number(exam) > 70) return alert("Exam score cannot exceed 70 marks");
-    if (Number(ca) < 0 || Number(exam) < 0)
-      return alert("Scores cannot be negative");
+    if (Number(ca) > 30) {
+      return setFormError("CA score cannot exceed 30 marks");
+    }
+    if (Number(exam) > 70) {
+      return setFormError("Exam score cannot exceed 70 marks");
+    }
+    if (Number(ca) < 0 || Number(exam) < 0) {
+      return setFormError("Scores cannot be negative");
+    }
 
     if (!editingResult) {
       const isDuplicate = await checkDuplicateResult(
@@ -127,7 +139,7 @@ export default function ResultsPage() {
         session,
       );
       if (isDuplicate) {
-        return alert(
+        return setFormError(
           `A result for this student in this subject already exists for ${term} ${session}. Use the Edit button to update it instead.`,
         );
       }
@@ -151,7 +163,7 @@ export default function ResultsPage() {
 
     const currentUser = {
       uid: user.uid,
-      name: userData?.name || "Staff Member",
+      name: userData?.name || user?.displayName || "Staff Member",
       role: role,
     };
 
@@ -178,29 +190,27 @@ export default function ResultsPage() {
     setSession(result.session);
   };
 
-  const openDeleteModal = (resultItem) => {
-    setResultToDelete(resultItem);
-    setModalOpen(true);
-  };
-
-  const handleConfirmDelete = (resultItem) => {
+  const handleConfirmDelete = () => {
     if (resultToDelete) {
       const currentUser = {
-        uid: user.uid,
-        name: userData?.name || "Staff Member",
+        uid: user?.uid,
+        name: userData?.name || user?.displayName || "Staff Member",
         role: role,
       };
-
-      deleteMutation.mutate(resultToDelete, {
-        onSuccess: () => {
-          setModalOpen(false);
-          setResultToDelete(null);
+      deleteMutation.mutate(
+        {
+          id: resultToDelete.id,
+          subjectName: resultToDelete.subjectName || "Subject",
+          studentName: resultToDelete.studentName || "Unknown Student",
+          currentUser,
         },
-        id: resultItem.id,
-        subjectName: resultItem.subjectName,
-        studentName: resultItem.studentName,
-        currentUser,
-      });
+        {
+          onSuccess: () => {
+            setModalOpen(false);
+            setResultToDelete(null);
+          },
+        },
+      );
     }
   };
 
@@ -243,7 +253,6 @@ export default function ResultsPage() {
             className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 bg-white"
             value={subjectId}
             onChange={(e) => setSubjectId(e.target.value)}
-            // disabled={role === "teacher"}
           >
             <option value="">Select Subject</option>
             {visibleSubjects.map((s) => (
@@ -324,7 +333,7 @@ export default function ResultsPage() {
             </span>
           </div>
         )}
-
+        {formError && <p className="text-red-500 text-sm mt-2">{formError}</p>}
         <div className="flex gap-3 mt-4">
           <button
             onClick={handleSubmit}
@@ -400,7 +409,10 @@ export default function ResultsPage() {
                             Edit
                           </button>
                           <button
-                            onClick={() => openDeleteModal(result)}
+                            onClick={() => {
+                              setResultToDelete(result);
+                              setModalOpen(true);
+                            }}
                             className="text-white bg-red-500 px-2.5 py-1 rounded-md text-xs font-medium cursor-pointer"
                           >
                             Delete
@@ -571,7 +583,10 @@ export default function ResultsPage() {
                                 Edit
                               </button>
                               <button
-                                onClick={() => openDeleteModal(result)}
+                                onClick={() => {
+                                  setResultToDelete(result);
+                                  setModalOpen(true);
+                                }}
                                 className="text-white bg-red-500 px-3 py-1.5 rounded-md text-xs font-medium cursor-pointer hover:bg-red-600 transition"
                               >
                                 Delete
@@ -613,7 +628,7 @@ export default function ResultsPage() {
                 Cancel
               </button>
               <button
-                onClick={handleConfirmDelete} // 👈 Fixed this handler callback
+                onClick={handleConfirmDelete}
                 disabled={deleteMutation.isPending}
                 className="bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer transition font-bold disabled:opacity-50"
               >

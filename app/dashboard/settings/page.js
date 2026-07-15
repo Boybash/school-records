@@ -278,7 +278,7 @@ export default function SettingsPage() {
         <button
           onClick={handleChangePassword}
           disabled={passwordLoading}
-          className="mt-4 bg-gray-100 text-primary font-semibold px-6 py-3 rounded-md transition"
+          className="mt-4 bg-gray-100 text-primary font-semibold px-6 py-3 rounded-md transition cursor-pointer"
         >
           {passwordLoading ? "Changing..." : "Change Password"}
         </button>

@@ -25,6 +25,7 @@ export default function ResultSheetPage() {
   const { userData, role } = useAuth();
   const [localTeacherComment, setLocalTeacherComment] = useState("");
   const [localPrincipalComment, setLocalPrincipalComment] = useState("");
+  const [formError, setFormError] = useState("");
 
   const { data: students = [] } = useQuery({
     queryKey: ["students"],
@@ -101,11 +102,16 @@ export default function ResultSheetPage() {
 
   // FIXED: Reset local state cleanly to eliminate asynchronous React state lag
   const handleSearch = async () => {
-    if (!studentId) return alert("Please select a student");
+    if (!studentId) {
+      return setFormError("Please select a student");
+    }
+    if (!session) {
+      return setFormError("Please select a session");
+    }
     if (role === "teacher" && selectedStudent) {
       const isAuthorized = userData?.classes?.includes(selectedStudent.class);
       if (!isAuthorized) {
-        return alert(
+        return setFormError(
           "Unauthorized: You can only query documents matching your assigned classes.",
         );
       }
@@ -223,6 +229,11 @@ export default function ResultSheetPage() {
             <option value="2028/2029">2028/2029</option>
           </select>
         </div>
+        {formError && (
+          <p className="text-red-500 mt-1 text-sm font-medium animate-fadeIn">
+            {formError}
+          </p>
+        )}
         <button
           onClick={handleSearch}
           className="mt-4 bg-gray-100 text-primary px-6 py-3 font-semibold rounded-md transition cursor-pointer"

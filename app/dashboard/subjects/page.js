@@ -19,6 +19,7 @@ export default function SubjectsPage() {
   const [deletingSubjectId, setDeletingSubjectId] = useState(null); // Fixed typo here
   const [currentPage, setCurrentPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
+  const [formError, setFormError] = useState("");
   const ITEMS_PER_PAGE = 10;
 
   const { data: subjects = [], isLoading } = useQuery({
@@ -55,7 +56,9 @@ export default function SubjectsPage() {
   });
 
   const handleSubmit = () => {
-    if (!name) return alert("Please enter a subject name");
+    if (!name) {
+      return setFormError("Please enter a subject name");
+    }
     if (editingSubject) {
       updateMutation.mutate({ id: editingSubject.id, data: { name } });
     } else {
@@ -107,35 +110,49 @@ export default function SubjectsPage() {
         <h3 className="text-lg font-semibold mb-4 text-white">
           {editingSubject ? "Edit Subject" : "Add New Subject"}
         </h3>
-        <div className="flex flex-col gap-4 md:flex-row md:items-center">
-          <input
-            type="text"
-            placeholder="Subject name e.g Mathematics"
-            className="flex-1 border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <div className="flex flex-col sm:flex-row gap-2 mt-2 md:mt-0">
-            <button
-              onClick={handleSubmit}
-              disabled={isPending}
-              className="bg-gray-100 md:w-[250px] text-primary px-6 py-3 rounded-md font-semibold cursor-pointer transition disabled:opacity-50"
-            >
-              {isPending
-                ? "Saving..."
-                : editingSubject
-                  ? "Update Subject"
-                  : "Add Subject"}
-            </button>
-            {editingSubject && (
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center">
+            {/* Left Side: Input Field Container */}
+            <div className="flex-1">
+              <input
+                type="text"
+                placeholder="Subject name e.g Mathematics"
+                className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white text-gray-900"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+
+            {/* Right Side: Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-2">
               <button
-                onClick={handleCancel}
-                className="bg-gray-200 md:w-[120px] text-gray-700 px-6 py-3 rounded-md font-semibold hover:bg-gray-300 transition cursor-pointer"
+                onClick={handleSubmit}
+                disabled={isPending}
+                className="bg-gray-100 text-primary px-6 py-3 rounded-lg font-semibold transition cursor-pointer disabled:opacity-50 hover:bg-gray-200 w-full md:w-[200px]"
               >
-                Cancel
+                {isPending
+                  ? "Saving..."
+                  : editingSubject
+                    ? "Update Subject"
+                    : "Add Subject"}
               </button>
-            )}
+              {editingSubject && (
+                <button
+                  onClick={handleCancel}
+                  className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition cursor-pointer w-full md:w-[110px]"
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
           </div>
+
+          {/* Error Message Section: Positioned cleanly beneath the inputs */}
+          {formError && (
+            <p className="text-red-500 text-sm font-medium animate-fadeIn">
+              {formError}
+            </p>
+          )}
         </div>
       </div>
 

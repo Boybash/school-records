@@ -30,6 +30,8 @@ export default function TeachersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [teacherToDelete, setTeacherToDelete] = useState(null);
+  const [formError, setFormError] = useState("");
+  const [resetPasswordError, setResetPasswordError] = useState("");
   const ITEMS_PER_PAGE = 10;
 
   const { data: teachers = [], isLoading } = useQuery({
@@ -59,8 +61,8 @@ export default function TeachersPage() {
   const createMutation = useMutation({
     mutationFn: async () => {
       const selectedSubject = subjects.find((s) => s.id === subjectId);
+      if (!selectedSubject) throw new Error("Please select a subject");
 
-      // Step 1 - Create teacher account
       await createTeacher(
         email,
         password,
@@ -69,9 +71,6 @@ export default function TeachersPage() {
         selectedSubject.name,
         selectedClasses,
       );
-
-      // Step 2 - Sign back in as admin
-      await signInWithEmailAndPassword(auth, adminEmail, adminPassword);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["teachers"] });
@@ -80,22 +79,15 @@ export default function TeachersPage() {
       setPassword("");
       setSubjectId("");
       setSelectedClasses([]);
-      setAdminEmail("");
-      setAdminPassword("");
       setStep(1);
-      alert("Teacher created successfully!");
+      setFormError("");
+      // alert("Teacher created successfully!");
     },
     onError: (error) => {
-      // If teacher was created but re-login failed
       if (error.message.includes("email-already-in-use")) {
-        alert(
-          "Teacher account was created successfully! Please log in again manually.",
-        );
-        signOut(auth).then(() => {
-          window.location.href = "/login";
-        });
+        setFormError("A teacher with this email already exists.");
       } else {
-        alert("Failed: " + error.message);
+        setFormError("Failed to create teacher: " + error.message);
       }
     },
   });
@@ -128,9 +120,12 @@ export default function TeachersPage() {
   }
 
   const handleResetPassword = async () => {
-    if (!newPassword) return alert("Please enter a new password");
-    if (newPassword.length < 6)
-      return alert("Password must be at least 6 characters");
+    if (!newPassword) {
+      return setResetPasswordError("Please enter a new password");
+    }
+    if (newPassword.length < 6) {
+      return setResetPasswordError("Password must be at least 6 characters");
+    }
     setResetLoading(true);
     try {
       await resetTeacherPassword(resetingId, newPassword);
@@ -141,7 +136,7 @@ export default function TeachersPage() {
         setResetSuccess(false);
       }, 2000);
     } catch (err) {
-      alert("Failed to reset password: " + err.message);
+      setFormError("Failed to reset password");
     } finally {
       setResetLoading(false);
     }
@@ -230,10 +225,10 @@ export default function TeachersPage() {
                     <button
                       key={cls}
                       onClick={() => toggleClass(cls)}
-                      className={`px-4 py-2 rounded-lg text-sm border transition ${
+                      className={`px-4 py-2 rounded-md font-bold cursor-pointer text-sm border transition ${
                         selectedClasses.includes(cls)
                           ? "bg-gray-100 text-primary border-blue-600"
-                          : "text-white border-gray-300 hover:bg-gray-100"
+                          : "text-white border-gray-300 hover:bg-gray-100 hover:text-primary"
                       }`}
                     >
                       {cls}
@@ -243,73 +238,32 @@ export default function TeachersPage() {
               )}
             </div>
 
+            {formError && (
+              <p className="text-red-500 text-sm mt-1 font-medium animate-fadeIn">
+                {formError}
+              </p>
+            )}
+
             <button
               onClick={() => {
                 if (!name || !email || !password)
-                  return alert("Please fill in all fields");
-                if (!subjectId) return alert("Please assign a subject");
+                  return setFormError("Please fill in all fields");
+                if (!subjectId) return setFormError("Please assign a subject");
                 if (selectedClasses.length === 0)
-                  return alert("Please assign at least one class");
-                setStep(2);
+                  return setFormError("Please assign at least one class");
+                createMutation.mutate();
               }}
-              className="mt-2 bg-gray-100 text-primary px-6 py-3 rounded-md font-semibold transition cursor-pointer"
+              disabled={createMutation.isPending}
+              className="mt-2 bg-gray-100 text-primary px-6 py-3 rounded-md font-semibold transition cursor-pointer disabled:opacity-50"
             >
-              Next
+              {createMutation.isPending ? "Creating..." : "Create Teacher"}
             </button>
-          </>
-        )}
-
-        {step === 2 && (
-          <>
-            <p className="text-sm text-gray-500 mb-4">
-              Creating a teacher account will temporarily sign you out. Enter
-              your admin credentials to sign back in automatically.
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <input
-                type="email"
-                placeholder="Your admin email"
-                className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
-                value={adminEmail}
-                onChange={(e) => setAdminEmail(e.target.value)}
-              />
-              <div className="relative">
-                <input
-                  type={showPasword ? "text" : "password"}
-                  placeholder="Your admin password"
-                  className=" w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
-                  value={adminPassword}
-                  onChange={(e) => setAdminPassword(e.target.value)}
-                />
-                <img
-                  onClick={togglePasswordVisibility}
-                  src={showPasword ? "/hide eye.svg" : "/show eye.svg"}
-                  alt="Toggle"
-                  className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
-                />
-              </div>
-            </div>
-            <div className="flex gap-3 mt-4">
-              <button
-                onClick={() => createMutation.mutate()}
-                disabled={createMutation.isPending}
-                className="bg-gray-100 text-primary font-semibold px-6 py-3 rounded-md transition cursor-pointer"
-              >
-                {createMutation.isPending ? "Creating..." : "Create Teacher"}
-              </button>
-              <button
-                onClick={() => setStep(1)}
-                className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition cursor-pointer"
-              >
-                Back
-              </button>
-            </div>
           </>
         )}
       </div>
 
       {/* Teachers Table */}
-      <div className="bg-primary rounded-xl shadow p-4 sm:p-6">
+      <div className="bg-primary rounded-xl shadow p-4 sm:p-6 ">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6">
           <h3 className="text-lg font-semibold mb-4 text-white">
             All Teachers
@@ -389,7 +343,7 @@ export default function TeachersPage() {
             </div>
 
             {/* 2. DESKTOP TABULAR VIEW (Visible from md screens and above) */}
-            <div className="hidden md:block overflow-x-auto">
+            <div className="hidden md:block overflow-x-auto w-full">
               <table className="w-full text-left text-sm text-white border-collapse table-fixed">
                 <thead>
                   <tr className="border-b border-white/20">
@@ -489,6 +443,11 @@ export default function TeachersPage() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
+                {resetPasswordError && (
+                  <p className="text-red-500 text-sm font-medium mb-2">
+                    {resetPasswordError}
+                  </p>
+                )}
                 <div className="flex gap-3">
                   <button
                     onClick={handleResetPassword}

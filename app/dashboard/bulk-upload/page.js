@@ -20,6 +20,7 @@ export default function BulkUploadPage() {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState(null);
+  const [formError, setFormError] = useState(null);
 
   const { data: students = [] } = useQuery({
     queryKey: ["students"],
@@ -42,7 +43,9 @@ export default function BulkUploadPage() {
       : subjects;
 
   const handleDownloadTemplate = () => {
-    if (!term || !session) return alert("Please select term and session first");
+    if (!term || !session) {
+      return setFormError("Please select term and session first");
+    }
     downloadTemplate(visibleStudents, visibleSubjects, term, session);
   };
 
@@ -84,7 +87,7 @@ export default function BulkUploadPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ml-10 mb-4">
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
             value={term}
             onChange={(e) => setTerm(e.target.value)}
           >
@@ -94,7 +97,7 @@ export default function BulkUploadPage() {
           </select>
 
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
             value={session}
             onChange={(e) => setSession(e.target.value)}
           >
@@ -113,7 +116,9 @@ export default function BulkUploadPage() {
             onChange={(e) => setSession(e.target.value)}
           /> */}
         </div>
-
+        {formError && (
+          <p className="text-red-500 text-sm mb-4 ml-10">{formError}</p>
+        )}
         <button
           onClick={handleDownloadTemplate}
           className="ml-10 bg-gray-100 text-primary px-6 py-3 rounded-lg transition cursor-pointer flex gap-1 items-center font-semibold"
@@ -174,22 +179,27 @@ export default function BulkUploadPage() {
               <p className="text-2xl font-bold text-green-600">
                 {result.successes.length}
               </p>
-              <p className="text-sm text-gray-500">Successfully uploaded</p>
+              <p className="text-sm text-gray-500 font-bold">
+                Successfully uploaded
+              </p>
             </div>
             <div className="bg-red-50 rounded-lg p-4 text-center">
               <p className="text-2xl font-bold text-red-500">
                 {result.errors.length}
               </p>
-              <p className="text-sm text-gray-500">Failed</p>
+              <p className="text-sm text-gray-500 font-bold">Failed</p>
             </div>
           </div>
 
           {result.errors.length > 0 && (
             <div>
               <p className="text-sm font-semibold text-red-500 mb-2">Errors:</p>
-              <ul className="text-sm text-red-400 space-y-1">
+              <ul className="text-sm text-red-400 font-bold space-y-1">
                 {result.errors.map((err, i) => (
-                  <li key={i}>❌ {err}</li>
+                  <li className="font-extrabold" key={i}>
+                    {" "}
+                    {err}
+                  </li>
                 ))}
               </ul>
             </div>
@@ -202,7 +212,7 @@ export default function BulkUploadPage() {
               </p>
               <ul className="text-sm text-green-500 space-y-1">
                 {result.successes.map((s, i) => (
-                  <li key={i}>✅ {s}</li>
+                  <li key={i}> {s}</li>
                 ))}
               </ul>
             </div>

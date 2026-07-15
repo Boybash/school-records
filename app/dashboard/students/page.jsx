@@ -236,7 +236,7 @@ export default function StudentsPage() {
             <input
               type="text"
               placeholder="Matric Number e.g GFS/2025/001"
-              className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={matricNumber}
               onChange={(e) => setMatricNumber(e.target.value)}
             />
@@ -250,7 +250,7 @@ export default function StudentsPage() {
             <input
               type="text"
               placeholder="Full Name"
-              className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+              className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -263,7 +263,7 @@ export default function StudentsPage() {
               <input
                 type="text"
                 placeholder="Class Format e.g JSS 1A"
-                className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+                className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
                 value={className}
                 onChange={(e) => setClassName(e.target.value)}
               />

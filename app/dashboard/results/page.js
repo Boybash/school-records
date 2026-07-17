@@ -55,24 +55,20 @@ export default function ResultsPage() {
 
   const visibleStudents = useMemo(() => {
     if (role !== "teacher") return students;
+
     const teacherDept = (userData?.department || "").toLowerCase();
 
     return students.filter((s) => {
       const matchesClass = userData?.classes?.includes(s.class);
       if (!matchesClass) return false;
-
       const studentCategory = getStudentCategory(s.class);
       const studentDept = (s.department || "").toLowerCase();
 
       if (studentCategory === "junior") {
-        return true;
+        return true; // Junior students bypass matching
       }
-      const teacherSubject = subjects.find(
-        (sub) => sub.id === userData?.subjectId,
-      );
-      const isGeneralSubject =
-        (teacherSubject?.department || "").toLowerCase() === "general";
-      return isGeneralSubject || studentDept === teacherDept;
+      const isGeneralSeniorTeacher = teacherDept === "senior";
+      return isGeneralSeniorTeacher || studentDept === teacherDept;
     });
   }, [students, role, userData]);
 

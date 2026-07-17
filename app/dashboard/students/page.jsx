@@ -57,7 +57,6 @@ export default function StudentsPage() {
     return classes;
   }, [role, userData, classes]);
 
-  // update the filteredStudents useMemo to add class restriction for teachers:
   const filteredStudents = useMemo(() => {
     return students.filter((student) => {
       const matchesSearch =
@@ -70,17 +69,20 @@ export default function StudentsPage() {
         : true;
 
       if (role === "teacher") {
-        // 1. Check Class Boundary Restriction
+        // 1. Class Boundary Check
         const matchesTeacherClass = userData?.classes?.includes(student.class);
         if (!matchesTeacherClass) return false;
 
-        // 2. Cross-Department Mapping Check
+        // 2. Department Stream Check
         const teacherDept = (userData?.department || "").toLowerCase();
         const studentCategory = getStudentCategory(student.class);
         const studentDept = (student.department || "").toLowerCase();
+        const isGeneralSeniorTeacher = teacherDept === "senior";
 
-        if (studentCategory !== "junior" && studentDept !== teacherDept) {
-          return false;
+        if (studentCategory !== "junior") {
+          if (!isGeneralSeniorTeacher && studentDept !== teacherDept) {
+            return false;
+          }
         }
       }
       return matchesSearch && matchesClass && matchesGender;
@@ -266,6 +268,7 @@ export default function StudentsPage() {
 
   const isPending = addMutation.isPending || updateMutation.isPending;
   const isAdmin = role === "admin";
+  ``;
 
   return (
     <div className="relative">
@@ -542,6 +545,7 @@ export default function StudentsPage() {
                     </button>
                     <button
                       onClick={() => openAlumniModal(student.id)}
+                      disabled={!isAdmin}
                       className={` text-white bg-green-500 px-3 py-1.5 rounded-md text-xs hover:bg-green-900 transition cursor-pointer ${student.class === "SS3" ? "block" : "hidden"}`}
                     >
                       Graduate
@@ -601,6 +605,7 @@ export default function StudentsPage() {
                         </button>
                         <button
                           onClick={() => openAlumniModal(student.id)}
+                          disabled={!isAdmin}
                           className={` text-white bg-green-500 px-3 py-1.5 rounded-md text-xs hover:bg-green-900 transition cursor-pointer ${student.class === "SS3" ? "block" : "hidden"}`}
                         >
                           Graduate

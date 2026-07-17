@@ -215,6 +215,7 @@ export default function TeachersPage() {
                   onChange={(e) => setDepartment(e.target.value)}
                 >
                   <option value="Junior">Junior</option>
+                  <option value="Senior">Senior</option>
                   <option value="Arts">Arts</option>
                   <option value="Science">Science</option>
                   <option value="Commercial">Commercial</option>

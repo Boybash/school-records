@@ -163,10 +163,10 @@ export default function DashboardLayout({ children }) {
                 <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
                   {role}
                 </p>
-                <h1 className="text-base font-bold text-gray-700 mt-1">
+                <h1 className="text-base font-bold text-gray-700">
                   {userData.subjectName || "None"}
                 </h1>
-                <h1 className="text-base font-bold text-gray-700 mt-1">
+                <h1 className="text-base font-bold text-gray-700">
                   {userData.classes?.join(", ") || "None"}
                 </h1>
               </div>

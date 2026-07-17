@@ -15,6 +15,8 @@ import Pagination from "@/components/pagination";
 export default function SubjectsPage() {
   const queryClient = useQueryClient();
   const [name, setName] = useState("");
+  const [department, setDepartment] = useState("General");
+  const [category, setCategory] = useState("All");
   const [editingSubject, setEditingSubject] = useState(null);
   const [deletingSubjectId, setDeletingSubjectId] = useState(null); // Fixed typo here
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,6 +34,8 @@ export default function SubjectsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
       setName("");
+      setDepartment("General");
+      setCategory("All");
     },
   });
 
@@ -41,6 +45,8 @@ export default function SubjectsPage() {
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
       setEditingSubject(null);
       setName("");
+      setDepartment("General");
+      setCategory("All");
     },
   });
 
@@ -59,16 +65,25 @@ export default function SubjectsPage() {
     if (!name) {
       return setFormError("Please enter a subject name");
     }
+
+    const subjectPayload = {
+      name,
+      department,
+      category,
+    };
+
     if (editingSubject) {
-      updateMutation.mutate({ id: editingSubject.id, data: { name } });
+      updateMutation.mutate({ id: editingSubject.id, data: subjectPayload });
     } else {
-      addMutation.mutate({ name });
+      addMutation.mutate(subjectPayload);
     }
   };
 
   const handleEdit = (subject) => {
     setEditingSubject(subject);
     setName(subject.name);
+    setDepartment(subject.department);
+    setCategory(subject.category);
   };
 
   const openDeleteModal = (id) => {
@@ -90,6 +105,8 @@ export default function SubjectsPage() {
   const handleCancel = () => {
     setEditingSubject(null);
     setName("");
+    setDepartment("General");
+    setCategory("All");
   };
 
   const isPending = addMutation.isPending || updateMutation.isPending;
@@ -111,16 +128,39 @@ export default function SubjectsPage() {
           {editingSubject ? "Edit Subject" : "Add New Subject"}
         </h3>
         <div className="flex flex-col gap-2">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:flex-row md:items-center">
             {/* Left Side: Input Field Container */}
             <div className="flex-1">
               <input
                 type="text"
                 placeholder="Subject name e.g Mathematics"
-                className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white text-gray-900"
+                className="w-full border p-3 rounded-md outline-none focus:ring-2 focus:ring-primary-50 bg-white text-gray-900"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
+            </div>
+            <div>
+              <select
+                className=" w-full border p-3 rounded-md outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+                value={department}
+                onChange={(e) => setDepartment(e.target.value)}
+              >
+                <option value="General">General</option>
+                <option value="Arts">Arts</option>
+                <option value="Science">Science</option>
+                <option value="Commercial">Commercial</option>
+              </select>
+            </div>
+            <div>
+              <select
+                className=" w-full border p-3 rounded-md outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                <option value="All">All</option>
+                <option value="Junior">Junior</option>
+                <option value="Senior">Senior</option>
+              </select>
             </div>
 
             {/* Right Side: Action Buttons */}
@@ -184,7 +224,7 @@ export default function SubjectsPage() {
                     <span className="text-xs text-gray-400 font-mono">
                       #{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
                     </span>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 font-semibold">
                       <button
                         onClick={() => handleEdit(subject)}
                         className="bg-blue-500 text-white hover:bg-blue-600 px-3 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer"
@@ -207,15 +247,27 @@ export default function SubjectsPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <img
-                      src="/book.png"
-                      alt="book"
-                      className="w-9 h-9 rounded-full bg-white p-2 object-contain flex-shrink-0"
-                    />
-                    <span className="text-white font-medium text-base truncate">
-                      {subject.name}
-                    </span>
+                  <div className="flex flex-col gap-3">
+                    <div className="flex gap-2 items-center">
+                      <img
+                        src="/book.png"
+                        alt="book"
+                        className="w-9 h-9 rounded-full bg-white p-2 object-contain flex-shrink-0"
+                      />
+                      <span className="text-white font-medium text-base truncate">
+                        {subject.name}
+                      </span>
+                    </div>
+                    <div className="flex gap-2">
+                      <p className="text-white font-medium text-base truncate">
+                        <span className="text-gray-500">Department:</span>{" "}
+                        {subject.department}
+                      </p>
+                      <p className="text-white font-medium text-base truncate">
+                        <span className="text-gray-500">Level:</span>{" "}
+                        {subject.category}
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -229,8 +281,14 @@ export default function SubjectsPage() {
                     <th className="pb-3 text-gray-400 font-medium w-[10%]">
                       #
                     </th>
-                    <th className="pb-3 text-gray-400 font-medium w-[65%]">
+                    <th className="pb-3 text-gray-400 font-medium w-[35%]">
                       Subject
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[15%]">
+                      Department
+                    </th>
+                    <th className="pb-3 text-gray-400 font-medium w-[15%]">
+                      Level
                     </th>
                     <th className="pb-3 text-gray-400 font-medium w-[25%]">
                       Actions
@@ -258,8 +316,14 @@ export default function SubjectsPage() {
                           </span>
                         </div>
                       </td>
+                      <td className="text-white font-medium truncate">
+                        {subject.department}
+                      </td>
+                      <td className="text-white font-medium truncate">
+                        {subject.category}
+                      </td>
                       <td className="py-3.5">
-                        <div className="flex gap-3">
+                        <div className="flex gap-3 font-semibold">
                           <button
                             onClick={() => handleEdit(subject)}
                             className="text-white bg-blue-500 hover:bg-blue-600 px-3 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer"

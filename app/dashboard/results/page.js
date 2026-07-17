@@ -14,6 +14,7 @@ import {
   getGrade,
   checkDuplicateResult,
 } from "@/lib/results";
+import { getStudentCategory } from "@/lib/students";
 import { useAuth } from "@/lib/useAuth";
 import { TableSkeleton } from "@/components/skeleton";
 import Pagination from "@/components/pagination";
@@ -52,15 +53,59 @@ export default function ResultsPage() {
     enabled: !!user,
   });
 
-  const visibleStudents =
-    role === "teacher"
-      ? students.filter((s) => userData?.classes?.includes(s.class))
-      : students;
+  const visibleStudents = useMemo(() => {
+    if (role !== "teacher") return students;
+    const teacherDept = (userData?.department || "").toLowerCase();
 
-  const visibleSubjects =
-    role === "teacher"
+    return students.filter((s) => {
+      const matchesClass = userData?.classes?.includes(s.class);
+      if (!matchesClass) return false;
+
+      const studentCategory = getStudentCategory(s.class);
+      const studentDept = (s.department || "").toLowerCase();
+
+      if (studentCategory === "junior") {
+        return true;
+      }
+      const teacherSubject = subjects.find(
+        (sub) => sub.id === userData?.subjectId,
+      );
+      const isGeneralSubject =
+        (teacherSubject?.department || "").toLowerCase() === "general";
+      return isGeneralSubject || studentDept === teacherDept;
+    });
+  }, [students, role, userData]);
+
+  const baseSubjects = useMemo(() => {
+    return role === "teacher"
       ? subjects.filter((s) => s.id === userData?.subjectId)
       : subjects;
+  }, [subjects, role, userData]);
+
+  const visibleSubjects = useMemo(() => {
+    const selectedStudent = students.find((s) => s.id === studentId);
+    if (!selectedStudent) return baseSubjects;
+
+    const studentCategory = getStudentCategory(selectedStudent.class); // "Junior" or "Senior"
+
+    const studentDept = (selectedStudent.department || "").toLowerCase();
+
+    return baseSubjects.filter((subject) => {
+      const subCat = (subject.category || "").toLowerCase();
+      const subDept = (subject.department || "").toLowerCase();
+
+      const matchesCategory =
+        subCat === "all" || subCat === studentCategory.toLowerCase();
+      let matchesDepartment = false;
+      if (studentCategory === "Junior") {
+        matchesDepartment = subDept === "general";
+      } else {
+        matchesDepartment = subDept === "general" || subDept === studentDept;
+      }
+
+      return matchesCategory && matchesDepartment;
+    });
+  }, [studentId, students, baseSubjects]);
 
   const addMutation = useMutation({
     mutationFn: addResult,
@@ -249,15 +294,16 @@ export default function ResultsPage() {
           </select>
 
           {/* Subject */}
+          {/* In your JSX form layout, change your subjects map to look at eligibleSubjects */}
           <select
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 bg-white"
             value={subjectId}
             onChange={(e) => setSubjectId(e.target.value)}
+            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 bg-white"
           >
             <option value="">Select Subject</option>
             {visibleSubjects.map((s) => (
               <option key={s.id} value={s.id}>
-                {s.name}
+                {s.name} ({s.department})
               </option>
             ))}
           </select>

@@ -3,8 +3,15 @@ import { getFirebaseAdmin } from "@/lib/firebaseAdmin";
 
 export async function POST(request) {
   try {
-    const { email, password, name, subjectId, subjectName, classes } =
-      await request.json();
+    const {
+      email,
+      password,
+      name,
+      subjectId,
+      subjectName,
+      classes,
+      department,
+    } = await request.json();
 
     const admin = getFirebaseAdmin();
 
@@ -26,6 +33,7 @@ export async function POST(request) {
       subjectId,
       subjectName,
       classes,
+      department,
     });
 
     return NextResponse.json({ success: true, uid });

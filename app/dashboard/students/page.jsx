@@ -8,9 +8,10 @@ import {
   updateStudent,
   deleteStudent,
 } from "@/lib/students";
+import { graduateStudent } from "@/lib/alumni";
 import { useAuth } from "@/lib/useAuth";
 import Pagination from "@/components/pagination";
-import Link from "next/link";
+import { getStudentCategory } from "@/lib/students";
 import { TableSkeleton, FormSkeleton } from "@/components/skeleton";
 
 export default function StudentsPage() {
@@ -24,10 +25,12 @@ export default function StudentsPage() {
   const [filterGender, setFilterGender] = useState("");
   const { userData, role } = useAuth();
   const [matricNumber, setMatricNumber] = useState("");
+  const [department, setDepartment] = useState("Junior");
   const [currentPage, setCurrentPage] = useState(1);
   const [dob, setDob] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const [alumniModal, setAlumniModal] = useState(null);
   const [formError, setFormError] = useState({
     matricNumber: "",
     name: "",
@@ -60,15 +63,27 @@ export default function StudentsPage() {
       const matchesSearch =
         student.name.toLowerCase().includes(search.toLowerCase()) ||
         student.matricNumber?.toLowerCase().includes(search.toLowerCase());
+
       const matchesClass = filterClass ? student.class === filterClass : true;
       const matchesGender = filterGender
         ? student.gender === filterGender
         : true;
-      const matchesTeacherClass =
-        role === "teacher" ? userData?.classes?.includes(student.class) : true;
-      return (
-        matchesSearch && matchesClass && matchesGender && matchesTeacherClass
-      );
+
+      if (role === "teacher") {
+        // 1. Check Class Boundary Restriction
+        const matchesTeacherClass = userData?.classes?.includes(student.class);
+        if (!matchesTeacherClass) return false;
+
+        // 2. Cross-Department Mapping Check
+        const teacherDept = (userData?.department || "").toLowerCase();
+        const studentCategory = getStudentCategory(student.class);
+        const studentDept = (student.department || "").toLowerCase();
+
+        if (studentCategory !== "junior" && studentDept !== teacherDept) {
+          return false;
+        }
+      }
+      return matchesSearch && matchesClass && matchesGender;
     });
   }, [students, search, filterClass, filterGender, role, userData]);
 
@@ -86,6 +101,7 @@ export default function StudentsPage() {
       setName("");
       setClassName("");
       setGender("Male");
+      setDepartment("Junior");
     },
   });
 
@@ -97,6 +113,7 @@ export default function StudentsPage() {
       setName("");
       setClassName("");
       setGender("Male");
+      setDepartment("Junior");
     },
   });
 
@@ -104,6 +121,20 @@ export default function StudentsPage() {
     mutationFn: deleteStudent,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["students"] });
+    },
+  });
+
+  const alumniMutation = useMutation({
+    mutationFn: graduateStudent,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["students"] });
+      queryClient.invalidateQueries({ queryKey: ["alumni"] });
+      setAlumniModal(false);
+      setSelectedStudentId(null);
+    },
+    onError: (error) => {
+      console.error("Failed to graduate student:", error);
+      alert(`Error: ${error.message}`); // This will tell us the exact issue instantly!
     },
   });
 
@@ -173,6 +204,7 @@ export default function StudentsPage() {
       gender,
       matricNumber: trimmedMatric,
       dob,
+      department,
     };
 
     if (editingStudent) {
@@ -192,6 +224,7 @@ export default function StudentsPage() {
     setGender(student.gender);
     setMatricNumber(student.matricNumber);
     setDob(student.dob || "");
+    setDepartment(student.department);
   };
 
   const openDeleteModal = (id) => {
@@ -210,6 +243,17 @@ export default function StudentsPage() {
     }
   };
 
+  const openAlumniModal = (id) => {
+    setSelectedStudentId(id);
+    setAlumniModal(true);
+  };
+
+  const handleConfirmGraduate = () => {
+    if (selectedStudentId) {
+      alumniMutation.mutate(selectedStudentId);
+    }
+  };
+
   const handleCancel = () => {
     setEditingStudent(null);
     setName("");
@@ -217,6 +261,7 @@ export default function StudentsPage() {
     setGender("Male");
     setMatricNumber("");
     setDob("");
+    setDepartment("Junior");
   };
 
   const isPending = addMutation.isPending || updateMutation.isPending;
@@ -312,6 +357,7 @@ export default function StudentsPage() {
           <div className="sm:col-span-2 lg:col-span-1">
             <input
               type="date"
+              placeholder="Enter DOB"
               className="w-full  border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
               value={dob}
               onChange={(e) => setDob(e.target.value)}
@@ -319,6 +365,18 @@ export default function StudentsPage() {
             {formError.dob && (
               <p className="text-red-500 text-sm mt-1">{formError.dob}</p>
             )}
+          </div>
+          <div>
+            <select
+              className=" w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+            >
+              <option value="Junior">Junior</option>
+              <option value="Arts">Arts</option>
+              <option value="Science">Science</option>
+              <option value="Commercial">Commercial</option>
+            </select>
           </div>
         </div>
         <div className="flex gap-3 mt-4">
@@ -460,12 +518,16 @@ export default function StudentsPage() {
                         {student.class}
                       </p>
                       <p>
+                        <span className="text-gray-500">Department:</span>{" "}
+                        {student.department}
+                      </p>
+                      <p>
                         <span className="text-gray-500">Gender:</span>{" "}
                         {student.gender}
                       </p>
                     </div>
                   </div>
-                  <div className="flex gap-3 justify-end mt-2 pt-2 border-t border-white/10">
+                  <div className="flex gap-3 justify-end mt-2 pt-2 border-t border-white/10 font-semibold">
                     <button
                       onClick={() => handleEdit(student)}
                       className="text-white bg-blue-500 px-4 py-2 rounded-md text-xs font-medium"
@@ -474,9 +536,15 @@ export default function StudentsPage() {
                     </button>
                     <button
                       onClick={() => openDeleteModal(student.id)}
-                      className="text-white bg-red-500 px-4 py-2 rounded-md text-xs font-medium"
+                      className={`text-white bg-red-500 px-3 py-1.5 rounded-md text-xs hover:bg-red-600 transition cursor-pointer ${student.class === "SS3" ? "hidden" : ""}`}
                     >
                       Delete
+                    </button>
+                    <button
+                      onClick={() => openAlumniModal(student.id)}
+                      className={` text-white bg-green-500 px-3 py-1.5 rounded-md text-xs hover:bg-green-900 transition cursor-pointer ${student.class === "SS3" ? "block" : "hidden"}`}
+                    >
+                      Graduate
                     </button>
                   </div>
                 </div>
@@ -491,9 +559,10 @@ export default function StudentsPage() {
                   <tr className="border-b border-white/30">
                     {/* 2. Set explicit percentage or fractional widths on the headers */}
                     <th className="pb-3 text-gray-500 w-[5%]">#</th>
-                    <th className="pb-3 text-gray-500 w-[20%]">Matric No.</th>
-                    <th className="pb-3 text-gray-500 w-[25%]">Name</th>
+                    <th className="pb-3 text-gray-500 w-[15%]">Matric No.</th>
+                    <th className="pb-3 text-gray-500 w-[15%]">Name</th>
                     <th className="pb-3 text-gray-500 w-[15%]">Class</th>
+                    <th className="pb-3 text-gray-500 w-[15%]">Department</th>
                     <th className="pb-3 text-gray-500 w-[15%]">Gender</th>
                     <th className="pb-3 text-gray-500 w-[20%]">Actions</th>
                   </tr>
@@ -515,8 +584,9 @@ export default function StudentsPage() {
                         {student.name}
                       </td>
                       <td className="py-3 text-white">{student.class}</td>
+                      <td className="py-3 text-white">{student.department}</td>
                       <td className="py-3 text-white">{student.gender}</td>
-                      <td className="py-3 flex gap-4">
+                      <td className="py-3 flex gap-4 font-semibold">
                         <button
                           onClick={() => handleEdit(student)}
                           className="text-white bg-blue-500 px-3 py-1.5 rounded-md text-xs hover:bg-blue-600 transition cursor-pointer"
@@ -525,9 +595,15 @@ export default function StudentsPage() {
                         </button>
                         <button
                           onClick={() => openDeleteModal(student.id)}
-                          className="text-white bg-red-500 px-3 py-1.5 rounded-md text-xs hover:bg-red-600 transition cursor-pointer"
+                          className={`text-white bg-red-500 px-3 py-1.5 rounded-md text-xs hover:bg-red-600 transition cursor-pointer ${student.class === "SS3" ? "hidden" : ""}`}
                         >
                           Delete
+                        </button>
+                        <button
+                          onClick={() => openAlumniModal(student.id)}
+                          className={` text-white bg-green-500 px-3 py-1.5 rounded-md text-xs hover:bg-green-900 transition cursor-pointer ${student.class === "SS3" ? "block" : "hidden"}`}
+                        >
+                          Graduate
                         </button>
                       </td>
                     </tr>
@@ -544,13 +620,6 @@ export default function StudentsPage() {
           </>
         )}
       </div>
-      {/* <Link
-        href="/"
-        className=" flex gap-2 items-center bg-primary-50 p-2 rounded-md absolute top-0 right-0 "
-      >
-        <img className="w-5 h-5" src="/arrow-l.png" alt="arrow" />
-        Back
-      </Link> */}
 
       {modalOpen && (
         <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
@@ -577,6 +646,36 @@ export default function StudentsPage() {
                 className="bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer transition font-bold disabled:opacity-50"
               >
                 {deleteMutation.isPending ? "Deleting..." : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {alumniModal && (
+        <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-md shadow-lg w-80">
+            <h2 className="text-lg font-semibold mb-4 text-gray-900">
+              Confirm Adding To Alumni
+            </h2>
+            <p className="mb-4 text-gray-600">
+              Are you sure you want to add this student to Alumni?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => {
+                  setAlumniModal(false);
+                  setSelectedStudentId(null);
+                }}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md cursor-pointer transition font-bold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmGraduate} // 👈 Fixed this handler callback
+                disabled={alumniMutation.isPending}
+                className="bg-green-500 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-green-900 transition font-bold disabled:opacity-50"
+              >
+                {alumniMutation.isPending ? "Graduating..." : "Graduate"}
               </button>
             </div>
           </div>

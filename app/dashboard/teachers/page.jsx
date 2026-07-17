@@ -16,11 +16,10 @@ export default function TeachersPage() {
   const queryClient = useQueryClient();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [department, setDepartment] = useState("Junior");
   const [password, setPassword] = useState("");
   const [subjectId, setSubjectId] = useState("");
   const [selectedClasses, setSelectedClasses] = useState([]);
-  const [adminEmail, setAdminEmail] = useState("");
-  const [adminPassword, setAdminPassword] = useState("");
   const [step, setStep] = useState(1);
   const [resetingId, setResetingId] = useState(null);
   const [newPassword, setNewPassword] = useState("");
@@ -70,6 +69,7 @@ export default function TeachersPage() {
         subjectId,
         selectedSubject.name,
         selectedClasses,
+        department,
       );
     },
     onSuccess: () => {
@@ -78,6 +78,7 @@ export default function TeachersPage() {
       setEmail("");
       setPassword("");
       setSubjectId("");
+      setDepartment("Junior");
       setSelectedClasses([]);
       setStep(1);
       setFormError("");
@@ -154,14 +155,14 @@ export default function TeachersPage() {
       <h2 className="text-xl font-bold mb-6 uppercase">Teachers</h2>
 
       {/* Add Teacher Form */}
-      <div className="bg-primary rounded-xl shadow p-6 mb-6">
+      <div className="bg-primary rounded-md shadow p-6 mb-6">
         <h3 className="text-lg font-semibold mb-4 text-white">
           Add New Teacher
         </h3>
 
         {step === 1 && (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 mb-4">
               <input
                 type="text"
                 placeholder="Full Name"
@@ -206,6 +207,19 @@ export default function TeachersPage() {
                   </option>
                 ))}
               </select>
+
+              <div>
+                <select
+                  className=" w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+                  value={department}
+                  onChange={(e) => setDepartment(e.target.value)}
+                >
+                  <option value="Junior">Junior</option>
+                  <option value="Arts">Arts</option>
+                  <option value="Science">Science</option>
+                  <option value="Commercial">Commercial</option>
+                </select>
+              </div>
             </div>
 
             {/* Subject Assignment */}
@@ -263,7 +277,7 @@ export default function TeachersPage() {
       </div>
 
       {/* Teachers Table */}
-      <div className="bg-primary rounded-xl shadow p-4 sm:p-6 ">
+      <div className="bg-primary rounded-md shadow p-4 sm:p-6 ">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6">
           <h3 className="text-lg font-semibold mb-4 text-white">
             All Teachers
@@ -306,6 +320,12 @@ export default function TeachersPage() {
                         {teacher.subjectName}
                       </span>
                     </p>
+                    <p className="text-white/70 text-sm mt-0.5">
+                      Department:{" "}
+                      <span className="text-white font-medium">
+                        {teacher.department}
+                      </span>
+                    </p>
                   </div>
 
                   {/* Target Classes badging container */}
@@ -319,7 +339,7 @@ export default function TeachersPage() {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-2 pt-1 mt-1 border-t border-white/5">
+                  <div className="flex gap-2 pt-1 mt-1 border-t border-white/5 font-semibold">
                     <button
                       onClick={() => setResetingId(teacher.uid)}
                       className="flex-1 text-center text-white bg-yellow-600 hover:bg-yellow-700 py-2 px-3 rounded-md text-xs font-medium transition cursor-pointer"
@@ -348,16 +368,19 @@ export default function TeachersPage() {
                 <thead>
                   <tr className="border-b border-white/20">
                     <th className="pb-3 text-white/50 font-medium w-[5%]">#</th>
-                    <th className="pb-3 text-white/50 font-medium w-[25%]">
+                    <th className="pb-3 text-white/50 font-medium w-[20%]">
                       Name
                     </th>
-                    <th className="pb-3 text-white/50 font-medium w-[25%]">
+                    <th className="pb-3 text-white/50 font-medium w-[17%]">
                       Email
                     </th>
                     <th className="pb-3 text-white/50 font-medium w-[15%]">
                       Subject
                     </th>
-                    <th className="pb-3 text-white/50 font-medium w-[12%]">
+                    <th className="pb-3 text-white/50 font-medium w-[15%]">
+                      Department
+                    </th>
+                    <th className="pb-3 text-white/50 font-medium w-[10%]">
                       Classes
                     </th>
                     <th className="pb-3 text-white/50 font-medium w-[18%] text-right">
@@ -382,10 +405,13 @@ export default function TeachersPage() {
                         {teacher.subjectName}
                       </td>
                       <td className="py-3 text-white/80 truncate">
+                        {teacher.department}
+                      </td>
+                      <td className="py-3 text-white/80 truncate">
                         {teacher.classes?.join(", ")}
                       </td>
                       <td className="py-3">
-                        <div className="flex gap-2 justify-end">
+                        <div className="flex gap-2 justify-end font-semibold">
                           <button
                             onClick={() => setResetingId(teacher.uid)}
                             className="text-white bg-yellow-600 hover:bg-yellow-700 px-3 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer whitespace-nowrap"

@@ -19,23 +19,28 @@ const adminLinks = [
     label: "Students",
     icon: "/graduation-cap.png",
   },
+  { href: "/dashboard/teachers", label: "Teachers", icon: "/workshop.png" },
   { href: "/dashboard/subjects", label: "Subjects", icon: "/book.png" },
   { href: "/dashboard/results", label: "Results", icon: "/sheet.png" },
-  { href: "/dashboard/comments", label: "Comments", icon: "/comment-alt.png" },
   { href: "/dashboard/bulk-upload", label: "Bulk Upload", icon: "/upload.png" },
+  { href: "/dashboard/comments", label: "Comments", icon: "/comment-alt.png" },
   { href: "/dashboard/approvals", label: "Approvals", icon: "/checkbox.png" },
   {
     href: "/dashboard/result-sheet",
     label: "Result Sheet",
     icon: "/result.png",
   },
-  { href: "/dashboard/teachers", label: "Teachers", icon: "/workshop.png" },
-  { href: "/dashboard/settings", label: "Settings", icon: "/settings.png" },
   {
     href: "/dashboard/activity",
     label: "Activity Logs",
     icon: "/log-file.png",
   },
+  {
+    href: "/dashboard/alumni",
+    label: "Alumni",
+    icon: "/student.png",
+  },
+  { href: "/dashboard/settings", label: "Settings", icon: "/settings.png" },
 ];
 
 const teacherLinks = [
@@ -45,9 +50,9 @@ const teacherLinks = [
     icon: "/graduation-cap.png",
   },
   { href: "/dashboard/results", label: "Results", icon: "/sheet.png" },
+  { href: "/dashboard/bulk-upload", label: "Bulk Upload", icon: "/upload.png" },
   { href: "/dashboard/comments", label: "Comments", icon: "/comment-alt.png" },
   { href: "/dashboard/approvals", label: "Approvals", icon: "/checkbox.png" },
-  { href: "/dashboard/bulk-upload", label: "Bulk Upload", icon: "/upload.png" },
   {
     href: "/dashboard/result-sheet",
     label: "Result Sheet",
@@ -158,6 +163,9 @@ export default function DashboardLayout({ children }) {
                 <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
                   {role}
                 </p>
+                <h1 className="text-base font-bold text-gray-700 mt-1">
+                  {userData.subjectName || "None"}
+                </h1>
                 <h1 className="text-base font-bold text-gray-700 mt-1">
                   {userData.classes?.join(", ") || "None"}
                 </h1>

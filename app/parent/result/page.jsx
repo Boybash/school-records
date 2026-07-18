@@ -22,6 +22,7 @@ export default function ParentResultPage() {
   const [term, setTerm] = useState("1st Term");
   const [session, setSession] = useState("2024/2025");
   const [searched, setSearched] = useState(false);
+  const [isGenerate, setIsGenerate] = useState(false);
 
   const [searchTrigger, setSearchTrigger] = useState({
     term: "1st Term",
@@ -107,6 +108,7 @@ export default function ParentResultPage() {
       session: session,
     });
     setSearched(true);
+    setIsGenerate(true);
   };
 
   const handleLogout = async () => {
@@ -253,7 +255,7 @@ export default function ParentResultPage() {
             onClick={handleSearch}
             className="mt-4 bg-gray-100 text-primary px-6 py-3 rounded-lg cursor-pointer font-semibold transition"
           >
-            View Result
+            {isGenerate ? "Fetching Result..." : "View Result"}
           </button>
         </div>
 

@@ -26,6 +26,7 @@ export default function ResultSheetPage() {
   const [localTeacherComment, setLocalTeacherComment] = useState("");
   const [localPrincipalComment, setLocalPrincipalComment] = useState("");
   const [formError, setFormError] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const { data: students = [] } = useQuery({
     queryKey: ["students"],
@@ -102,6 +103,7 @@ export default function ResultSheetPage() {
 
   // FIXED: Reset local state cleanly to eliminate asynchronous React state lag
   const handleSearch = async () => {
+    // 1. Validation Checks
     if (!studentId) {
       return setFormError("Please select a student");
     }
@@ -116,18 +118,19 @@ export default function ResultSheetPage() {
         );
       }
     }
-
-    setSearched(true);
-
-    // Invalidate cache first then refetch
-    await queryClient.invalidateQueries({
-      queryKey: ["result-comments", studentId, term, session],
-    });
-
-    setTimeout(() => {
-      refetchResults();
-      refetchComments();
-    }, 100);
+    try {
+      setFormError("");
+      setSearched(true);
+      setIsGenerating(true);
+      await queryClient.invalidateQueries({
+        queryKey: ["result-comments", studentId, term, session],
+      });
+      await Promise.all([refetchResults(), refetchComments()]);
+    } catch (error) {
+      console.error("Error fetching sheet data:", error);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const totalScore = results.reduce((sum, r) => sum + r.score, 0);
@@ -238,7 +241,7 @@ export default function ResultSheetPage() {
           onClick={handleSearch}
           className="mt-4 bg-gray-100 text-primary px-6 py-3 font-semibold rounded-md transition cursor-pointer"
         >
-          Generate Result Sheet
+          {isGenerating ? "Generating..." : "Generate Result Sheet"}
         </button>
       </div>
 

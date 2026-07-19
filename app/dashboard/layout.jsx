@@ -98,6 +98,7 @@ export default function DashboardLayout({ children }) {
   const navLinks = role === "admin" ? adminLinks : teacherLinks;
   const isTeacher = role === "teacher";
   const isAdmin = role === "admin";
+  const isClassTeacherOf = role === "teacher" && userData?.isClassTeacher;
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-gray-100">
@@ -169,6 +170,13 @@ export default function DashboardLayout({ children }) {
                 <h1 className="text-base font-bold text-gray-700">
                   {userData.classes?.join(", ") || "None"}
                 </h1>
+                {isClassTeacherOf ? (
+                  <p className="text-base font-bold text-gray-700">
+                    Class Teacher: {userData.classTeacherOf}
+                  </p>
+                ) : (
+                  ""
+                )}
               </div>
             ) : isTeacher ? (
               <p className="text-gray-400 italic">Loading profile details...</p>

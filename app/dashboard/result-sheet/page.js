@@ -101,6 +101,11 @@ export default function ResultSheetPage() {
     enabled: !!selectedStudent && searched,
   });
 
+  const isClassTeacherOfStudent =
+    role === "teacher" &&
+    userData?.isClassTeacher &&
+    userData?.classTeacherOf === selectedStudent?.class;
+
   // FIXED: Reset local state cleanly to eliminate asynchronous React state lag
   const handleSearch = async () => {
     // 1. Validation Checks
@@ -205,17 +210,6 @@ export default function ResultSheetPage() {
               <option key={t}>{t}</option>
             ))}
           </select>
-
-          {/* <input
-            type="text"
-            placeholder="Session e.g 2024/2025"
-            className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
-            value={session}
-            onChange={(e) => {
-              setSession(e.target.value);
-              setSearched(false); // Reset view on session change
-            }}
-          /> */}
           <select
             className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 bg-white"
             value={session}
@@ -472,7 +466,7 @@ export default function ResultSheetPage() {
                   <label className="block text-xs font-bold uppercase text-gray-500 mb-2">
                     Class Teacher's Remark
                   </label>
-                  {role === "teacher" ? (
+                  {isClassTeacherOfStudent ? (
                     <div className="space-y-2 no-print">
                       <textarea
                         className="w-full border p-2 text-sm rounded bg-white text-gray-800 outline-none focus:ring-1 focus:ring-primary"

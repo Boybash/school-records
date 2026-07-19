@@ -22,7 +22,6 @@ export default function ParentResultPage() {
   const [term, setTerm] = useState("1st Term");
   const [session, setSession] = useState("2024/2025");
   const [searched, setSearched] = useState(false);
-  const [isGenerate, setIsGenerate] = useState(false);
 
   const [searchTrigger, setSearchTrigger] = useState({
     term: "1st Term",
@@ -108,7 +107,6 @@ export default function ParentResultPage() {
       session: session,
     });
     setSearched(true);
-    setIsGenerate(true);
   };
 
   const handleLogout = async () => {
@@ -231,13 +229,6 @@ export default function ParentResultPage() {
                 <option key={t}>{t}</option>
               ))}
             </select>
-            {/* <input
-              type="text"
-              placeholder="Session e.g 2024/2025"
-              className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 bg-white"
-              value={session}
-              onChange={(e) => setSession(e.target.value)}
-            /> */}
             <select
               className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 bg-white"
               value={session}
@@ -255,7 +246,7 @@ export default function ParentResultPage() {
             onClick={handleSearch}
             className="mt-4 bg-gray-100 text-primary px-6 py-3 rounded-lg cursor-pointer font-semibold transition"
           >
-            {isGenerate ? "Fetching Result..." : "View Result"}
+            View Result
           </button>
         </div>
 

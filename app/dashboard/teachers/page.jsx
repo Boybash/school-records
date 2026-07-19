@@ -5,11 +5,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createTeacher, getTeachers, deleteTeacher } from "@/lib/auth";
 import { getSubjects } from "@/lib/subjects";
 import { getStudentsForUser } from "@/lib/students";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 import { TableSkeleton } from "@/components/skeleton";
 import { resetTeacherPassword } from "@/lib/resetPassword";
-import { signOut } from "firebase/auth";
 import Pagination from "@/components/pagination";
 
 export default function TeachersPage() {
@@ -31,6 +28,8 @@ export default function TeachersPage() {
   const [teacherToDelete, setTeacherToDelete] = useState(null);
   const [formError, setFormError] = useState("");
   const [resetPasswordError, setResetPasswordError] = useState("");
+  const [isClassTeacher, setIsClassTeacher] = useState(false);
+  const [classTeacherOf, setClassTeacherOf] = useState("");
   const ITEMS_PER_PAGE = 10;
 
   const { data: teachers = [], isLoading } = useQuery({
@@ -70,6 +69,8 @@ export default function TeachersPage() {
         selectedSubject.name,
         selectedClasses,
         department,
+        isClassTeacher,
+        classTeacherOf,
       );
     },
     onSuccess: () => {
@@ -80,6 +81,8 @@ export default function TeachersPage() {
       setSubjectId("");
       setDepartment("Junior");
       setSelectedClasses([]);
+      setClassTeacherOf("");
+      setIsClassTeacher(false);
       setStep(1);
       setFormError("");
       // alert("Teacher created successfully!");
@@ -222,7 +225,6 @@ export default function TeachersPage() {
                 </select>
               </div>
             </div>
-
             {/* Subject Assignment */}
 
             {/* Class Assignment */}
@@ -250,6 +252,46 @@ export default function TeachersPage() {
                     </button>
                   ))}
                 </div>
+              )}
+            </div>
+
+            {/* Class Teacher Assignment */}
+            <div className="mb-4">
+              {/* <label className="text-sm text-white mb-2 block">
+                Class Teacher
+              </label> */}
+              <div className="flex items-center gap-3 mb-3">
+                <input
+                  type="checkbox"
+                  id="isClassTeacher"
+                  checked={isClassTeacher}
+                  onChange={(e) => {
+                    setIsClassTeacher(e.target.checked);
+                    if (!e.target.checked) setClassTeacherOf("");
+                  }}
+                  className="w-5 h-5 cursor-pointer"
+                />
+                <label
+                  htmlFor="isClassTeacher"
+                  className="text-white text-sm cursor-pointer"
+                >
+                  This teacher is a class teacher
+                </label>
+              </div>
+
+              {isClassTeacher && (
+                <select
+                  className=" w-[220px] border p-3 rounded-lg outline-none focus:ring-2 focus:ring-primary-50 bg-white"
+                  value={classTeacherOf}
+                  onChange={(e) => setClassTeacherOf(e.target.value)}
+                >
+                  <option value="">Select Class</option>
+                  {classes.map((cls) => (
+                    <option key={cls} value={cls}>
+                      {cls}
+                    </option>
+                  ))}
+                </select>
               )}
             </div>
 
@@ -327,6 +369,12 @@ export default function TeachersPage() {
                         {teacher.department}
                       </span>
                     </p>
+                    <p className="text-white/70 text-sm mt-0.5">
+                      Class Teacher:{" "}
+                      <span className="text-white font-medium">
+                        {teacher.isClassTeacher ? teacher.classTeacherOf : "No"}
+                      </span>
+                    </p>
                   </div>
 
                   {/* Target Classes badging container */}
@@ -369,20 +417,23 @@ export default function TeachersPage() {
                 <thead>
                   <tr className="border-b border-white/20">
                     <th className="pb-3 text-white/50 font-medium w-[5%]">#</th>
-                    <th className="pb-3 text-white/50 font-medium w-[20%]">
+                    <th className="pb-3 text-white/50 font-medium w-[15%]">
                       Name
                     </th>
-                    <th className="pb-3 text-white/50 font-medium w-[17%]">
+                    <th className="pb-3 text-white/50 font-medium w-[15%]">
                       Email
                     </th>
-                    <th className="pb-3 text-white/50 font-medium w-[15%]">
+                    <th className="pb-3 text-white/50 font-medium w-[13%]">
                       Subject
                     </th>
-                    <th className="pb-3 text-white/50 font-medium w-[15%]">
+                    <th className="pb-3 text-white/50 font-medium w-[13%]">
                       Department
                     </th>
-                    <th className="pb-3 text-white/50 font-medium w-[10%]">
+                    <th className="pb-3 text-white/50 font-medium w-[11%]">
                       Classes
+                    </th>
+                    <th className="pb-3 text-white/50 font-medium w-[10%]">
+                      Class Teacher Of
                     </th>
                     <th className="pb-3 text-white/50 font-medium w-[18%] text-right">
                       Actions
@@ -410,6 +461,15 @@ export default function TeachersPage() {
                       </td>
                       <td className="py-3 text-white/80 truncate">
                         {teacher.classes?.join(", ")}
+                      </td>
+                      <td className="py-3 text-white/80 truncate">
+                        {teacher.isClassTeacher ? (
+                          <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">
+                            {teacher.classTeacherOf}
+                          </span>
+                        ) : (
+                          <span className="text-gray-500 text-xs">—</span>
+                        )}
                       </td>
                       <td className="py-3">
                         <div className="flex gap-2 justify-end font-semibold">
